@@ -1,0 +1,18 @@
+<form class="form-inline" method="post" action="jsp/site/plugins/mydashboard/modules/identity/DoModifyIdentity.jsp">
+    <fieldset>
+       <#list identity.attributes as attribute>
+          <div class="form-group">
+               <label for="title" class="col-xs-12 col-sm-3 control-label">${attribute.key}!''&#8239;:&#8239;</label>
+               <div class="col-xs-12 col-sm-9">
+                  <p class="form-control-static">
+                      ${attribute.value!''}
+                  </p>
+               </div>
+           </div>
+       </#list>
+    </fieldset>
+    <div class="control-group">
+        <button type="submit" class="btn btn-small btn-primary"><i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{module.mydashboard.identity.xpage.view_identity.labelButtonModify}</button> 
+    </div>
+</form>
+
