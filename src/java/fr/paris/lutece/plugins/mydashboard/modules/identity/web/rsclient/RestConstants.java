@@ -41,23 +41,13 @@ package fr.paris.lutece.plugins.mydashboard.modules.identity.web.rsclient;
 public final class RestConstants
 {
     public static final String IDENTITY_PATH = "identity/";
-    public static final String ID_PATH = "id";
-    public static final String ALL_PATH = "s";
-    public static final String FORMAT_QUERY = "format";
-    public static final String MEDIA_TYPE_JSON = "json";
     public static final String PARAM_ID_CONNECTION = "connection_id";
     public static final String PARAM_CLIENT_CODE = "client_code";
     public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_CERTIFIER_ID = "certifier_id";
-    public static final String PARAM_FILE = "file";
-    public static final String PARAM_ATTRIBUTE_KEY = "attribute_key";
-    public static final String ERROR_FIELD_MISSING = "FIELD_MISSING";
-    public static final String ERROR_FIELD_PERMISSION = "FIELD_PERMISION_ERROR";
-    public static final String RESPONSE_OK = "OK";
-
-    public static final String URL_IDENTITYSTORE_ENDPOINT = "mydashboard-identity.urlIdentityStoreEndpoint";
-    public static final String URL_TOKEN = "mydashboard-identity.urlApiManager";
-    public static final String TOKEN = "mydashboard-identity.urlApiManagerToken";
+    public static final String URL_IDENTITYSTORE_ENDPOINT = "mydashboard.identity.urlIdentityStoreEndpoint";
+    public static final String URL_TOKEN = "mydashboard.identity.urlApiManager";
+    public static final String TOKEN = "mydashboard.identity.urlApiManagerToken";
 
     //CONSTANT FOR SENDING JSON FLUX
     public static final String TYPE_AUTHENTIFICATION = "Bearer";
@@ -71,7 +61,7 @@ public final class RestConstants
 
     //HTTP ERROR MESSAGE
     public static final String ERROR_MESSAGE = "Failed : HTTP error code : ";
-    
+
     /**
      * Default constructor
      */

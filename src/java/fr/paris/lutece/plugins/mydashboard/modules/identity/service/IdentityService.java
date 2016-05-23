@@ -31,17 +31,15 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.mydashboard.modules.identity.service;
 
-import fr.paris.lutece.plugins.mydashboard.modules.identity.business.Identity;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.service.dto.IdentityDto;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.service.dto.ResponseDto;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.ResponseDto;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.web.Constants;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.web.rsclient.IdentityRestClientService;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.web.rsclient.IdentityRestClientUtil;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 
 /**
@@ -57,7 +55,7 @@ public class IdentityService implements IIdentityService
     protected IdentityService(  )
     {
     }
-   
+
     /**
      * Get the instance of {@link IdentityService}
      * @return the instance of {@link IdentityService}
@@ -67,24 +65,22 @@ public class IdentityService implements IIdentityService
         return SpringContextService.getBean( BEAN_IDENTITYSERVICE );
     }
 
-    
     @Override
-    public Identity getIdentity( LuteceUser user ) 
+    public IdentityDto getIdentity( LuteceUser user )
     {
         IdentityRestClientService identityRestClientService = IdentityRestClientService.getService(  );
-        
-        Identity identity = IdentityRestClientUtil.convertFromDto( identityRestClientService.getIdentity( user.getName( ), Constants.CLIENT_CODE ) );
-        
-        return identity;
+
+        return identityRestClientService.getIdentity( user.getName(  ),
+            AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE ) );
     }
 
     @Override
-    public ResponseDto updateAttributes( Identity identity ) 
+    public ResponseDto updateIdentity( IdentityDto identity )
     {
         IdentityRestClientService identityRestClientService = IdentityRestClientService.getService(  );
-        
-        ResponseDto responseDto = identityRestClientService.updateAttributes( identity );
-        
+
+        ResponseDto responseDto = identityRestClientService.updateIdentity( identity );
+
         return responseDto;
     }
 }

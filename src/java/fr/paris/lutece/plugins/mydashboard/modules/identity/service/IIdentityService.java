@@ -31,19 +31,19 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.mydashboard.modules.identity.service;
 
-import fr.paris.lutece.plugins.mydashboard.modules.identity.business.Identity;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.service.dto.ResponseDto;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.ResponseDto;
 import fr.paris.lutece.portal.service.security.LuteceUser;
+
 
 /**
  * IIdentityService
  */
-public interface IIdentityService 
+public interface IIdentityService
 {
-    Identity getIdentity( LuteceUser user );
+    IdentityDto getIdentity( LuteceUser user );
 
-    ResponseDto updateAttributes( Identity identity );
+    ResponseDto updateIdentity( IdentityDto identity );
 }

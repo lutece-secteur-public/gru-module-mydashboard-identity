@@ -26,7 +26,7 @@
         <dependency>
             <artifactId>lutece-core</artifactId>
             <groupId>fr.paris.lutece</groupId>
-            <version>5.1.1-SNAPSHOT</version>
+            <version>[5.1.1-SNAPSHOT,)</version>
             <type>lutece-core</type>
         </dependency>
         <dependency>
@@ -36,9 +36,9 @@
             <type>lutece-plugin</type>
         </dependency>
         <dependency>
+            <artifactId>plugin-identitystore</artifactId>
             <groupId>fr.paris.lutece.plugins</groupId>
-            <artifactId>plugin-rest</artifactId>
-            <version>[3.0.0,)</version>
+            <version>[1.0.0-SNAPSHOT,)</version>
             <type>lutece-plugin</type>
         </dependency>
         <dependency>

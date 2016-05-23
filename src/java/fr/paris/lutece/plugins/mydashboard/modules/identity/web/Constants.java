@@ -40,10 +40,24 @@ package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
  */
 public final class Constants
 {
-    public static final String MARK_IDENTITY = "identity";
+    //properties 
+    public static final String PROPERTY_KEY_NAME = "mydashboard.identity.attribute.key.name";
+    public static final String PROPERTY_KEY_BIRTHNAME = "mydashboard.identity.attribute.key.birthname";
+    public static final String PROPERTY_KEY_FIRSTNAME = "mydashboard.identity.attribute.key.firstname";
+    public static final String PROPERTY_KEY_GENDER = "mydashboard.identity.attribute.key.gender";
+    public static final String PROPERTY_KEY_BIRTHDATE = "mydashboard.identity.attribute.key.birthdate";
+    public static final String PROPERTY_KEY_BIRTHPLACE = "mydashboard.identity.attribute.key.birthplace";
+    public static final String PROPERTY_KEY_ADDRESS_NUMBER = "mydashboard.identity.attribute.key.address_number";
+    public static final String PROPERTY_KEY_ADDRESS_SUFFIX = "mydashboard.identity.attribute.key.address_suffix";
+    public static final String PROPERTY_KEY_ADDRESS_STREET = "mydashboard.identity.attribute.key.address_street";
+    public static final String PROPERTY_KEY_ADDRESS_BUILDING = "mydashboard.identity.attribute.key.address_building";
+    public static final String PROPERTY_KEY_ADDRESS_STAIR = "mydashboard.identity.attribute.key.address_stair";
+    public static final String PROPERTY_KEY_ADDRESS_POSTAL_CODE = "mydashboard.identity.attribute.key.address_postal_code";
+    public static final String PROPERTY_KEY_EMAIL = "mydashboard.identity.attribute.key.email";
+    public static final String PROPERTY_KEY_PHONE = "mydashboard.identity.attribute.key.phone";
+    public static final String PROPERTY_KEY_MOBILE_PHONE = "mydashboard.identity.attribute.key.mobile_phone";
+    public static final String PROPERTY_APPLICATION_CODE = "mydashboard.identity.application.code";
 
-    public static final String CLIENT_CODE = "MyDashboard";
-    
     /**
      * Default constructor
      */

@@ -33,17 +33,17 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web.rsclient;
 
-import javax.ws.rs.core.MediaType;
-
-import org.junit.Test;
-
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
-import fr.paris.lutece.plugins.mydashboard.modules.identity.service.dto.AttributeDto;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.service.dto.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
 import fr.paris.lutece.test.LuteceTestCase;
+
+import org.junit.Test;
+
+import javax.ws.rs.core.MediaType;
 
 
 /**
@@ -53,7 +53,7 @@ import fr.paris.lutece.test.LuteceTestCase;
 public class IdentityRestClientServiceTest extends LuteceTestCase
 {
     private static final String PLUGIN_IDENTITYSTORE_REST_URL = "http://localhost:8080/identity/rest/identitystore/identity/";
-    
+
     /**
      * Test of getIdentityAttributes rest service of plugin-identitystore.
      */
@@ -61,38 +61,40 @@ public class IdentityRestClientServiceTest extends LuteceTestCase
     public void testRestServiceGetIdentityAttributes(  )
     {
         System.out.println( "getIdentityAttributes" );
-        
+
         String strIdConnection = "azerty";
         String strClientCode = "MyDashboard";
 
         Client client = Client.create(  );
 
-        WebResource webResource = client.resource( PLUGIN_IDENTITYSTORE_REST_URL + strIdConnection    
-                    + "?format=json&client_code=" + strClientCode );
+        WebResource webResource = client.resource( PLUGIN_IDENTITYSTORE_REST_URL + strIdConnection +
+                "?format=json&client_code=" + strClientCode );
 
         ClientResponse response = webResource.accept( MediaType.APPLICATION_JSON ).get( ClientResponse.class );
-        
+
         if ( response.getStatus(  ) != 200 )
         {
             System.out.println( "Status : " + response.getStatus(  ) );
         }
-        
+
         IdentityDto identityDto = null;
-        if ( response.hasEntity(  ) && response.getType(  ).toString(  ).equals(MediaType.APPLICATION_JSON)) 
+
+        if ( response.hasEntity(  ) && response.getType(  ).toString(  ).equals( MediaType.APPLICATION_JSON ) )
         {
-            identityDto = response.getEntity(IdentityDto.class);
+            identityDto = response.getEntity( IdentityDto.class );
         }
-        
+
         if ( identityDto != null )
         {
             System.out.println( "Identity : " );
-            System.out.println( "ClientAppCode : " + identityDto.getClientAppCode(  ) );
+
             System.out.println( "Attributes : " );
-            for ( AttributeDto attributeDto : identityDto.getAttributes(  ) )
+
+            for ( AttributeDto attributeDto : identityDto.getAttributes(  ).values(  ) )
             {
-                System.out.println( attributeDto.getKey(  ) + " - " + attributeDto.getType(  ) + " - " + attributeDto.getValue(  ) );
+                System.out.println( attributeDto.getKey(  ) + " - " + attributeDto.getType(  ) + " - " +
+                    attributeDto.getValue(  ) );
             }
         }
     }
-
 }

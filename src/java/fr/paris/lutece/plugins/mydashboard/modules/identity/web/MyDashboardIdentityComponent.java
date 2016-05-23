@@ -33,22 +33,17 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
+import fr.paris.lutece.plugins.mydashboard.service.MyDashboardComponent;
+import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.web.l10n.LocaleService;
+import fr.paris.lutece.util.html.HtmlTemplate;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import fr.paris.lutece.plugins.mydashboard.modules.identity.business.Identity;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.service.IIdentityService;
-import fr.paris.lutece.plugins.mydashboard.service.MyDashboardComponent;
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.security.LuteceUser;
-import fr.paris.lutece.portal.service.security.SecurityService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.portal.web.l10n.LocaleService;
-import fr.paris.lutece.util.html.HtmlTemplate;
 
 
 /**
@@ -59,17 +54,11 @@ public class MyDashboardIdentityComponent extends MyDashboardComponent
     private static final String DASHBOARD_COMPONENT_ID = "mydashboard-identity.identityComponent";
     private static final String MESSAGE_DASHBOARD_COMPONENT_DESCRIPTION = "module.mydashboard.identity.component.identity.description";
     private static final String TEMPLATE_DASHBOARD_COMPONENT = "skin/plugins/mydashboard/modules/identity/identity_component.html";
-    private static final String MARK_IDENTITY = "identity";
-    
-    private static IIdentityService _identityService = (IIdentityService) SpringContextService.getBean( "mydashboard-identity.identityService" );
-    
+
     @Override
     public String getDashboardData( HttpServletRequest request )
     {
-        LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
-        Identity identity = _identityService.getIdentity( user );
         Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_IDENTITY, identity );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD_COMPONENT,
                 LocaleService.getDefault(  ), model );
 
