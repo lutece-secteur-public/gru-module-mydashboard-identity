@@ -50,7 +50,6 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -91,13 +90,7 @@ public class IdentityXPage extends MVCApplication
     public XPage getViewIdentity( HttpServletRequest request )
         throws UserNotSignedException
     {
-        LuteceUser luteceUser = SecurityService.isAuthenticationEnable(  )
-            ? SecurityService.getInstance(  ).getRegisteredUser( request ) : null;
-
-        if ( luteceUser == null )
-        {
-            throw new UserNotSignedException(  );
-        }
+        LuteceUser luteceUser = getConnectedUser( request );
 
         IdentityService identityService = IdentityService.getService(  );
 
@@ -120,13 +113,7 @@ public class IdentityXPage extends MVCApplication
     public XPage getModifyIdentity( HttpServletRequest request )
         throws UserNotSignedException
     {
-        LuteceUser luteceUser = SecurityService.isAuthenticationEnable(  )
-            ? SecurityService.getInstance(  ).getRegisteredUser( request ) : null;
-
-        if ( luteceUser == null )
-        {
-            throw new UserNotSignedException(  );
-        }
+        LuteceUser luteceUser = getConnectedUser( request );
 
         if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId(  ) == null ) ||
                 !_dashboardIdentity.getConnectionId(  ).equals( luteceUser.getName(  ) ) )
@@ -152,13 +139,7 @@ public class IdentityXPage extends MVCApplication
     public XPage doModifyIdentity( HttpServletRequest request )
         throws UserNotSignedException
     {
-        LuteceUser luteceUser = SecurityService.isAuthenticationEnable(  )
-            ? SecurityService.getInstance(  ).getRegisteredUser( request ) : null;
-
-        if ( luteceUser == null )
-        {
-            throw new UserNotSignedException(  );
-        }
+        checkUserAuthentication( request );
 
         if ( request.getParameter( PARAMETER_BACK ) != null )
         {
@@ -196,13 +177,7 @@ public class IdentityXPage extends MVCApplication
     public XPage getGenericViewIdentity( HttpServletRequest request )
         throws UserNotSignedException
     {
-        LuteceUser luteceUser = SecurityService.isAuthenticationEnable(  )
-            ? SecurityService.getInstance(  ).getRegisteredUser( request ) : null;
-
-        if ( luteceUser == null )
-        {
-            throw new UserNotSignedException(  );
-        }
+        LuteceUser luteceUser = getConnectedUser( request );
 
         Map<String, Object> model = getModel(  );
         IdentityDto identityDto = null;
@@ -223,13 +198,7 @@ public class IdentityXPage extends MVCApplication
     public XPage getGenericModifyIdentity( HttpServletRequest request )
         throws UserNotSignedException
     {
-        LuteceUser luteceUser = SecurityService.isAuthenticationEnable(  )
-            ? SecurityService.getInstance(  ).getRegisteredUser( request ) : null;
-
-        if ( luteceUser == null )
-        {
-            throw new UserNotSignedException(  );
-        }
+        LuteceUser luteceUser = getConnectedUser( request );
 
         Map<String, Object> model = getModel(  );
         IdentityDto identityDto = IdentityService.getService(  ).getIdentity( luteceUser );
@@ -249,13 +218,7 @@ public class IdentityXPage extends MVCApplication
     public XPage doGenericModifyIdentity( HttpServletRequest request )
         throws UserNotSignedException
     {
-        LuteceUser luteceUser = SecurityService.isAuthenticationEnable(  )
-            ? SecurityService.getInstance(  ).getRegisteredUser( request ) : null;
-
-        if ( luteceUser == null )
-        {
-            throw new UserNotSignedException(  );
-        }
+        checkUserAuthentication( request );
 
         if ( request.getParameter( PARAMETER_BACK ) != null )
         {
@@ -265,7 +228,6 @@ public class IdentityXPage extends MVCApplication
         IdentityService identityService = IdentityService.getService(  );
 
         Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>(  );
-        Set<String> setParameterKeys = request.getParameterMap(  ).entrySet(  );
         Iterator it = request.getParameterMap(  ).entrySet(  ).iterator(  );
 
         while ( it.hasNext(  ) )
@@ -298,5 +260,36 @@ public class IdentityXPage extends MVCApplication
         addInfo( MESSAGE_INFO_IDENTITY_UPDATED, request.getLocale(  ) );
 
         return redirectView( request, VIEW_GET_GENERIC_VIEW_IDENTITY );
+    }
+
+    /**
+     * get connected user
+     * @param request request
+     * @return lutece user
+     * @throws UserNotSignedException if user is not connected
+     */
+    private LuteceUser getConnectedUser( HttpServletRequest request )
+        throws UserNotSignedException
+    {
+        LuteceUser luteceUser = SecurityService.isAuthenticationEnable(  )
+            ? SecurityService.getInstance(  ).getRegisteredUser( request ) : null;
+
+        if ( luteceUser == null )
+        {
+            throw new UserNotSignedException(  );
+        }
+
+        return luteceUser;
+    }
+
+    /**
+     * check if user is authenticated
+     * @param request request
+     * @throws UserNotSignedException if user is not connected
+     */
+    private void checkUserAuthentication( HttpServletRequest request )
+        throws UserNotSignedException
+    {
+        getConnectedUser( request );
     }
 }

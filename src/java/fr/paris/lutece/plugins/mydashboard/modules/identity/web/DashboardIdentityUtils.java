@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.business.MobilePhone;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import org.apache.commons.lang.StringUtils;
@@ -241,11 +242,22 @@ public final class DashboardIdentityUtils
 
             if ( attribute != null )
             {
-                dashboardIdentity.setMobilePhone( attribute.getValue(  ) );
+                MobilePhone mobilePhone = new MobilePhone(  );
+                mobilePhone.setMobilePhoneNumber( attribute.getValue(  ) );
+                mobilePhone.setMobilePhoneCertifiable( attribute.isCertifiable(  ) );
+
+                if ( attribute.isCertified(  ) )
+                {
+                    mobilePhone.setMobilePhoneCertified( true );
+                }
+
+                dashboardIdentity.setMobilePhone( mobilePhone );
             }
             else
             {
-                dashboardIdentity.setMobilePhone( StringUtils.EMPTY );
+                MobilePhone mobilePhone = new MobilePhone(  );
+                mobilePhone.setMobilePhoneNumber( StringUtils.EMPTY );
+                dashboardIdentity.setMobilePhone( mobilePhone );
             }
         }
 
@@ -265,125 +277,80 @@ public final class DashboardIdentityUtils
 
         Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>(  );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getLastName(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_NAME ) );
-            attribute.setValue( dashboardIdentity.getLastName(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        AttributeDto attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_NAME ) );
+        attribute.setValue( dashboardIdentity.getLastName(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getBirthname(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_BIRTHNAME ) );
-            attribute.setValue( dashboardIdentity.getBirthname(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_BIRTHNAME ) );
+        attribute.setValue( dashboardIdentity.getBirthname(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getFirstname(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_FIRSTNAME ) );
-            attribute.setValue( dashboardIdentity.getFirstname(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_FIRSTNAME ) );
+        attribute.setValue( dashboardIdentity.getFirstname(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getGender(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_GENDER ) );
-            attribute.setValue( dashboardIdentity.getGender(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_GENDER ) );
+        attribute.setValue( dashboardIdentity.getGender(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getBirthdate(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_BIRTHDATE ) );
-            attribute.setValue( dashboardIdentity.getBirthdate(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_BIRTHDATE ) );
+        attribute.setValue( dashboardIdentity.getBirthdate(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getBirthplace(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_BIRTHPLACE ) );
-            attribute.setValue( dashboardIdentity.getBirthplace(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_BIRTHPLACE ) );
+        attribute.setValue( dashboardIdentity.getBirthplace(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getAddressNumber(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_NUMBER ) );
-            attribute.setValue( dashboardIdentity.getAddressNumber(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_NUMBER ) );
+        attribute.setValue( dashboardIdentity.getAddressNumber(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getAddressSuffix(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_SUFFIX ) );
-            attribute.setValue( dashboardIdentity.getAddressSuffix(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_SUFFIX ) );
+        attribute.setValue( dashboardIdentity.getAddressSuffix(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getAddressStreet(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_STREET ) );
-            attribute.setValue( dashboardIdentity.getAddressStreet(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_STREET ) );
+        attribute.setValue( dashboardIdentity.getAddressStreet(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getAddressBuilding(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_BUILDING ) );
-            attribute.setValue( dashboardIdentity.getAddressBuilding(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_BUILDING ) );
+        attribute.setValue( dashboardIdentity.getAddressBuilding(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getAddressStair(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_STAIR ) );
-            attribute.setValue( dashboardIdentity.getAddressStair(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_STAIR ) );
+        attribute.setValue( dashboardIdentity.getAddressStair(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getAddressPostalcode(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE ) );
-            attribute.setValue( dashboardIdentity.getAddressPostalcode(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE ) );
+        attribute.setValue( dashboardIdentity.getAddressPostalcode(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getPhone(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_PHONE ) );
-            attribute.setValue( dashboardIdentity.getPhone(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_PHONE ) );
+        attribute.setValue( dashboardIdentity.getPhone(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getEmail(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_EMAIL ) );
-            attribute.setValue( dashboardIdentity.getEmail(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_EMAIL ) );
+        attribute.setValue( dashboardIdentity.getEmail(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
-        if ( StringUtils.isNotBlank( dashboardIdentity.getMobilePhone(  ) ) )
-        {
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_MOBILE_PHONE ) );
-            attribute.setValue( dashboardIdentity.getMobilePhone(  ) );
-            mapAttributes.put( attribute.getKey(  ), attribute );
-        }
+        attribute = new AttributeDto(  );
+        attribute.setKey( AppPropertiesService.getProperty( Constants.PROPERTY_KEY_MOBILE_PHONE ) );
+        attribute.setValue( dashboardIdentity.getMobilePhone(  ).getMobilePhoneNumber(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
 
         identityDto.setAttributes( mapAttributes );
 

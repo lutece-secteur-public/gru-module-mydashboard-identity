@@ -51,7 +51,7 @@ public class DashboardIdentity
     private String _strAddressPostalcode;
     private String _strEmail;
     private String _strPhone;
-    private String _strMobilePhone;
+    private MobilePhone _mobilePhone;
 
     /**
      * @return the _strConnectionId
@@ -312,16 +312,16 @@ public class DashboardIdentity
     /**
      * @return the _strMobilePhone
      */
-    public String getMobilePhone(  )
+    public MobilePhone getMobilePhone(  )
     {
-        return _strMobilePhone;
+        return _mobilePhone;
     }
 
     /**
-     * @param _strMobilePhone the _strMobilePhone to set
+     * @param mobilePhone the mobilePhone to set
      */
-    public void setMobilePhone( String _strMobilePhone )
+    public void setMobilePhone( MobilePhone mobilePhone )
     {
-        this._strMobilePhone = _strMobilePhone;
+        this._mobilePhone = mobilePhone;
     }
 }

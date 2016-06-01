@@ -1,5 +1,6 @@
 <@messages errors=errors />
 <@messages infos=infos />
+<#include "include/popins.html">
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="box box-primary">
@@ -86,7 +87,16 @@
 								</div>
 								<div class="form-group">
 									<label class="control-label" for="mobile_phone" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone} :</label>
-									<input class="form-control" type="text" id="mobile_phone" name="mobile_phone" value="${identity.mobilePhone!}" <#if viewMode>readonly</#if> />
+									<input class="form-control" type="text" id="mobilePhone.mobilePhoneNumber" name="mobilePhone.mobilePhoneNumber" value="${identity.mobilePhone.mobilePhoneNumber!}" <#if viewMode>readonly</#if> />
+                                    <#if viewMode>
+                                        <#if identity.mobilePhone?? && identity.mobilePhone.mobilePhoneCertified?? && identity.mobilePhone.mobilePhoneCertified>
+                                            <i class="fa fa-check" style="color:green" aria-hidden="true"></i> #i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.certified}
+                                        <#else>
+                                            <#if identity.mobilePhone?? && identity.mobilePhone.mobilePhoneCertifiable?? && identity.mobilePhone.mobilePhoneCertifiable>
+                                                <a data-target="#mydashboard-identity-modal-certifier"  data-toggle="modal" data-remote="false" href="jsp/site/Portal.jsp?page=mobilecertifier&action=certify&mobile_number=${identity.mobilePhone.mobilePhoneNumber!}&view_mode=ajax" data-title="#i18n{module.mydashboard.identity.xpage.edit_identity.popin.mobilePhoneCertifyTitle}">#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.toCertify}</a>
+                                            </#if>                                          
+                                        </#if>
+									</#if>
 							</div>
 						</div>
 					</div>
@@ -108,5 +118,4 @@
         </div>
     </div>
 </div>
-
 

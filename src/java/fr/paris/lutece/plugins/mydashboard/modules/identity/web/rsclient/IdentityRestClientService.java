@@ -64,7 +64,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * IdentityRestClientService
  */
-public class IdentityRestClientService
+public final class IdentityRestClientService
 {
     private static final String BEAN_IDENTITYRESTCLIENTSERVICE = "mydashboard-identity.identityRestClientService";
     private ObjectMapper _mapper = new ObjectMapper(  );
@@ -162,6 +162,7 @@ public class IdentityRestClientService
                     RestConstants.URL_IDENTITYSTORE_ENDPOINT ) + RestConstants.IDENTITY_PATH );
 
         FormDataMultiPart formParams = new FormDataMultiPart(  );
+
         try
         {
             formParams.field( RestConstants.PARAM_CLIENT_CODE,
@@ -192,6 +193,7 @@ public class IdentityRestClientService
         {
             throw new AppException( RestConstants.ERROR_MESSAGE + response.getStatus(  ) );
         }
+
         ResponseDto responseDto = null;
 
         if ( response.hasEntity(  ) && response.getType(  ).toString(  ).equals( MediaType.APPLICATION_JSON ) )
@@ -205,6 +207,7 @@ public class IdentityRestClientService
                 throw new AppException( RestConstants.ERROR_MESSAGE + e.getMessage(  ) );
             }
         }
+
         return responseDto;
     }
 }
