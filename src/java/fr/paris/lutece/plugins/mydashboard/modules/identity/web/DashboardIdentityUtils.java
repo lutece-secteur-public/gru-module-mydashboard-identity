@@ -260,6 +260,13 @@ public final class DashboardIdentityUtils
                 dashboardIdentity.setMobilePhone( mobilePhone );
             }
         }
+        else
+        {
+            //initialize mobile phone object to let bean populate method fill the field
+            MobilePhone mobilePhone = new MobilePhone(  );
+            mobilePhone.setMobilePhoneNumber( StringUtils.EMPTY );
+            dashboardIdentity.setMobilePhone( mobilePhone );
+        }
 
         return dashboardIdentity;
     }
