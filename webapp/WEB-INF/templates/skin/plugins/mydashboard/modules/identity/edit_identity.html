@@ -93,7 +93,7 @@
                                             <i class="fa fa-check" style="color:green" aria-hidden="true"></i> #i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.certified}
                                         <#else>
                                             <#if identity.mobilePhone?? && identity.mobilePhone.mobilePhoneCertifiable?? && identity.mobilePhone.mobilePhoneCertifiable>
-                                                <a data-target="#mydashboard-identity-modal-certifier" data-toggle="modal" data-remote="false" href="jsp/site/Portal.jsp?page=mobilecertifier&action=certify&view_mode=ajax&mobile_number=${identity.mobilePhone.mobilePhoneNumber!}" data-title="#i18n{module.mydashboard.identity.xpage.edit_identity.popin.mobilePhoneCertifyTitle}">#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.toCertify}</a>
+                                                <a data-target="#mydashboard-identity-modal-certifier" data-toggle="modal" data-remote="false" href="jsp/site/Portal.jsp?page=mobilecertifier&action=certify&view_mode=ajax&mobile_number=${identity.mobilePhone.mobilePhoneNumber!}&cid=${identity.customerId!}" data-title="#i18n{module.mydashboard.identity.xpage.edit_identity.popin.mobilePhoneCertifyTitle}">#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.toCertify}</a>
                                             </#if>                                          
                                         </#if>
 									</#if>

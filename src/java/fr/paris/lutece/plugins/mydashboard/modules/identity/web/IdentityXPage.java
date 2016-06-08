@@ -34,13 +34,18 @@
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.AuthorDto;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityChangeDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.web.service.AuthorType;
+import fr.paris.lutece.plugins.identitystore.web.service.IdentityNotFoundException;
+import fr.paris.lutece.plugins.identitystore.web.service.IdentityService;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.service.IdentityService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -76,15 +81,19 @@ public class IdentityXPage extends MVCApplication
     private static final String TEMPLATE_GET_GENERIC_VIEW_IDENTITY = "skin/plugins/mydashboard/modules/identity/view_generic_identity.html";
     private static final String TEMPLATE_GET_GENERIC_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/modify_generic_identity.html";
     private static final String IDENTITY_GENERIC_ATTRIBUTE_PREFIX = "attribute#";
+    private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
 
-    //session variable
+    // session variable
     private DashboardIdentity _dashboardIdentity;
 
     /**
      * Get the identity of the current user
-     * @param request The request, with the user logged in
+     *
+     * @param request
+     *          The request, with the user logged in
      * @return The XPage to display the identity of the user
-     * @throws UserNotSignedException If the user is not logged in
+     * @throws UserNotSignedException
+     *           If the user is not logged in
      */
     @View( value = VIEW_GET_VIEW_IDENTITY, defaultView = true )
     public XPage getViewIdentity( HttpServletRequest request )
@@ -92,10 +101,8 @@ public class IdentityXPage extends MVCApplication
     {
         LuteceUser luteceUser = getConnectedUser( request );
 
-        IdentityService identityService = IdentityService.getService(  );
-
         Map<String, Object> model = getModel(  );
-        IdentityDto identityDto = identityService.getIdentity( luteceUser );
+        IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
         _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_VIEW_MODE, Boolean.TRUE );
@@ -105,9 +112,12 @@ public class IdentityXPage extends MVCApplication
 
     /**
      * Get the XPage to modify the identity of the current user
-     * @param request The request
+     *
+     * @param request
+     *          The request
      * @return The XPage to display
-     * @throws UserNotSignedException If the user has not signed in
+     * @throws UserNotSignedException
+     *           If the user has not signed in
      */
     @View( VIEW_GET_MODIFY_IDENTITY )
     public XPage getModifyIdentity( HttpServletRequest request )
@@ -118,7 +128,7 @@ public class IdentityXPage extends MVCApplication
         if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId(  ) == null ) ||
                 !_dashboardIdentity.getConnectionId(  ).equals( luteceUser.getName(  ) ) )
         {
-            IdentityDto identityDto = IdentityService.getService(  ).getIdentity( luteceUser );
+            IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
             _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
         }
 
@@ -131,9 +141,12 @@ public class IdentityXPage extends MVCApplication
 
     /**
      * Do the modification of the user identity
-     * @param request The request
+     *
+     * @param request
+     *          The request
      * @return The next view to redirect to
-     * @throws UserNotSignedException If the user has not signed in
+     * @throws UserNotSignedException
+     *           If the user has not signed in
      */
     @Action( ACTION_DO_MODIFY_IDENTITY )
     public XPage doModifyIdentity( HttpServletRequest request )
@@ -146,14 +159,14 @@ public class IdentityXPage extends MVCApplication
             return redirectView( request, VIEW_GET_VIEW_IDENTITY );
         }
 
-        //fill dashboardIdentity from submitted form
+        // fill dashboardIdentity from submitted form
         populate( _dashboardIdentity, request );
 
         IdentityDto identityDto = DashboardIdentityUtils.convertToIdentityDto( _dashboardIdentity );
 
         try
         {
-            IdentityService.getService(  ).updateIdentity( identityDto );
+            IdentityService.instance(  ).updateIdentity( buildIdentityChangeDto( identityDto ) );
         }
         catch ( AppException appEx )
         {
@@ -169,9 +182,12 @@ public class IdentityXPage extends MVCApplication
 
     /**
      * Get the identity of the current user
-     * @param request The request, with the user logged in
+     *
+     * @param request
+     *          The request, with the user logged in
      * @return The XPage to display the identity of the user
-     * @throws UserNotSignedException If the user is not logged in
+     * @throws UserNotSignedException
+     *           If the user is not logged in
      */
     @View( value = VIEW_GET_GENERIC_VIEW_IDENTITY )
     public XPage getGenericViewIdentity( HttpServletRequest request )
@@ -181,7 +197,7 @@ public class IdentityXPage extends MVCApplication
 
         Map<String, Object> model = getModel(  );
         IdentityDto identityDto = null;
-        identityDto = IdentityService.getService(  ).getIdentity( luteceUser );
+        identityDto = getIdentityDto( luteceUser.getName(  ) );
         model.put( MARK_IDENTITY, identityDto );
         request.getSession(  ).setAttribute( MARK_IDENTITY, identityDto );
 
@@ -190,9 +206,12 @@ public class IdentityXPage extends MVCApplication
 
     /**
      * Get the identity of the current user
-     * @param request The request, with the user logged in
+     *
+     * @param request
+     *          The request, with the user logged in
      * @return The XPage to display the identity of the user
-     * @throws UserNotSignedException If the user is not logged in
+     * @throws UserNotSignedException
+     *           If the user is not logged in
      */
     @View( value = VIEW_GET_GENERIC_MODIFY_IDENTITY )
     public XPage getGenericModifyIdentity( HttpServletRequest request )
@@ -201,7 +220,7 @@ public class IdentityXPage extends MVCApplication
         LuteceUser luteceUser = getConnectedUser( request );
 
         Map<String, Object> model = getModel(  );
-        IdentityDto identityDto = IdentityService.getService(  ).getIdentity( luteceUser );
+        IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
         model.put( MARK_IDENTITY, identityDto );
         request.getSession(  ).setAttribute( MARK_IDENTITY, identityDto );
 
@@ -210,10 +229,14 @@ public class IdentityXPage extends MVCApplication
 
     /**
      * Do the modification of the user identity
-     * @param request The request
+     *
+     * @param request
+     *          The request
      * @return The next view to redirect to
-     * @throws UserNotSignedException If the user has not signed in
+     * @throws UserNotSignedException
+     *           If the user has not signed in
      */
+    @SuppressWarnings( "rawtypes" )
     @Action( ACTION_DO_GENERIC_MODIFY_IDENTITY )
     public XPage doGenericModifyIdentity( HttpServletRequest request )
         throws UserNotSignedException
@@ -224,8 +247,6 @@ public class IdentityXPage extends MVCApplication
         {
             return redirectView( request, VIEW_GET_GENERIC_VIEW_IDENTITY );
         }
-
-        IdentityService identityService = IdentityService.getService(  );
 
         Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>(  );
         Iterator it = request.getParameterMap(  ).entrySet(  ).iterator(  );
@@ -248,7 +269,7 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            identityService.updateIdentity( identityDto );
+            IdentityService.instance(  ).updateIdentity( buildIdentityChangeDto( identityDto ) );
         }
         catch ( AppException appEx )
         {
@@ -264,9 +285,12 @@ public class IdentityXPage extends MVCApplication
 
     /**
      * get connected user
-     * @param request request
+     *
+     * @param request
+     *          request
      * @return lutece user
-     * @throws UserNotSignedException if user is not connected
+     * @throws UserNotSignedException
+     *           if user is not connected
      */
     private LuteceUser getConnectedUser( HttpServletRequest request )
         throws UserNotSignedException
@@ -283,13 +307,64 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
+     * return IdentityDto from strConnectionId
+     *
+     * @param strConnectionId
+     *          user connection id
+     * @return IdentityDto
+     * @throws UserNotSignedException
+     */
+    private IdentityDto getIdentityDto( String strConnectionId )
+    {
+        IdentityDto identityDto = null;
+
+        try
+        {
+            identityDto = IdentityService.instance(  ).getIdentity( strConnectionId, null, DASHBOARD_APP_CODE );
+        }
+        catch ( IdentityNotFoundException infe )
+        {
+            // FIXME (as there s no identitystore openam plugin
+            // this is to make identityStore work for new users
+            // this must be removed when identitystore-openam is done and plugged
+            identityDto = new IdentityDto(  );
+            identityDto.setConnectionId( strConnectionId );
+        }
+
+        return identityDto;
+    }
+
+    /**
      * check if user is authenticated
-     * @param request request
-     * @throws UserNotSignedException if user is not connected
+     *
+     * @param request
+     *          request
+     * @throws UserNotSignedException
+     *           if user is not connected
      */
     private void checkUserAuthentication( HttpServletRequest request )
         throws UserNotSignedException
     {
         getConnectedUser( request );
+    }
+
+    /**
+     * build a changeDto from Identity
+     *
+     * @param identity
+     *          identity to update
+     * @return IdentityChangeDto
+     */
+    private IdentityChangeDto buildIdentityChangeDto( IdentityDto identity )
+    {
+        IdentityChangeDto identityChange = new IdentityChangeDto(  );
+        AuthorDto author = new AuthorDto(  );
+        author.setApplicationCode( DASHBOARD_APP_CODE );
+        author.setType( AuthorType.TYPE_USER_OWNER.getTypeValue(  ) );
+
+        identityChange.setIdentity( identity );
+        identityChange.setAuthor( author );
+
+        return identityChange;
     }
 }
