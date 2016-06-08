@@ -61,7 +61,9 @@ public final class DashboardIdentityUtils
 
     /**
      * return an dashboardIdentity from a identityDto
-     * @param identityDto identityDto to convert
+     *
+     * @param identity
+     *          identityDto to convert
      * @return dashboardIdentity initialized from provided identityDto
      */
     public static DashboardIdentity convertToDashboardIdentity( IdentityDto identity )
@@ -262,7 +264,8 @@ public final class DashboardIdentityUtils
         }
         else
         {
-            //initialize mobile phone object to let bean populate method fill the field
+            // initialize mobile phone object to let bean populate method fill the
+            // field
             MobilePhone mobilePhone = new MobilePhone(  );
             mobilePhone.setMobilePhoneNumber( StringUtils.EMPTY );
             dashboardIdentity.setMobilePhone( mobilePhone );
@@ -273,7 +276,9 @@ public final class DashboardIdentityUtils
 
     /**
      * return an identityDto from a DashboardIdentity
-     * @param dashboardIdentity dashboardIdentity to convert
+     *
+     * @param dashboardIdentity
+     *          dashboardIdentity to convert
      * @return identityDto initialized from provided dashboardIdentity
      */
     public static IdentityDto convertToIdentityDto( DashboardIdentity dashboardIdentity )

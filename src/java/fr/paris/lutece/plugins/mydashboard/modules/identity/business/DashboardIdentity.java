@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2015, Mairie de Paris
+ * Copyright (c) 2002-2016, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,12 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.business;
 
+
+/**
+ *
+ * DashboardIdentity
+ *
+ */
 public class DashboardIdentity
 {
     private String _strConnectionId;
@@ -62,11 +68,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strConnectionId the _strConnectionId to set
+     * @param strConnectionId
+     *          the _strConnectionId to set
      */
-    public void setConnectionId( String _strConnectionId )
+    public void setConnectionId( String strConnectionId )
     {
-        this._strConnectionId = _strConnectionId;
+        this._strConnectionId = strConnectionId;
     }
 
     /**
@@ -78,11 +85,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strCustomerId the _strCustomerId to set
+     * @param strCustomerId
+     *          the _strCustomerId to set
      */
-    public void setCustomerId( String _strCustomerId )
+    public void setCustomerId( String strCustomerId )
     {
-        this._strCustomerId = _strCustomerId;
+        this._strCustomerId = strCustomerId;
     }
 
     /**
@@ -94,11 +102,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strLastName the _strLastName to set
+     * @param strLastName
+     *          the _strLastName to set
      */
-    public void setLastName( String _strLastName )
+    public void setLastName( String strLastName )
     {
-        this._strLastName = _strLastName;
+        this._strLastName = strLastName;
     }
 
     /**
@@ -110,11 +119,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strBirthname the _strBirthname to set
+     * @param strBirthname
+     *          the strBirthname to set
      */
-    public void setBirthname( String _strBirthname )
+    public void setBirthname( String strBirthname )
     {
-        this._strBirthname = _strBirthname;
+        this._strBirthname = strBirthname;
     }
 
     /**
@@ -126,11 +136,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strFirstname the _strFirstname to set
+     * @param strFirstname
+     *          the _strFirstname to set
      */
-    public void setFirstname( String _strFirstname )
+    public void setFirstname( String strFirstname )
     {
-        this._strFirstname = _strFirstname;
+        this._strFirstname = strFirstname;
     }
 
     /**
@@ -142,11 +153,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strGender the _strGender to set
+     * @param strGender
+     *          the _strGender to set
      */
-    public void setGender( String _strGender )
+    public void setGender( String strGender )
     {
-        this._strGender = _strGender;
+        this._strGender = strGender;
     }
 
     /**
@@ -158,11 +170,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strBirthdate the _strBirthdate to set
+     * @param strBirthdate
+     *          the _strBirthdate to set
      */
-    public void setBirthdate( String _strBirthdate )
+    public void setBirthdate( String strBirthdate )
     {
-        this._strBirthdate = _strBirthdate;
+        this._strBirthdate = strBirthdate;
     }
 
     /**
@@ -174,11 +187,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strBirthplace the _strBirthplace to set
+     * @param strBirthplace
+     *          the _strBirthplace to set
      */
-    public void setBirthplace( String _strBirthplace )
+    public void setBirthplace( String strBirthplace )
     {
-        this._strBirthplace = _strBirthplace;
+        this._strBirthplace = strBirthplace;
     }
 
     /**
@@ -190,11 +204,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strAddressNumber the _strAddressNumber to set
+     * @param strAddressNumber
+     *          the _strAddressNumber to set
      */
-    public void setAddressNumber( String _strAddressNumber )
+    public void setAddressNumber( String strAddressNumber )
     {
-        this._strAddressNumber = _strAddressNumber;
+        this._strAddressNumber = strAddressNumber;
     }
 
     /**
@@ -206,11 +221,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strAddressSuffix the _strAddressSuffix to set
+     * @param strAddressSuffix
+     *          the _strAddressSuffix to set
      */
-    public void setAddressSuffix( String _strAddressSuffix )
+    public void setAddressSuffix( String strAddressSuffix )
     {
-        this._strAddressSuffix = _strAddressSuffix;
+        this._strAddressSuffix = strAddressSuffix;
     }
 
     /**
@@ -222,11 +238,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strAddressStreet the _strAddressStreet to set
+     * @param strAddressStreet
+     *          the _strAddressStreet to set
      */
-    public void setAddressStreet( String _strAddressStreet )
+    public void setAddressStreet( String strAddressStreet )
     {
-        this._strAddressStreet = _strAddressStreet;
+        this._strAddressStreet = strAddressStreet;
     }
 
     /**
@@ -238,11 +255,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strAddressBuilding the _strAddressBuilding to set
+     * @param strAddressBuilding
+     *          the strAddressBuilding to set
      */
-    public void setAddressBuilding( String _strAddressBuilding )
+    public void setAddressBuilding( String strAddressBuilding )
     {
-        this._strAddressBuilding = _strAddressBuilding;
+        this._strAddressBuilding = strAddressBuilding;
     }
 
     /**
@@ -254,11 +272,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strAddressStair the _strAddressStair to set
+     * @param strAddressStair
+     *          the _strAddressStair to set
      */
-    public void setAddressStair( String _strAddressStair )
+    public void setAddressStair( String strAddressStair )
     {
-        this._strAddressStair = _strAddressStair;
+        this._strAddressStair = strAddressStair;
     }
 
     /**
@@ -270,11 +289,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strAddressPostalcode the _strAddressPostalcode to set
+     * @param strAddressPostalcode
+     *          the _strAddressPostalcode to set
      */
-    public void setAddressPostalcode( String _strAddressPostalcode )
+    public void setAddressPostalcode( String strAddressPostalcode )
     {
-        this._strAddressPostalcode = _strAddressPostalcode;
+        this._strAddressPostalcode = strAddressPostalcode;
     }
 
     /**
@@ -286,11 +306,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strEmail the _strEmail to set
+     * @param strEmail
+     *          the _strEmail to set
      */
-    public void setEmail( String _strEmail )
+    public void setEmail( String strEmail )
     {
-        this._strEmail = _strEmail;
+        this._strEmail = strEmail;
     }
 
     /**
@@ -302,11 +323,12 @@ public class DashboardIdentity
     }
 
     /**
-     * @param _strPhone the _strPhone to set
+     * @param strPhone
+     *          the strPhone to set
      */
-    public void setPhone( String _strPhone )
+    public void setPhone( String strPhone )
     {
-        this._strPhone = _strPhone;
+        this._strPhone = strPhone;
     }
 
     /**
@@ -318,7 +340,8 @@ public class DashboardIdentity
     }
 
     /**
-     * @param mobilePhone the mobilePhone to set
+     * @param mobilePhone
+     *          the mobilePhone to set
      */
     public void setMobilePhone( MobilePhone mobilePhone )
     {

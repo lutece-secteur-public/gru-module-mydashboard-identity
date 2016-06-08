@@ -40,7 +40,7 @@ package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
  */
 public final class Constants
 {
-    //properties 
+    // properties
     public static final String PROPERTY_KEY_NAME = "mydashboard.identity.attribute.key.name";
     public static final String PROPERTY_KEY_BIRTHNAME = "mydashboard.identity.attribute.key.birthname";
     public static final String PROPERTY_KEY_FIRSTNAME = "mydashboard.identity.attribute.key.firstname";

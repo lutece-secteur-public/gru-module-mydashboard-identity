@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2015, Mairie de Paris
+ * Copyright (c) 2002-2016, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,11 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.business;
 
+
+/**
+ * MobilePhone
+ *
+ */
 public class MobilePhone
 {
     private String _strMobilePhoneNumber;
@@ -48,11 +53,12 @@ public class MobilePhone
     }
 
     /**
-     * @param _strMobilePhoneNumber the _strMobilePhoneNumber to set
+     * @param strMobilePhoneNumber
+     *          the _strMobilePhoneNumber to set
      */
-    public void setMobilePhoneNumber( String _strMobilePhoneNumber )
+    public void setMobilePhoneNumber( String strMobilePhoneNumber )
     {
-        this._strMobilePhoneNumber = _strMobilePhoneNumber;
+        this._strMobilePhoneNumber = strMobilePhoneNumber;
     }
 
     /**
@@ -72,11 +78,12 @@ public class MobilePhone
     }
 
     /**
-     * @param _bMobilePhoneCertified the _bMobilePhoneCertified to set
+     * @param bMobilePhoneCertified
+     *          the _bMobilePhoneCertified to set
      */
-    public void setMobilePhoneCertified( boolean _bMobilePhoneCertified )
+    public void setMobilePhoneCertified( boolean bMobilePhoneCertified )
     {
-        this._bMobilePhoneCertified = _bMobilePhoneCertified;
+        this._bMobilePhoneCertified = bMobilePhoneCertified;
     }
 
     /**
@@ -96,10 +103,11 @@ public class MobilePhone
     }
 
     /**
-     * @param _bMobilePhoneCertifiable the _bMobilePhoneCertifiable to set
+     * @param bMobilePhoneCertifiable
+     *          the _bMobilePhoneCertifiable to set
      */
-    public void setMobilePhoneCertifiable( boolean _bMobilePhoneCertifiable )
+    public void setMobilePhoneCertifiable( boolean bMobilePhoneCertifiable )
     {
-        this._bMobilePhoneCertifiable = _bMobilePhoneCertifiable;
+        this._bMobilePhoneCertifiable = bMobilePhoneCertifiable;
     }
 }
