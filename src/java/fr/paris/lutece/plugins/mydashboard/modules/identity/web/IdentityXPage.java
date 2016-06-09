@@ -82,6 +82,8 @@ public class IdentityXPage extends MVCApplication
     private static final String TEMPLATE_GET_GENERIC_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/modify_generic_identity.html";
     private static final String IDENTITY_GENERIC_ATTRIBUTE_PREFIX = "attribute#";
     private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
+    private static final String DASHBOARD_APP_NAME = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_NAME );
+    private static final String DASHBOARD_APP_HASH = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_HASH );
 
     // session variable
     private DashboardIdentity _dashboardIdentity;
@@ -166,7 +168,7 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            IdentityService.instance(  ).updateIdentity( buildIdentityChangeDto( identityDto ) );
+            IdentityService.instance(  ).updateIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH );
         }
         catch ( AppException appEx )
         {
@@ -269,7 +271,7 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            IdentityService.instance(  ).updateIdentity( buildIdentityChangeDto( identityDto ) );
+            IdentityService.instance(  ).updateIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH );
         }
         catch ( AppException appEx )
         {
@@ -320,7 +322,8 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            identityDto = IdentityService.instance(  ).getIdentity( strConnectionId, null, DASHBOARD_APP_CODE );
+            identityDto = IdentityService.instance(  )
+                                         .getIdentity( strConnectionId, null, DASHBOARD_APP_CODE, DASHBOARD_APP_HASH );
         }
         catch ( IdentityNotFoundException infe )
         {
@@ -360,6 +363,7 @@ public class IdentityXPage extends MVCApplication
         IdentityChangeDto identityChange = new IdentityChangeDto(  );
         AuthorDto author = new AuthorDto(  );
         author.setApplicationCode( DASHBOARD_APP_CODE );
+        author.setApplicationName( DASHBOARD_APP_NAME );
         author.setType( AuthorType.TYPE_USER_OWNER.getTypeValue(  ) );
 
         identityChange.setIdentity( identity );

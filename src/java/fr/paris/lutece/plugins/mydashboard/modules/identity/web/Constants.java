@@ -57,6 +57,8 @@ public final class Constants
     public static final String PROPERTY_KEY_PHONE = "mydashboard.identity.attribute.key.phone";
     public static final String PROPERTY_KEY_MOBILE_PHONE = "mydashboard.identity.attribute.key.mobile_phone";
     public static final String PROPERTY_APPLICATION_CODE = "mydashboard.identity.application.code";
+    public static final String PROPERTY_APPLICATION_NAME = "mydashboard.identity.application.name";
+    public static final String PROPERTY_APPLICATION_HASH = "mydashboard.identity.application.hash";
 
     /**
      * Default constructor
