@@ -47,7 +47,7 @@ import java.util.Map;
 
 /**
  *
- * class to help managing rest feature
+ * class to help managing identity feature
  *
  */
 public final class DashboardIdentityUtils
@@ -246,7 +246,6 @@ public final class DashboardIdentityUtils
             {
                 MobilePhone mobilePhone = new MobilePhone(  );
                 mobilePhone.setMobilePhoneNumber( attribute.getValue(  ) );
-                mobilePhone.setMobilePhoneCertifiable( attribute.isCertifiable(  ) );
 
                 if ( attribute.isCertified(  ) )
                 {

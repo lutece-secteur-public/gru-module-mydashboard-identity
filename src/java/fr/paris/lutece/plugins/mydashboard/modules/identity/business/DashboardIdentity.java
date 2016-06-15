@@ -42,7 +42,7 @@ package fr.paris.lutece.plugins.mydashboard.modules.identity.business;
 public class DashboardIdentity
 {
     private String _strConnectionId;
-    private String _strCustomerId;
+    private int _nCustomerId;
     private String _strLastName;
     private String _strBirthname;
     private String _strFirstname;
@@ -77,20 +77,20 @@ public class DashboardIdentity
     }
 
     /**
-     * @return the _strCustomerId
+     * @return the _nCustomerId
      */
-    public String getCustomerId(  )
+    public int getCustomerId(  )
     {
-        return _strCustomerId;
+        return _nCustomerId;
     }
 
     /**
-     * @param strCustomerId
-     *          the _strCustomerId to set
+     * @param nCustomerId
+     *          the _nCustomerId to set
      */
-    public void setCustomerId( String strCustomerId )
+    public void setCustomerId( int nCustomerId )
     {
-        this._strCustomerId = strCustomerId;
+        this._nCustomerId = nCustomerId;
     }
 
     /**

@@ -66,9 +66,6 @@ import javax.servlet.http.HttpServletRequest;
 public class IdentityXPage extends MVCApplication
 {
     private static final long serialVersionUID = 1L;
-    private static final String VIEW_GET_GENERIC_VIEW_IDENTITY = "getGenericViewIdentity";
-    private static final String VIEW_GET_GENERIC_MODIFY_IDENTITY = "getGenericModifyIdentity";
-    private static final String ACTION_DO_GENERIC_MODIFY_IDENTITY = "doGenericModifyIdentity";
     private static final String VIEW_GET_VIEW_IDENTITY = "getViewIdentity";
     private static final String VIEW_GET_MODIFY_IDENTITY = "getModifyIdentity";
     private static final String ACTION_DO_MODIFY_IDENTITY = "doModifyIdentity";
@@ -79,8 +76,6 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_VIEW_MODE = "viewMode";
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String TEMPLATE_GET_GENERIC_VIEW_IDENTITY = "skin/plugins/mydashboard/modules/identity/view_generic_identity.html";
-    private static final String TEMPLATE_GET_GENERIC_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/modify_generic_identity.html";
-    private static final String IDENTITY_GENERIC_ATTRIBUTE_PREFIX = "attribute#";
     private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
     private static final String DASHBOARD_APP_NAME = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_NAME );
     private static final String DASHBOARD_APP_HASH = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_HASH );
@@ -168,7 +163,11 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            IdentityService.instance(  ).updateIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH );
+            IdentityService.instance(  ).updateIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH, null );
+        }
+        catch ( IdentityNotFoundException infe )
+        {
+            IdentityService.instance(  ).createIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH );
         }
         catch ( AppException appEx )
         {
@@ -180,109 +179,6 @@ public class IdentityXPage extends MVCApplication
         addInfo( MESSAGE_INFO_IDENTITY_UPDATED, request.getLocale(  ) );
 
         return redirectView( request, VIEW_GET_VIEW_IDENTITY );
-    }
-
-    /**
-     * Get the identity of the current user
-     *
-     * @param request
-     *          The request, with the user logged in
-     * @return The XPage to display the identity of the user
-     * @throws UserNotSignedException
-     *           If the user is not logged in
-     */
-    @View( value = VIEW_GET_GENERIC_VIEW_IDENTITY )
-    public XPage getGenericViewIdentity( HttpServletRequest request )
-        throws UserNotSignedException
-    {
-        LuteceUser luteceUser = getConnectedUser( request );
-
-        Map<String, Object> model = getModel(  );
-        IdentityDto identityDto = null;
-        identityDto = getIdentityDto( luteceUser.getName(  ) );
-        model.put( MARK_IDENTITY, identityDto );
-        request.getSession(  ).setAttribute( MARK_IDENTITY, identityDto );
-
-        return getXPage( TEMPLATE_GET_GENERIC_VIEW_IDENTITY, request.getLocale(  ), model );
-    }
-
-    /**
-     * Get the identity of the current user
-     *
-     * @param request
-     *          The request, with the user logged in
-     * @return The XPage to display the identity of the user
-     * @throws UserNotSignedException
-     *           If the user is not logged in
-     */
-    @View( value = VIEW_GET_GENERIC_MODIFY_IDENTITY )
-    public XPage getGenericModifyIdentity( HttpServletRequest request )
-        throws UserNotSignedException
-    {
-        LuteceUser luteceUser = getConnectedUser( request );
-
-        Map<String, Object> model = getModel(  );
-        IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
-        model.put( MARK_IDENTITY, identityDto );
-        request.getSession(  ).setAttribute( MARK_IDENTITY, identityDto );
-
-        return getXPage( TEMPLATE_GET_GENERIC_MODIFY_IDENTITY, request.getLocale(  ), model );
-    }
-
-    /**
-     * Do the modification of the user identity
-     *
-     * @param request
-     *          The request
-     * @return The next view to redirect to
-     * @throws UserNotSignedException
-     *           If the user has not signed in
-     */
-    @SuppressWarnings( "rawtypes" )
-    @Action( ACTION_DO_GENERIC_MODIFY_IDENTITY )
-    public XPage doGenericModifyIdentity( HttpServletRequest request )
-        throws UserNotSignedException
-    {
-        checkUserAuthentication( request );
-
-        if ( request.getParameter( PARAMETER_BACK ) != null )
-        {
-            return redirectView( request, VIEW_GET_GENERIC_VIEW_IDENTITY );
-        }
-
-        Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>(  );
-        Iterator it = request.getParameterMap(  ).entrySet(  ).iterator(  );
-
-        while ( it.hasNext(  ) )
-        {
-            Map.Entry entry = (Map.Entry) it.next(  );
-
-            if ( ( (String) entry.getKey(  ) ).startsWith( IDENTITY_GENERIC_ATTRIBUTE_PREFIX ) )
-            {
-                AttributeDto attribute = new AttributeDto(  );
-                attribute.setKey( ( (String) entry.getKey(  ) ).substring( IDENTITY_GENERIC_ATTRIBUTE_PREFIX.length(  ) ) );
-                attribute.setValue( request.getParameter( (String) entry.getKey(  ) ) );
-                mapAttributes.put( attribute.getKey(  ), attribute );
-            }
-        }
-
-        IdentityDto identityDto = (IdentityDto) request.getSession(  ).getAttribute( MARK_IDENTITY );
-        identityDto.setAttributes( mapAttributes );
-
-        try
-        {
-            IdentityService.instance(  ).updateIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH );
-        }
-        catch ( AppException appEx )
-        {
-            addError( MESSAGE_ERROR_UPDATE_IDENTITY, request.getLocale(  ) );
-
-            return redirectView( request, VIEW_GET_GENERIC_MODIFY_IDENTITY );
-        }
-
-        addInfo( MESSAGE_INFO_IDENTITY_UPDATED, request.getLocale(  ) );
-
-        return redirectView( request, VIEW_GET_GENERIC_VIEW_IDENTITY );
     }
 
     /**
@@ -323,7 +219,7 @@ public class IdentityXPage extends MVCApplication
         try
         {
             identityDto = IdentityService.instance(  )
-                                         .getIdentity( strConnectionId, null, DASHBOARD_APP_CODE, DASHBOARD_APP_HASH );
+                                         .getIdentity( strConnectionId, 0, DASHBOARD_APP_CODE, DASHBOARD_APP_HASH );
         }
         catch ( IdentityNotFoundException infe )
         {
