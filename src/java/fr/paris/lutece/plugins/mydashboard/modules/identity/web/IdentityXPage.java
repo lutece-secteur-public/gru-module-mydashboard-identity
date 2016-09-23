@@ -33,17 +33,19 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
+import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AuthorDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityChangeDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
 import fr.paris.lutece.plugins.identitystore.web.service.AuthorType;
-import fr.paris.lutece.plugins.identitystore.web.service.IdentityNotFoundException;
 import fr.paris.lutece.plugins.identitystore.web.service.IdentityService;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -51,11 +53,10 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
+import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -80,8 +81,20 @@ public class IdentityXPage extends MVCApplication
     private static final String DASHBOARD_APP_NAME = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_NAME );
     private static final String DASHBOARD_APP_HASH = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_HASH );
 
+    private static final String MARK_GENDER_LIST = "genderlist";
+    private static final String MARK_CONTACT_MODE_LIST = "contact_modeList";
+        
     // session variable
     private DashboardIdentity _dashboardIdentity;
+    private static final String BEAN_IDENTITYSTORE_SERVICE = "mydashboard-identity.identitystore.service";
+    
+    private IdentityService _identityService;
+    
+    public IdentityXPage()
+	{
+		super ();
+        _identityService = SpringContextService.getBean( BEAN_IDENTITYSTORE_SERVICE );   	
+	}
 
     /**
      * Get the identity of the current user
@@ -98,11 +111,29 @@ public class IdentityXPage extends MVCApplication
     {
         LuteceUser luteceUser = getConnectedUser( request );
 
+		ReferenceList genderList = new ReferenceList();		
+		for (String sItem : Constants.PROPERTY_KEY_GENDER_LIST.split( ";" ) ){
+			ReferenceItem refItm = new ReferenceItem();
+			refItm.setName(sItem);
+			refItm.setCode(sItem);
+			genderList.add( refItm );
+		}
+        
+		ReferenceList contactModeList = new ReferenceList();		
+		for (String sItem : Constants.PROPERTY_KEY_CONTACT_MODE_LIST.split( ";" ) ){
+			ReferenceItem refItm = new ReferenceItem();
+			refItm.setName(sItem);
+			refItm.setCode(sItem);
+			contactModeList.add( refItm );
+		}
+        
         Map<String, Object> model = getModel(  );
         IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
         _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_VIEW_MODE, Boolean.TRUE );
+        model.put( MARK_CONTACT_MODE_LIST, contactModeList);
+        model.put( MARK_GENDER_LIST, genderList);
 
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale(  ), model );
     }
@@ -129,10 +160,28 @@ public class IdentityXPage extends MVCApplication
             _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
         }
 
+		ReferenceList genderList = new ReferenceList();		
+		for (String sItem : Constants.PROPERTY_KEY_GENDER_LIST.split( ";" ) ){
+			ReferenceItem refItm = new ReferenceItem();
+			refItm.setName(sItem);
+			refItm.setCode(sItem);
+			genderList.add( refItm );
+		}
+		
+		ReferenceList contactModeList = new ReferenceList();		
+		for (String sItem : Constants.PROPERTY_KEY_CONTACT_MODE_LIST.split( ";" ) ){
+			ReferenceItem refItm = new ReferenceItem();
+			refItm.setName(sItem);
+			refItm.setCode(sItem);
+			contactModeList.add( refItm );
+		}
+        
         Map<String, Object> model = getModel(  );
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_VIEW_MODE, Boolean.FALSE );
-
+        model.put( MARK_CONTACT_MODE_LIST, contactModeList);
+        model.put( MARK_GENDER_LIST, genderList);
+        
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale(  ), model );
     }
 
@@ -163,11 +212,7 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            IdentityService.instance(  ).updateIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH, null );
-        }
-        catch ( IdentityNotFoundException infe )
-        {
-            IdentityService.instance(  ).createIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH );
+        	updateIdentity( identityDto );
         }
         catch ( AppException appEx )
         {
@@ -215,11 +260,10 @@ public class IdentityXPage extends MVCApplication
     private IdentityDto getIdentityDto( String strConnectionId )
     {
         IdentityDto identityDto = null;
-
+        
         try
         {
-            identityDto = IdentityService.instance(  )
-                                         .getIdentity( strConnectionId, 0, DASHBOARD_APP_CODE, DASHBOARD_APP_HASH );
+            identityDto = _identityService.getIdentity( strConnectionId, 0, DASHBOARD_APP_CODE, DASHBOARD_APP_HASH );
         }
         catch ( IdentityNotFoundException infe )
         {
@@ -232,6 +276,32 @@ public class IdentityXPage extends MVCApplication
 
         return identityDto;
     }
+    
+    
+    /**
+     * Update Identity from an IdentityDto
+     *
+     * @param identityDto
+     *          identity Data transfer Object
+     * @throws IdentityNotFoundException
+     */
+    private void updateIdentity( IdentityDto identityDto )
+    {
+
+        try
+        {
+            _identityService.updateIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH, null );
+
+            
+        }
+        catch ( IdentityNotFoundException infe )
+        {
+        	_identityService.createIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH );
+        }
+
+    }
+
+      
 
     /**
      * check if user is authenticated

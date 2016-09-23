@@ -44,20 +44,25 @@ public class DashboardIdentity
     private String _strConnectionId;
     private int _nCustomerId;
     private String _strLastName;
-    private String _strBirthname;
+    private String _strPreferredUsername;
     private String _strFirstname;
     private String _strGender;
     private String _strBirthdate;
     private String _strBirthplace;
-    private String _strAddressNumber;
-    private String _strAddressSuffix;
-    private String _strAddressStreet;
-    private String _strAddressBuilding;
-    private String _strAddressStair;
+	private String _strBirthcountry;
+    private String _strAddress;
+    private String _strAddressDetail;
     private String _strAddressPostalcode;
+    private String _strAddressCity;
+    private String _strBillingAddress;
+    private String _strBillingAddressDetail;
+    private String _strBillingAddressPostalcode;
+    private String _strBillingAddressCity;
     private String _strEmail;
     private String _strPhone;
     private MobilePhone _mobilePhone;
+    private String _strPreferredContactMode;
+
 
     /**
      * @return the _strConnectionId
@@ -111,20 +116,20 @@ public class DashboardIdentity
     }
 
     /**
-     * @return the _strBirthname
+     * @return the Preferred Username
      */
-    public String getBirthname(  )
+    public String getPreferredUsername(  )
     {
-        return _strBirthname;
+        return _strPreferredUsername;
     }
 
     /**
-     * @param strBirthname
-     *          the strBirthname to set
+     * @param strPreferredUsername
+     *          the Preferred Username to set
      */
-    public void setBirthname( String strBirthname )
+    public void setPreferredUsername( String strPreferredUsername )
     {
-        this._strBirthname = strBirthname;
+        this._strPreferredUsername = strPreferredUsername;
     }
 
     /**
@@ -196,89 +201,52 @@ public class DashboardIdentity
     }
 
     /**
-     * @return the _strAddressNumber
+     * @return the strBirthcountry
      */
-    public String getAddressNumber(  )
+    public String getBirthcountry(  )
     {
-        return _strAddressNumber;
+        return _strBirthcountry;
     }
 
     /**
-     * @param strAddressNumber
-     *          the _strAddressNumber to set
+     * @param strBirthcountry
+     *          the _strBirthcountry to set
      */
-    public void setAddressNumber( String strAddressNumber )
+    public void setBirthcountry( String strBirthcountry )
     {
-        this._strAddressNumber = strAddressNumber;
+        this._strBirthcountry = strBirthcountry;
     }
-
     /**
-     * @return the _strAddressSuffix
-     */
-    public String getAddressSuffix(  )
-    {
-        return _strAddressSuffix;
-    }
+	 * @return the Address
+	 */
+	public String getAddress()
+	{
+		return _strAddress;
+	}
 
-    /**
-     * @param strAddressSuffix
-     *          the _strAddressSuffix to set
-     */
-    public void setAddressSuffix( String strAddressSuffix )
-    {
-        this._strAddressSuffix = strAddressSuffix;
-    }
+	/**
+	 * @param _strAddress the Address to set
+	 */
+	public void setAddress( String strAddress )
+	{
+		this._strAddress = strAddress;
+	}
 
-    /**
-     * @return the _strAddressStreet
-     */
-    public String getAddressStreet(  )
-    {
-        return _strAddressStreet;
-    }
+	/**
+	 * @return the AddressDetail
+	 */
+	public String getAddressDetail()
+	{
+		return _strAddressDetail;
+	}
 
-    /**
-     * @param strAddressStreet
-     *          the _strAddressStreet to set
-     */
-    public void setAddressStreet( String strAddressStreet )
-    {
-        this._strAddressStreet = strAddressStreet;
-    }
-
-    /**
-     * @return the _strAddressBuilding
-     */
-    public String getAddressBuilding(  )
-    {
-        return _strAddressBuilding;
-    }
-
-    /**
-     * @param strAddressBuilding
-     *          the strAddressBuilding to set
-     */
-    public void setAddressBuilding( String strAddressBuilding )
-    {
-        this._strAddressBuilding = strAddressBuilding;
-    }
-
-    /**
-     * @return the _strAddressStair
-     */
-    public String getAddressStair(  )
-    {
-        return _strAddressStair;
-    }
-
-    /**
-     * @param strAddressStair
-     *          the _strAddressStair to set
-     */
-    public void setAddressStair( String strAddressStair )
-    {
-        this._strAddressStair = strAddressStair;
-    }
+	/**
+	 * @param _strAddressDetail the AddressDetail to set
+	 */
+	public void setAddressDetail( String strAddressDetail )
+	{
+		this._strAddressDetail = strAddressDetail;
+	}
 
     /**
      * @return the _strAddressPostalcode
@@ -298,6 +266,86 @@ public class DashboardIdentity
     }
 
     /**
+	 * @return the AddressCity
+	 */
+	public String getAddressCity()
+	{
+		return _strAddressCity;
+	}
+
+	/**
+	 * @param _strAddressCity the AddressCity to set
+	 */
+	public void setAddressCity( String strAddressCity )
+	{
+		this._strAddressCity = strAddressCity;
+	}
+
+	/**
+	 * @return the BillingAddress
+	 */
+	public String getBillingAddress()
+	{
+		return _strBillingAddress;
+	}
+
+	/**
+	 * @param _strBillingAddress the BillingAddress to set
+	 */
+	public void setBillingAddress( String strBillingAddress )
+	{
+		this._strBillingAddress = strBillingAddress;
+	}
+
+	/**
+	 * @return the BillingAddressDetail
+	 */
+	public String getBillingAddressDetail()
+	{
+		return _strBillingAddressDetail;
+	}
+
+	/**
+	 * @param _strBillingAddressDetail the BillingAddressDetail to set
+	 */
+	public void setBillingAddressDetail( String strBillingAddressDetail )
+	{
+		this._strBillingAddressDetail = strBillingAddressDetail;
+	}
+
+	/**
+	 * @return the BillingAddressPostalcode
+	 */
+	public String getBillingAddressPostalcode()
+	{
+		return _strBillingAddressPostalcode;
+	}
+
+	/**
+	 * @param _strBillingAddressPostalcode the BillingAddressPostalcode to set
+	 */
+	public void setBillingAddressPostalcode( String strBillingAddressPostalcode )
+	{
+		this._strBillingAddressPostalcode = strBillingAddressPostalcode;
+	}
+
+	/**
+	 * @return the BillingAddressCity
+	 */
+	public String getBillingAddressCity()
+	{
+		return _strBillingAddressCity;
+	}
+
+	/**
+	 * @param _strBillingAddressCity the BillingAddressCity to set
+	 */
+	public void setBillingAddressCity( String strBillingAddressCity )
+	{
+		this._strBillingAddressCity = strBillingAddressCity;
+	}
+
+	/**
      * @return the _strEmail
      */
     public String getEmail(  )
@@ -347,4 +395,20 @@ public class DashboardIdentity
     {
         this._mobilePhone = mobilePhone;
     }
+
+	/**
+	 * @return the PreferredContactMode
+	 */
+	public String getPreferredContactMode()
+	{
+		return _strPreferredContactMode;
+	}
+
+	/**
+	 * @param _strPreferredContactMode thePreferred Contact Mode to set
+	 */
+	public void setPreferredContactMode( String strPreferredContactMode )
+	{
+		this._strPreferredContactMode = strPreferredContactMode;
+	}
 }

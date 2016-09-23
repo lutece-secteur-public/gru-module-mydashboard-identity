@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 /**
  * This class provides constants for identity services
@@ -41,24 +42,34 @@ package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 public final class Constants
 {
     // properties
-    public static final String PROPERTY_KEY_NAME = "mydashboard.identity.attribute.key.name";
-    public static final String PROPERTY_KEY_BIRTHNAME = "mydashboard.identity.attribute.key.birthname";
-    public static final String PROPERTY_KEY_FIRSTNAME = "mydashboard.identity.attribute.key.firstname";
-    public static final String PROPERTY_KEY_GENDER = "mydashboard.identity.attribute.key.gender";
-    public static final String PROPERTY_KEY_BIRTHDATE = "mydashboard.identity.attribute.key.birthdate";
-    public static final String PROPERTY_KEY_BIRTHPLACE = "mydashboard.identity.attribute.key.birthplace";
-    public static final String PROPERTY_KEY_ADDRESS_NUMBER = "mydashboard.identity.attribute.key.address_number";
-    public static final String PROPERTY_KEY_ADDRESS_SUFFIX = "mydashboard.identity.attribute.key.address_suffix";
-    public static final String PROPERTY_KEY_ADDRESS_STREET = "mydashboard.identity.attribute.key.address_street";
-    public static final String PROPERTY_KEY_ADDRESS_BUILDING = "mydashboard.identity.attribute.key.address_building";
-    public static final String PROPERTY_KEY_ADDRESS_STAIR = "mydashboard.identity.attribute.key.address_stair";
-    public static final String PROPERTY_KEY_ADDRESS_POSTAL_CODE = "mydashboard.identity.attribute.key.address_postal_code";
-    public static final String PROPERTY_KEY_EMAIL = "mydashboard.identity.attribute.key.email";
-    public static final String PROPERTY_KEY_PHONE = "mydashboard.identity.attribute.key.phone";
-    public static final String PROPERTY_KEY_MOBILE_PHONE = "mydashboard.identity.attribute.key.mobile_phone";
+
     public static final String PROPERTY_APPLICATION_CODE = "mydashboard.identity.application.code";
     public static final String PROPERTY_APPLICATION_NAME = "mydashboard.identity.application.name";
-    public static final String PROPERTY_APPLICATION_HASH = "mydashboard.identity.application.hash";
+    public static final String PROPERTY_APPLICATION_HASH = "mydashboard.identity.application.hash";    
+    
+    public static final String PROPERTY_KEY_LOGIN = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.login");
+    public static final String PROPERTY_KEY_GENDER = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.gender");
+    public static final String PROPERTY_KEY_BIRTHDATE = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.bdate");
+    public static final String PROPERTY_KEY_BIRTHPLACE = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.bplace");
+    public static final String PROPERTY_KEY_NAME = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.name.family");
+    public static final String PROPERTY_KEY_PREFERREDUSERNAME = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.name.preferred-username");
+    public static final String PROPERTY_KEY_FIRSTNAME = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.name.given");
+    public static final String PROPERTY_KEY_BIRTHCOUNTRY = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.bcountry");
+    public static final String PROPERTY_KEY_ADDRESS = AppPropertiesService.getProperty("mydashboard.identity.attribute.home-info.postal.address");
+    public static final String PROPERTY_KEY_ADDRESSDETAIL = AppPropertiesService.getProperty("mydashboard.identity.attribute.home-info.postal.addressdetail");
+    public static final String PROPERTY_KEY_ADDRESS_POSTAL_CODE = AppPropertiesService.getProperty("mydashboard.identity.attribute.home-info.postal.postalcode");
+    public static final String PROPERTY_KEY_ADDRESS_CITY = AppPropertiesService.getProperty("mydashboard.identity.attribute.home-info.postal.city");
+    public static final String PROPERTY_KEY_BILLING_ADDRESS = AppPropertiesService.getProperty("mydashboard.identity.attribute.billing-info.postal.address");
+    public static final String PROPERTY_KEY_BILLING_ADDRESSDETAIL = AppPropertiesService.getProperty("mydashboard.identity.attribute.billing-info.postal.addressdetail");
+    public static final String PROPERTY_KEY_BILLING_ADDRESS_POSTAL_CODE = AppPropertiesService.getProperty("mydashboard.identity.attribute.billing-info.postal.postalcode");
+    public static final String PROPERTY_KEY_BILLING_ADDRESS_CITY = AppPropertiesService.getProperty("mydashboard.identity.attribute.billing-info.postal.city");
+    public static final String PROPERTY_KEY_EMAIL = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.home-info.online.email");
+    public static final String PROPERTY_KEY_MOBILE_PHONE = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.home-info.telecom.mobile.number");
+    public static final String PROPERTY_KEY_PHONE = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.home-info.telecom.telephone.number");
+    public static final String PROPERTY_KEY_PREFERRED_CONTACT = AppPropertiesService.getProperty("mydashboard.identity.attribute.user.home-info.preferred-contact-mode");
+
+    public static final String PROPERTY_KEY_GENDER_LIST = AppPropertiesService.getProperty("mydashboard.identity.application.listref.gender");
+    public static final String PROPERTY_KEY_CONTACT_MODE_LIST = AppPropertiesService.getProperty("mydashboard.identity.application.listref.contact-mode");
 
     /**
      * Default constructor
