@@ -288,15 +288,18 @@ public class IdentityXPage extends MVCApplication
     private void updateIdentity( IdentityDto identityDto )
     {
 
+        IdentityChangeDto identityChangeDto = buildIdentityChangeDto( identityDto );
+        
         try
         {
-            _identityService.updateIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH, null );
-
-            
+            _identityService.updateIdentity( identityChangeDto, DASHBOARD_APP_HASH, null );
         }
         catch ( IdentityNotFoundException infe )
         {
-        	_identityService.createIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH );
+        	_identityService.createIdentity( identityChangeDto, DASHBOARD_APP_HASH );
+        	
+        	// Only the information from external source are set when an identity is created. Thus, we need to do an update to set all the attributes
+        	_identityService.updateIdentity( identityChangeDto, DASHBOARD_APP_HASH, null );
         }
 
     }
