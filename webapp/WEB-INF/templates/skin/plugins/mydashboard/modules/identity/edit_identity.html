@@ -29,14 +29,14 @@
 							<@comboWithParams name="gender" default_value="${identity.gender!}" additionalParameters=" id=\"gender\"  class=\"form-control\" " items=genderlist  />
 							</#if>
 						</div>
-					   <div class="form-group">
-							<label class="control-label" for="lastname" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelName} :</label>
-							<input class="form-control" type="text" id="preferred_username" name="preferred_username" value="${identity.preferredUsername!''}" <#if viewMode>readonly</#if> />
-						</div>
-						<div class="form-group">
-							<label class="control-label" for="birthname" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthName} :</label>
-							<input class="form-control" type="text" id="birthname" name="birthname" value="${identity.lastName!}"  <#if viewMode>readonly</#if> />
-						</div>
+    				<div class="form-group">
+    					<label for="preferredUsername" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelName} :</label>
+    					<input class="form-control input-sm" type="text" id="preferredUsername" name="preferredUsername" value="${identity.preferredUsername!''}" <#if viewMode>readonly</#if>>
+    				</div>
+    				<div class="form-group">
+    					<label for="lastName" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthName} :</label>
+    					<input class="form-control input-sm" type="text" id="lastName" name="lastName" value="${identity.lastName!}"  <#if viewMode>readonly</#if>>
+    				</div>
 						<div class="form-group">
 							<label class="control-label" for="firstname" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelFirstName} :</label>
 							<input class="form-control" type="text" id="firstname" name="firstname" value="${identity.firstname!}"  <#if viewMode>readonly</#if> />
@@ -50,7 +50,7 @@
 							<input class="form-control" type="text" id="birthplace" name="birthplace" value="${identity.birthplace!}" <#if viewMode>readonly</#if> />
 						</div>
 						<div class="form-group">
-							<label class="control-label" for="birthplace" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthCountry} :</label>
+							<label class="control-label" for="birthcountry" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthCountry} :</label>
 							<input class="form-control" type="text" id="birthcountry" name="birthcountry" value="${identity.birthcountry!}" <#if viewMode>readonly</#if> />
 						</div>
 					</div>
@@ -58,7 +58,7 @@
 						<div>
 							<h4 class="box-title form-group">#i18n{module.mydashboard.identity.xpage.edit_identity.address.label}</h4>
 							<div class="form-group">
-								<label class="control-label" for="address_number" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelAdress} :</label>
+								<label class="control-label" for="address" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelAdress} :</label>
 								<input class="form-control" type="text" id="address" name="address" value="${identity.address!}" <#if viewMode>readonly</#if> />
 							</div>
 							<div class="form-group">

@@ -73,8 +73,7 @@ public final class DashboardIdentityUtils
 
         if ( identity.getAttributes(  ) != null )
         {
-            AttributeDto attribute = identity.getAttributes(  )
-                                             .get(  Constants.PROPERTY_KEY_NAME ) ;
+            AttributeDto attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_NAME );
 
             if ( attribute != null )
             {
@@ -85,8 +84,7 @@ public final class DashboardIdentityUtils
                 dashboardIdentity.setLastName( StringUtils.EMPTY );
             }
 
-            attribute = identity.getAttributes(  )
-                                .get(  Constants.PROPERTY_KEY_PREFERREDUSERNAME ) ;
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_PREFERREDUSERNAME );
 
             if ( attribute != null )
             {
@@ -97,8 +95,7 @@ public final class DashboardIdentityUtils
                 dashboardIdentity.setPreferredUsername( StringUtils.EMPTY );
             }
 
-            attribute = identity.getAttributes(  )
-                                .get(  Constants.PROPERTY_KEY_FIRSTNAME ) ;
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_FIRSTNAME );
 
             if ( attribute != null )
             {
@@ -109,7 +106,7 @@ public final class DashboardIdentityUtils
                 dashboardIdentity.setFirstname( StringUtils.EMPTY );
             }
 
-            attribute = identity.getAttributes(  ).get(  Constants.PROPERTY_KEY_GENDER ) ;
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_GENDER );
 
             if ( attribute != null )
             {
@@ -120,8 +117,7 @@ public final class DashboardIdentityUtils
                 dashboardIdentity.setGender( StringUtils.EMPTY );
             }
 
-            attribute = identity.getAttributes(  )
-                                .get(  Constants.PROPERTY_KEY_BIRTHDATE ) ;
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_BIRTHDATE );
 
             if ( attribute != null )
             {
@@ -132,8 +128,7 @@ public final class DashboardIdentityUtils
                 dashboardIdentity.setBirthdate( StringUtils.EMPTY );
             }
 
-            attribute = identity.getAttributes(  )
-                                .get(  Constants.PROPERTY_KEY_BIRTHPLACE ) ;
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_BIRTHPLACE );
 
             if ( attribute != null )
             {
@@ -143,45 +138,41 @@ public final class DashboardIdentityUtils
             {
                 dashboardIdentity.setBirthplace( StringUtils.EMPTY );
             }
-            
-            attribute = identity.getAttributes(  )
-                    .get(  Constants.PROPERTY_KEY_BIRTHCOUNTRY ) ;
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_BIRTHCOUNTRY );
 
             if ( attribute != null )
             {
-            	dashboardIdentity.setBirthcountry( attribute.getValue(  ) );
+                dashboardIdentity.setBirthcountry( attribute.getValue(  ) );
             }
             else
             {
-            	dashboardIdentity.setBirthcountry( StringUtils.EMPTY );
+                dashboardIdentity.setBirthcountry( StringUtils.EMPTY );
             }
-            
-            attribute = identity.getAttributes(  )
-                    .get(  Constants.PROPERTY_KEY_ADDRESS  );
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_ADDRESS );
 
             if ( attribute != null )
             {
-            	dashboardIdentity.setAddress( attribute.getValue(  ) );
+                dashboardIdentity.setAddress( attribute.getValue(  ) );
             }
             else
             {
-            	dashboardIdentity.setAddress( StringUtils.EMPTY );
+                dashboardIdentity.setAddress( StringUtils.EMPTY );
             }
-            
-            attribute = identity.getAttributes(  )
-                    .get(  Constants.PROPERTY_KEY_ADDRESSDETAIL  );
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_ADDRESSDETAIL );
 
             if ( attribute != null )
             {
-            	dashboardIdentity.setAddressDetail( attribute.getValue(  ) );
+                dashboardIdentity.setAddressDetail( attribute.getValue(  ) );
             }
             else
             {
-            	dashboardIdentity.setAddressPostalcode( StringUtils.EMPTY );
+                dashboardIdentity.setAddressPostalcode( StringUtils.EMPTY );
             }
-            
-            attribute = identity.getAttributes(  )
-                                .get(  Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE  );
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE );
 
             if ( attribute != null )
             {
@@ -191,45 +182,41 @@ public final class DashboardIdentityUtils
             {
                 dashboardIdentity.setAddressPostalcode( StringUtils.EMPTY );
             }
-            
-            attribute = identity.getAttributes(  )
-            		.get(  Constants.PROPERTY_KEY_ADDRESS_CITY  );
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_ADDRESS_CITY );
 
             if ( attribute != null )
             {
-            	dashboardIdentity.setAddressCity( attribute.getValue(  ) );
+                dashboardIdentity.setAddressCity( attribute.getValue(  ) );
             }
             else
             {
-            	dashboardIdentity.setAddressCity( StringUtils.EMPTY );
+                dashboardIdentity.setAddressCity( StringUtils.EMPTY );
             }
 
-            attribute = identity.getAttributes(  )
-                    .get(  Constants.PROPERTY_KEY_BILLING_ADDRESS  );
-
-            if ( attribute != null )
-            {
-            	dashboardIdentity.setBillingAddress( attribute.getValue(  ) );
-            }
-            else
-            {
-            	dashboardIdentity.setBillingAddress( StringUtils.EMPTY );
-            }
-            
-            attribute = identity.getAttributes(  )
-                    .get(  Constants.PROPERTY_KEY_BILLING_ADDRESSDETAIL  );
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_BILLING_ADDRESS );
 
             if ( attribute != null )
             {
-            	dashboardIdentity.setBillingAddressDetail( attribute.getValue(  ) );
+                dashboardIdentity.setBillingAddress( attribute.getValue(  ) );
             }
             else
             {
-            	dashboardIdentity.setBillingAddressDetail( StringUtils.EMPTY );
+                dashboardIdentity.setBillingAddress( StringUtils.EMPTY );
             }
-            
-            attribute = identity.getAttributes(  )
-                                .get(  Constants.PROPERTY_KEY_BILLING_ADDRESS_POSTAL_CODE  );
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_BILLING_ADDRESSDETAIL );
+
+            if ( attribute != null )
+            {
+                dashboardIdentity.setBillingAddressDetail( attribute.getValue(  ) );
+            }
+            else
+            {
+                dashboardIdentity.setBillingAddressDetail( StringUtils.EMPTY );
+            }
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_BILLING_ADDRESS_POSTAL_CODE );
 
             if ( attribute != null )
             {
@@ -239,20 +226,19 @@ public final class DashboardIdentityUtils
             {
                 dashboardIdentity.setBillingAddressPostalcode( StringUtils.EMPTY );
             }
-            
-            attribute = identity.getAttributes(  )
-            		.get(  Constants.PROPERTY_KEY_BILLING_ADDRESS_CITY  );
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_BILLING_ADDRESS_CITY );
 
             if ( attribute != null )
             {
-            	dashboardIdentity.setBillingAddressCity( attribute.getValue(  ) );
+                dashboardIdentity.setBillingAddressCity( attribute.getValue(  ) );
             }
             else
             {
-            	dashboardIdentity.setBillingAddressCity( StringUtils.EMPTY );
+                dashboardIdentity.setBillingAddressCity( StringUtils.EMPTY );
             }
-            
-            attribute = identity.getAttributes(  ).get(  Constants.PROPERTY_KEY_EMAIL ) ;
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_EMAIL );
 
             if ( attribute != null )
             {
@@ -263,7 +249,7 @@ public final class DashboardIdentityUtils
                 dashboardIdentity.setEmail( StringUtils.EMPTY );
             }
 
-            attribute = identity.getAttributes(  ).get(  Constants.PROPERTY_KEY_PHONE  );
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_PHONE );
 
             if ( attribute != null )
             {
@@ -273,8 +259,8 @@ public final class DashboardIdentityUtils
             {
                 dashboardIdentity.setPhone( StringUtils.EMPTY );
             }
-            
-            attribute = identity.getAttributes(  ).get(  Constants.PROPERTY_KEY_PREFERRED_CONTACT  );
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_PREFERRED_CONTACT );
 
             if ( attribute != null )
             {
@@ -285,9 +271,7 @@ public final class DashboardIdentityUtils
                 dashboardIdentity.setPreferredContactMode( StringUtils.EMPTY );
             }
 
-
-            attribute = identity.getAttributes(  )
-                                .get(  Constants.PROPERTY_KEY_MOBILE_PHONE  );
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_MOBILE_PHONE );
 
             if ( attribute != null )
             {
@@ -336,98 +320,98 @@ public final class DashboardIdentityUtils
         Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>(  );
 
         AttributeDto attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_NAME ) ;
+        attribute.setKey( Constants.PROPERTY_KEY_NAME );
         attribute.setValue( dashboardIdentity.getLastName(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_PREFERREDUSERNAME ) ;
-        attribute.setValue( dashboardIdentity.getPreferredUsername( ) );
+        attribute.setKey( Constants.PROPERTY_KEY_PREFERREDUSERNAME );
+        attribute.setValue( dashboardIdentity.getPreferredUsername(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_FIRSTNAME ) ;
+        attribute.setKey( Constants.PROPERTY_KEY_FIRSTNAME );
         attribute.setValue( dashboardIdentity.getFirstname(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_GENDER ) ;
+        attribute.setKey( Constants.PROPERTY_KEY_GENDER );
         attribute.setValue( dashboardIdentity.getGender(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_BIRTHDATE ) ;
+        attribute.setKey( Constants.PROPERTY_KEY_BIRTHDATE );
         attribute.setValue( dashboardIdentity.getBirthdate(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_BIRTHPLACE ) ;
+        attribute.setKey( Constants.PROPERTY_KEY_BIRTHPLACE );
         attribute.setValue( dashboardIdentity.getBirthplace(  ) );
-        mapAttributes.put( attribute.getKey(  ), attribute );
-        
-        attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_BIRTHCOUNTRY ) ;
-        attribute.setValue( dashboardIdentity.getBirthcountry() );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_ADDRESS ) ;
-        attribute.setValue( dashboardIdentity.getAddress() );
+        attribute.setKey( Constants.PROPERTY_KEY_BIRTHCOUNTRY );
+        attribute.setValue( dashboardIdentity.getBirthcountry(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
-        
+
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_ADDRESSDETAIL ) ;
-        attribute.setValue( dashboardIdentity.getAddressDetail());
+        attribute.setKey( Constants.PROPERTY_KEY_ADDRESS );
+        attribute.setValue( dashboardIdentity.getAddress(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
-                
+
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE );
+        attribute.setKey( Constants.PROPERTY_KEY_ADDRESSDETAIL );
+        attribute.setValue( dashboardIdentity.getAddressDetail(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
+
+        attribute = new AttributeDto(  );
+        attribute.setKey( Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE );
         attribute.setValue( dashboardIdentity.getAddressPostalcode(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_ADDRESS_CITY ) ;
-        attribute.setValue( dashboardIdentity.getAddressCity());
-        mapAttributes.put( attribute.getKey(  ), attribute );
-        
-        attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_BILLING_ADDRESS ) ;
-        attribute.setValue( dashboardIdentity.getBillingAddress());
-        mapAttributes.put( attribute.getKey(  ), attribute );
-        
-        attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_BILLING_ADDRESSDETAIL ) ;
-        attribute.setValue( dashboardIdentity.getBillingAddressDetail() );
-        mapAttributes.put( attribute.getKey(  ), attribute );
-        
-        attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_BILLING_ADDRESS_POSTAL_CODE ) ;
-        attribute.setValue( dashboardIdentity.getBillingAddressPostalcode());
-        mapAttributes.put( attribute.getKey(  ), attribute );
-                
-        attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_BILLING_ADDRESS_CITY );
-        attribute.setValue( dashboardIdentity.getBillingAddressCity());
+        attribute.setKey( Constants.PROPERTY_KEY_ADDRESS_CITY );
+        attribute.setValue( dashboardIdentity.getAddressCity(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_PHONE );
+        attribute.setKey( Constants.PROPERTY_KEY_BILLING_ADDRESS );
+        attribute.setValue( dashboardIdentity.getBillingAddress(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
+
+        attribute = new AttributeDto(  );
+        attribute.setKey( Constants.PROPERTY_KEY_BILLING_ADDRESSDETAIL );
+        attribute.setValue( dashboardIdentity.getBillingAddressDetail(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
+
+        attribute = new AttributeDto(  );
+        attribute.setKey( Constants.PROPERTY_KEY_BILLING_ADDRESS_POSTAL_CODE );
+        attribute.setValue( dashboardIdentity.getBillingAddressPostalcode(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
+
+        attribute = new AttributeDto(  );
+        attribute.setKey( Constants.PROPERTY_KEY_BILLING_ADDRESS_CITY );
+        attribute.setValue( dashboardIdentity.getBillingAddressCity(  ) );
+        mapAttributes.put( attribute.getKey(  ), attribute );
+
+        attribute = new AttributeDto(  );
+        attribute.setKey( Constants.PROPERTY_KEY_PHONE );
         attribute.setValue( dashboardIdentity.getPhone(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_EMAIL );
+        attribute.setKey( Constants.PROPERTY_KEY_EMAIL );
         attribute.setValue( dashboardIdentity.getEmail(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_MOBILE_PHONE );
+        attribute.setKey( Constants.PROPERTY_KEY_MOBILE_PHONE );
         attribute.setValue( dashboardIdentity.getMobilePhone(  ).getMobilePhoneNumber(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
 
         attribute = new AttributeDto(  );
-        attribute.setKey(  Constants.PROPERTY_KEY_PREFERRED_CONTACT);
-        attribute.setValue( dashboardIdentity.getPreferredContactMode( ) );
+        attribute.setKey( Constants.PROPERTY_KEY_PREFERRED_CONTACT );
+        attribute.setValue( dashboardIdentity.getPreferredContactMode(  ) );
         mapAttributes.put( attribute.getKey(  ), attribute );
         identityDto.setAttributes( mapAttributes );
 
