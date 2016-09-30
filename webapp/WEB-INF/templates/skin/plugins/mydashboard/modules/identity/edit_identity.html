@@ -150,3 +150,30 @@
         </div>
     </div>
 </div>
+<#if !viewMode>
+<script type="text/javascript" src="jsp/site/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp"></script>
+<script type="text/javascript" src="js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js"></script>
+<script type="text/javascript" src="js/jquery/plugins/ui/jquery.ui.custom-autocomplete.min.js"></script>
+<script type="text/javascript">
+
+    //load css dynamically
+    var loadresource = document.createElement('link');
+    loadresource.setAttribute("rel", "stylesheet");
+    loadresource.setAttribute("type", "text/css");
+    loadresource.setAttribute("href", "js/jquery/plugins/ui/css/jquery-ui.css");
+    document.getElementsByTagName("head")[0].appendChild(loadresource);
+
+    $(window).load(function() {
+     var jAdresse = $('#address');
+     var jAdressePostalcode =  $('#address_postalcode');
+     var jAdresseCity = $('#address_city');
+     jAdresse.suggestPOI();
+     jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
+         //Use properties from BAN apiinput type. Would not work with suggestPOI.
+         jAdresse.val(event.poi.sourcePOI.properties.name);
+         jAdressePostalcode.val(event.poi.sourcePOI.properties.postcode);
+         jAdresseCity.val(event.poi.sourcePOI.properties.city);
+     });
+    });
+</script>
+</#if>
