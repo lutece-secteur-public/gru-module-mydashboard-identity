@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
+import fr.paris.lutece.plugins.avatar.service.AvatarService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AuthorDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityChangeDto;
@@ -77,6 +78,7 @@ public class IdentityXPage extends MVCApplication
     private static final String PARAMETER_BACK = "back";
     private static final String MARK_IDENTITY = "identity";
     private static final String MARK_VIEW_MODE = "viewMode";
+    private static final String MARK_AVATAR_URL = "avatar_url";
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String TEMPLATE_GET_GENERIC_VIEW_IDENTITY = "skin/plugins/mydashboard/modules/identity/view_generic_identity.html";
     private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
@@ -159,6 +161,7 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_VIEW_MODE, Boolean.TRUE );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
         model.put( MARK_GENDER_LIST, _lstGenderList );
+        model.put( MARK_AVATAR_URL , getAvatarUrl( request ));
 
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale(  ), model );
     }
@@ -190,6 +193,7 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_VIEW_MODE, Boolean.FALSE );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
         model.put( MARK_GENDER_LIST, _lstGenderList );
+        model.put( MARK_AVATAR_URL , getAvatarUrl( request ));
 
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale(  ), model );
     }
@@ -782,5 +786,11 @@ public class IdentityXPage extends MVCApplication
         xpContent.setStandalone( true );
 
         return xpContent;
+    }
+
+    private String getAvatarUrl( HttpServletRequest request )
+    {
+        LuteceUser user = SecurityService.getInstance().getRegisteredUser( request );
+        return AvatarService.getAvatarUrl( user.getEmail() );
     }
 }
