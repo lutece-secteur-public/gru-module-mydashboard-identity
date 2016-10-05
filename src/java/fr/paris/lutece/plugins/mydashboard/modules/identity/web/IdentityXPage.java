@@ -80,6 +80,7 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_IDENTITY = "identity";
     private static final String MARK_VIEW_MODE = "viewMode";
     private static final String MARK_AVATAR_URL = "avatar_url";
+    private static final String MARK_AVATARSERVER_POST_URL = "avatarserver_post_url";
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String TEMPLATE_GET_GENERIC_VIEW_IDENTITY = "skin/plugins/mydashboard/modules/identity/view_generic_identity.html";
     private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
@@ -89,6 +90,8 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_CONTACT_MODE_LIST = "contact_modeList";
     private static final String BEAN_IDENTITYSTORE_SERVICE = "mydashboard-identity.identitystore.service";
     private static final String SPLIT_PATTERN = ";";
+    private static final String PROPERTY_AVATERSERVER_POST_URL = "mydashboard.identity.avatarserver.post.url";
+    private static final String AVATARSERVER_POST_URL = AppPropertiesService.getProperty( PROPERTY_AVATERSERVER_POST_URL );
 
     //Views
     private static final String VIEW_VALIDATE_LAST_NAME = "validate_lastName";
@@ -212,6 +215,7 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_AVATAR_URL , getAvatarUrl( request ));
+        model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
 
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale(  ), model );
     }
