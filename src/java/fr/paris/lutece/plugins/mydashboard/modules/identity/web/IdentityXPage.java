@@ -822,6 +822,7 @@ public class IdentityXPage extends MVCApplication
         return AvatarService.getAvatarUrl( user.getEmail() );
     }
 
+
     /**
      * Update the accept_news attribute of the current Identity
      * @param request the request
@@ -867,4 +868,5 @@ public class IdentityXPage extends MVCApplication
 
         updateIdentity( identityDto );
     }
+
 }
