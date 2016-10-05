@@ -62,6 +62,9 @@ public class DashboardIdentity
     private String _strPhone;
     private MobilePhone _mobilePhone;
     private String _strPreferredContactMode;
+    private String _strLogin;
+    private boolean _bAcceptNews;
+    private boolean _bAcceptSurvey;
 
     /**
      * @return the _strConnectionId
@@ -410,5 +413,53 @@ public class DashboardIdentity
     public void setPreferredContactMode( String strPreferredContactMode )
     {
         this._strPreferredContactMode = strPreferredContactMode;
+    }
+
+    /**
+     * @return the Login
+     */
+    public String getLogin(  )
+    {
+        return _strLogin;
+    }
+
+    /**
+     * @param strLogin the Login to set
+     */
+    public void setLogin( String strLogin )
+    {
+        this._strLogin = strLogin;
+    }
+
+    /**
+     * @return the AcceptNews flag
+     */
+    public boolean getAcceptNews(  )
+    {
+        return _bAcceptNews;
+    }
+
+    /**
+     * @param bAcceptNews the AcceptNews flag to set
+     */
+    public void setAcceptNews( boolean bAcceptNews )
+    {
+        this._bAcceptNews = bAcceptNews;
+    }
+
+    /**
+     * @return the AcceptSurvey flag
+     */
+    public boolean getAcceptSurvey(  )
+    {
+        return _bAcceptSurvey;
+    }
+
+    /**
+     * @param bAcceptSurvey the AcceptSurvey flag to set
+     */
+    public void setAcceptSurvey( boolean bAcceptSurvey )
+    {
+        this._bAcceptSurvey = bAcceptSurvey;
     }
 }

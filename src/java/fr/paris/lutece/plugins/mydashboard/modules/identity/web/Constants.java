@@ -91,6 +91,10 @@ public final class Constants
             "mydashboard.identity.application.listref.gender" );
     public static final String PROPERTY_KEY_CONTACT_MODE_LIST = AppPropertiesService.getProperty( 
             "mydashboard.identity.application.listref.contact-mode" );
+    public static final String PROPERTY_KEY_ACCEPT_NEWS = AppPropertiesService.getProperty( 
+            "mydashboard.identity.application.user.acceptnews" );
+    public static final String PROPERTY_KEY_ACCEPT_SURVEY = AppPropertiesService.getProperty( 
+            "mydashboard.identity.application.user.acceptsurvey" );
 
     //Fields validation messages
     public static final String MESSAGE_ERROR_UPDATE_IDENTITY = "module.mydashboard.identity.message.error.identity.update";

@@ -33,7 +33,9 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
+import fr.paris.lutece.plugins.avatar.service.AvatarService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AuthorDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityChangeDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
@@ -45,7 +47,6 @@ import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -59,6 +60,7 @@ import org.apache.commons.lang.StringUtils;
 
 import org.hibernate.validator.constraints.impl.EmailValidator;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,6 +79,7 @@ public class IdentityXPage extends MVCApplication
     private static final String PARAMETER_BACK = "back";
     private static final String MARK_IDENTITY = "identity";
     private static final String MARK_VIEW_MODE = "viewMode";
+    private static final String MARK_AVATAR_URL = "avatar_url";
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String TEMPLATE_GET_GENERIC_VIEW_IDENTITY = "skin/plugins/mydashboard/modules/identity/view_generic_identity.html";
     private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
@@ -101,6 +104,8 @@ public class IdentityXPage extends MVCApplication
     private static final String VIEW_VALIDATE_EMAIL = "validate_email";
     private static final String VIEW_VALIDATE_PHONE = "validate_phone";
     private static final String VIEW_VALIDATE_MOBILEPHONE = "validate_mobilephone";
+    private static final String VIEW_UPDATE_ACCEPT_NEWS = "update_acceptNews";
+    private static final String VIEW_UPDATE_ACCEPT_SURVEY = "update_acceptSurvey";
     private ReferenceList _lstContactModeList;
     private ReferenceList _lstGenderList;
 
@@ -118,12 +123,15 @@ public class IdentityXPage extends MVCApplication
 
         _lstGenderList = new ReferenceList(  );
 
+        int i = 0;
+
         for ( String sItem : Constants.PROPERTY_KEY_GENDER_LIST.split( SPLIT_PATTERN ) )
         {
             ReferenceItem refItm = new ReferenceItem(  );
             refItm.setName( sItem );
-            refItm.setCode( sItem );
+            refItm.setCode( String.valueOf( i ) );
             _lstGenderList.add( refItm );
+            i++;
         }
 
         _lstContactModeList = new ReferenceList(  );
@@ -155,10 +163,23 @@ public class IdentityXPage extends MVCApplication
         Map<String, Object> model = getModel(  );
         IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
         _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
+
+        //Populate gender with list value instead of code 
+        String strGender = _dashboardIdentity.getGender(  );
+
+        for ( ReferenceItem rItem : _lstGenderList )
+        {
+            if ( strGender.compareTo( rItem.getCode(  ) ) == 0 )
+            {
+                _dashboardIdentity.setGender( rItem.getName(  ) );
+            }
+        }
+
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_VIEW_MODE, Boolean.TRUE );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
         model.put( MARK_GENDER_LIST, _lstGenderList );
+        model.put( MARK_AVATAR_URL , getAvatarUrl( request ));
 
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale(  ), model );
     }
@@ -181,8 +202,8 @@ public class IdentityXPage extends MVCApplication
         if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId(  ) == null ) ||
                 !_dashboardIdentity.getConnectionId(  ).equals( luteceUser.getName(  ) ) )
         {
-            IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
-            _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
+        	IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
+            _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );            
         }
 
         Map<String, Object> model = getModel(  );
@@ -190,6 +211,7 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_VIEW_MODE, Boolean.FALSE );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
         model.put( MARK_GENDER_LIST, _lstGenderList );
+        model.put( MARK_AVATAR_URL , getAvatarUrl( request ));
 
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale(  ), model );
     }
@@ -228,7 +250,7 @@ public class IdentityXPage extends MVCApplication
         {
             updateIdentity( identityDto );
         }
-        catch ( AppException appEx )
+        catch ( Exception appEx )
         {
             addError( Constants.MESSAGE_ERROR_UPDATE_IDENTITY, request.getLocale(  ) );
 
@@ -281,11 +303,10 @@ public class IdentityXPage extends MVCApplication
         }
         catch ( IdentityNotFoundException infe )
         {
-            // FIXME (as there s no identitystore openam plugin
-            // this is to make identityStore work for new users
-            // this must be removed when identitystore-openam is done and plugged
             identityDto = new IdentityDto(  );
             identityDto.setConnectionId( strConnectionId );
+            //Create a new identity. IdentityStore will initialize it with openam data
+            identityDto = _identityService.createIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH );
         }
 
         return identityDto;
@@ -487,6 +508,17 @@ public class IdentityXPage extends MVCApplication
             {
                 addError( I18nService.getLocalizedString( Constants.MESSAGE_ERROR_TELEPHONE_EMPTY, request.getLocale(  ) ) );
                 bStatus = false;
+            }
+        }
+
+        //Populate gender with list codes {0,1,2}  instead of values 
+        String strGender = dashboardIdentity.getGender(  );
+
+        for ( ReferenceItem rItem : _lstGenderList )
+        {
+            if ( strGender.compareTo( rItem.getName(  ) ) == 0 )
+            {
+                dashboardIdentity.setGender( rItem.getCode(  ) );
             }
         }
 
@@ -782,5 +814,57 @@ public class IdentityXPage extends MVCApplication
         xpContent.setStandalone( true );
 
         return xpContent;
+    }
+
+    private String getAvatarUrl( HttpServletRequest request )
+    {
+        LuteceUser user = SecurityService.getInstance().getRegisteredUser( request );
+        return AvatarService.getAvatarUrl( user.getEmail() );
+    }
+
+    /**
+     * Update the accept_news attribute of the current Identity
+     * @param request the request
+     */
+    @View( VIEW_UPDATE_ACCEPT_NEWS )
+    public void updateAcceptNews( HttpServletRequest request )
+    {
+        if ( !request.getParameter( "bAccept" ).isEmpty(  ) )
+        {
+            updateIdentityAttribute( Constants.PROPERTY_KEY_ACCEPT_NEWS, request.getParameter( "bAccept" ) );
+        }
+    }
+
+    /**
+     * Update the accept_survey attribute of the current Identity
+     * @param request the request
+     */
+    @View( VIEW_UPDATE_ACCEPT_SURVEY )
+    public void updateAcceptSurvey( HttpServletRequest request )
+    {
+        if ( !request.getParameter( "bAccept" ).isEmpty(  ) )
+        {
+            updateIdentityAttribute( Constants.PROPERTY_KEY_ACCEPT_SURVEY, request.getParameter( "bAccept" ) );
+        }
+    }
+
+    /** Update an attribute of current Identity with provided key/value
+     * @param propertyKeyToUpdate the attribute key in IdentityStore
+     * @param value the attribute value to set
+     */
+    private void updateIdentityAttribute( String propertyKeyToUpdate, String value )
+    {
+        IdentityDto identityDto = new IdentityDto(  );
+        identityDto.setConnectionId( _dashboardIdentity.getConnectionId(  ) );
+        identityDto.setCustomerId( _dashboardIdentity.getCustomerId(  ) );
+
+        Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>(  );
+        AttributeDto attribute = new AttributeDto(  );
+        attribute.setKey( propertyKeyToUpdate );
+        attribute.setValue( value );
+        mapAttributes.put( attribute.getKey(  ), attribute );
+        identityDto.setAttributes( mapAttributes );
+
+        updateIdentity( identityDto );
     }
 }

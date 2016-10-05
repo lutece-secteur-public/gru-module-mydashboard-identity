@@ -238,17 +238,6 @@ public final class DashboardIdentityUtils
                 dashboardIdentity.setBillingAddressCity( StringUtils.EMPTY );
             }
 
-            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_EMAIL );
-
-            if ( attribute != null )
-            {
-                dashboardIdentity.setEmail( attribute.getValue(  ) );
-            }
-            else
-            {
-                dashboardIdentity.setEmail( StringUtils.EMPTY );
-            }
-
             attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_PHONE );
 
             if ( attribute != null )
@@ -290,6 +279,43 @@ public final class DashboardIdentityUtils
                 MobilePhone mobilePhone = new MobilePhone(  );
                 mobilePhone.setMobilePhoneNumber( StringUtils.EMPTY );
                 dashboardIdentity.setMobilePhone( mobilePhone );
+            }
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_LOGIN );
+
+            if ( attribute != null )
+            {
+                dashboardIdentity.setLogin( attribute.getValue(  ) );
+                dashboardIdentity.setEmail( attribute.getValue(  ) );
+            }
+            else
+            {
+                dashboardIdentity.setLogin( StringUtils.EMPTY );
+                dashboardIdentity.setEmail( StringUtils.EMPTY );
+            }
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_ACCEPT_NEWS );
+
+            if ( attribute != null )
+            {
+                boolean bAcceptNews = Boolean.parseBoolean( attribute.getValue(  ) );
+                dashboardIdentity.setAcceptNews( bAcceptNews );
+            }
+            else
+            {
+                dashboardIdentity.setAcceptNews( Boolean.FALSE );
+            }
+
+            attribute = identity.getAttributes(  ).get( Constants.PROPERTY_KEY_ACCEPT_SURVEY );
+
+            if ( attribute != null )
+            {
+                boolean bAcceptSurvey = Boolean.parseBoolean( attribute.getValue(  ) );
+                dashboardIdentity.setAcceptSurvey( bAcceptSurvey );
+            }
+            else
+            {
+                dashboardIdentity.setAcceptSurvey( Boolean.FALSE );
             }
         }
         else

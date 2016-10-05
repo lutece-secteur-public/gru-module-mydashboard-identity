@@ -20,4 +20,10 @@
             <application-class>fr.paris.lutece.plugins.mydashboard.modules.identity.web.IdentityXPage</application-class>
         </application>
     </applications>
+    
+    <javascript-files>
+    	<javascript-files-scope>portal</javascript-files-scope>
+        <javascript-file>mydashboard/modules/identity/mydashboard_identity.js</javascript-file>
+	</javascript-files>
+    
 </plug-in>
