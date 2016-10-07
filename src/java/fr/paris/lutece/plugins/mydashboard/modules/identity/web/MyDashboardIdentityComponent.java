@@ -33,8 +33,11 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
+import fr.paris.lutece.plugins.avatar.service.AvatarService;
 import fr.paris.lutece.plugins.mydashboard.service.MyDashboardComponent;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.security.LuteceUser;
+import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.web.l10n.LocaleService;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -54,26 +57,51 @@ public class MyDashboardIdentityComponent extends MyDashboardComponent
     private static final String DASHBOARD_COMPONENT_ID = "mydashboard-identity.identityComponent";
     private static final String MESSAGE_DASHBOARD_COMPONENT_DESCRIPTION = "module.mydashboard.identity.component.identity.description";
     private static final String TEMPLATE_DASHBOARD_COMPONENT = "skin/plugins/mydashboard/modules/identity/identity_component.html";
+    private static final String MARK_AVATAR_URL = "avatar_url";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDashboardData( HttpServletRequest request )
     {
         Map<String, Object> model = new HashMap<String, Object>(  );
+        
+        model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD_COMPONENT,
                 LocaleService.getDefault(  ), model );
 
         return template.getHtml(  );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getComponentId(  )
     {
         return DASHBOARD_COMPONENT_ID;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getComponentDescription( Locale locale )
     {
         return I18nService.getLocalizedString( MESSAGE_DASHBOARD_COMPONENT_DESCRIPTION, locale );
     }
+    
+    /**
+     * Return the avatar URL
+     * @param request The HTTP request
+     * @return The URL
+     */
+    private String getAvatarUrl( HttpServletRequest request )
+    {
+        LuteceUser user = SecurityService.getInstance().getRegisteredUser( request );
+        return AvatarService.getAvatarUrl( user.getEmail() );
+    }
+
+
 }

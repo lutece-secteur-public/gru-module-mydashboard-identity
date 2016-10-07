@@ -819,6 +819,11 @@ public class IdentityXPage extends MVCApplication
         return xpContent;
     }
 
+    /**
+     * Return the avatar URL
+     * @param request The HTTP request
+     * @return The URL
+     */
     private String getAvatarUrl( HttpServletRequest request )
     {
         LuteceUser user = SecurityService.getInstance().getRegisteredUser( request );
