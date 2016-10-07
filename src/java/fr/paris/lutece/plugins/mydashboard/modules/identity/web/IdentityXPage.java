@@ -85,7 +85,6 @@ public class IdentityXPage extends MVCApplication
     private static final String TEMPLATE_GET_GENERIC_VIEW_IDENTITY = "skin/plugins/mydashboard/modules/identity/view_generic_identity.html";
     private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
     private static final String DASHBOARD_APP_NAME = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_NAME );
-    private static final String DASHBOARD_APP_HASH = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_HASH );
     private static final String MARK_GENDER_LIST = "genderlist";
     private static final String MARK_CONTACT_MODE_LIST = "contact_modeList";
     private static final String BEAN_IDENTITYSTORE_SERVICE = "mydashboard-identity.identitystore.service";
@@ -303,14 +302,14 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            identityDto = _identityService.getIdentity( strConnectionId, 0, DASHBOARD_APP_CODE, DASHBOARD_APP_HASH );
+            identityDto = _identityService.getIdentity( strConnectionId, 0, DASHBOARD_APP_CODE );
         }
         catch ( IdentityNotFoundException infe )
         {
             identityDto = new IdentityDto(  );
             identityDto.setConnectionId( strConnectionId );
             //Create a new identity. IdentityStore will initialize it with openam data
-            identityDto = _identityService.createIdentity( buildIdentityChangeDto( identityDto ), DASHBOARD_APP_HASH );
+            identityDto = _identityService.createIdentity( buildIdentityChangeDto( identityDto ) );
         }
 
         return identityDto;
@@ -329,14 +328,14 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            _identityService.updateIdentity( identityChangeDto, DASHBOARD_APP_HASH, null );
+            _identityService.updateIdentity( identityChangeDto, null );
         }
         catch ( IdentityNotFoundException infe )
         {
-            _identityService.createIdentity( identityChangeDto, DASHBOARD_APP_HASH );
+            _identityService.createIdentity( identityChangeDto );
 
             // Only the information from external source are set when an identity is created. Thus, we need to do an update to set all the attributes
-            _identityService.updateIdentity( identityChangeDto, DASHBOARD_APP_HASH, null );
+            _identityService.updateIdentity( identityChangeDto, null );
         }
     }
 
