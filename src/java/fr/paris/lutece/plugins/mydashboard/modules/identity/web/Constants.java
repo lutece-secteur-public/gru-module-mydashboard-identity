@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
-import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 
@@ -44,9 +43,10 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
 public final class Constants
 {
     // properties
+    
+    
     public static final String PROPERTY_APPLICATION_CODE = "mydashboard.identity.application.code";
     public static final String PROPERTY_APPLICATION_NAME = "mydashboard.identity.application.name";
-    public static final String PROPERTY_APPLICATION_HASH = "mydashboard.identity.application.hash";
     public static final String PROPERTY_KEY_LOGIN = AppPropertiesService.getProperty( 
             "mydashboard.identity.attribute.user.login" );
     public static final String PROPERTY_KEY_GENDER = AppPropertiesService.getProperty( 

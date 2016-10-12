@@ -84,7 +84,6 @@ public class IdentityXPage extends MVCApplication
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
     private static final String DASHBOARD_APP_NAME = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_NAME );
-    private static final String DASHBOARD_APP_HASH = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_HASH );
     private static final String MARK_GENDER_LIST = "genderlist";
     private static final String MARK_CONTACT_MODE_LIST = "contact_modeList";
     private static final String BEAN_IDENTITYSTORE_SERVICE = "mydashboard-identity.identitystore.service";
@@ -302,7 +301,7 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            identityDto = _identityService.getIdentity( strConnectionId, 0, DASHBOARD_APP_CODE, DASHBOARD_APP_HASH );
+            identityDto = _identityService.getIdentity( strConnectionId, 0, DASHBOARD_APP_CODE );
         }
         catch ( IdentityNotFoundException infe )
         {
@@ -324,7 +323,9 @@ public class IdentityXPage extends MVCApplication
     {
         IdentityChangeDto identityChangeDto = buildIdentityChangeDto( identityDto );
 
-        _identityService.updateIdentity( identityChangeDto, DASHBOARD_APP_HASH, null );
+        _identityService.updateIdentity( identityChangeDto, null );
+
+
     }
 
     /**
@@ -807,6 +808,11 @@ public class IdentityXPage extends MVCApplication
         return xpContent;
     }
 
+    /**
+     * Return the avatar URL
+     * @param request The HTTP request
+     * @return The URL
+     */
     private String getAvatarUrl( HttpServletRequest request )
     {
         LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
