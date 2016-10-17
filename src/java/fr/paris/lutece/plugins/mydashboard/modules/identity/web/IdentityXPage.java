@@ -165,17 +165,6 @@ public class IdentityXPage extends MVCApplication
         IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
         _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
 
-        //Populate gender with list value instead of code 
-        String strGender = _dashboardIdentity.getGender(  );
-
-        for ( ReferenceItem rItem : _lstGenderList )
-        {
-            if ( strGender.compareTo( rItem.getCode(  ) ) == 0 )
-            {
-                _dashboardIdentity.setGender( rItem.getName(  ) );
-            }
-        }
-
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_VIEW_MODE, Boolean.TRUE );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
@@ -207,6 +196,7 @@ public class IdentityXPage extends MVCApplication
             _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
         }
 
+        
         Map<String, Object> model = getModel(  );
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_VIEW_MODE, Boolean.FALSE );
@@ -830,6 +820,7 @@ public class IdentityXPage extends MVCApplication
         if ( !request.getParameter( "bAccept" ).isEmpty(  ) )
         {
             updateIdentityAttribute( Constants.PROPERTY_KEY_ACCEPT_NEWS, request.getParameter( "bAccept" ) );
+            _dashboardIdentity.setAcceptNews( Boolean.parseBoolean( request.getParameter( "bAccept" ) ));
         }
     }
 
@@ -843,6 +834,8 @@ public class IdentityXPage extends MVCApplication
         if ( !request.getParameter( "bAccept" ).isEmpty(  ) )
         {
             updateIdentityAttribute( Constants.PROPERTY_KEY_ACCEPT_SURVEY, request.getParameter( "bAccept" ) );
+            _dashboardIdentity.setAcceptSurvey( Boolean.parseBoolean( request.getParameter( "bAccept" ) ));
+
         }
     }
 
