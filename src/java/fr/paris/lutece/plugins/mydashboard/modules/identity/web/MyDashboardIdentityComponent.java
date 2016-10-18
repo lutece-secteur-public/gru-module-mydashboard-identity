@@ -33,31 +33,43 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
-import fr.paris.lutece.plugins.avatar.service.AvatarService;
-import fr.paris.lutece.plugins.mydashboard.service.MyDashboardComponent;
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.security.LuteceUser;
-import fr.paris.lutece.portal.service.security.SecurityService;
-import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.portal.web.l10n.LocaleService;
-import fr.paris.lutece.util.html.HtmlTemplate;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.plugins.avatar.service.AvatarService;
+import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.web.service.IdentityService;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
+import fr.paris.lutece.plugins.mydashboard.service.MyDashboardComponent;
+import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.security.LuteceUser;
+import fr.paris.lutece.portal.service.security.SecurityService;
+import fr.paris.lutece.portal.service.security.UserNotSignedException;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.web.l10n.LocaleService;
+import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
  * MyDashboardAlertsComponent
  */
 public class MyDashboardIdentityComponent extends MyDashboardComponent
 {
+    private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
+    private static final String BEAN_IDENTITYSTORE_SERVICE = "mydashboard-identity.identitystore.service";
     private static final String DASHBOARD_COMPONENT_ID = "mydashboard-identity.identityComponent";
     private static final String MESSAGE_DASHBOARD_COMPONENT_DESCRIPTION = "module.mydashboard.identity.component.identity.description";
     private static final String TEMPLATE_DASHBOARD_COMPONENT = "skin/plugins/mydashboard/modules/identity/identity_component.html";
     private static final String MARK_AVATAR_URL = "avatar_url";
+    private static final String MARK_IDENTITY = "identity";
+
+    private IdentityService _identityService;
 
     /**
      * {@inheritDoc}
@@ -65,20 +77,34 @@ public class MyDashboardIdentityComponent extends MyDashboardComponent
     @Override
     public String getDashboardData( HttpServletRequest request )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        
-        model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD_COMPONENT,
-                LocaleService.getDefault(  ), model );
 
-        return template.getHtml(  );
+        if ( _identityService == null )
+        {
+            _identityService = SpringContextService.getBean( BEAN_IDENTITYSTORE_SERVICE );
+        }
+
+        Map<String, Object> model = new HashMap<String, Object>( );
+
+        LuteceUser luteceUser = SecurityService.isAuthenticationEnable( ) ? SecurityService.getInstance( ).getRegisteredUser( request ) : null;
+
+        if ( luteceUser != null )
+        {
+
+            model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
+            DashboardIdentity dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( getIdentityDto( luteceUser.getName( ) ) );
+            model.put( MARK_IDENTITY, dashboardIdentity );
+            HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD_COMPONENT, LocaleService.getDefault( ), model );
+
+            return template.getHtml( );
+        }
+        return "";
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getComponentId(  )
+    public String getComponentId( )
     {
         return DASHBOARD_COMPONENT_ID;
     }
@@ -91,17 +117,44 @@ public class MyDashboardIdentityComponent extends MyDashboardComponent
     {
         return I18nService.getLocalizedString( MESSAGE_DASHBOARD_COMPONENT_DESCRIPTION, locale );
     }
-    
+
     /**
      * Return the avatar URL
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The URL
      */
     private String getAvatarUrl( HttpServletRequest request )
     {
-        LuteceUser user = SecurityService.getInstance().getRegisteredUser( request );
-        return AvatarService.getAvatarUrl( user.getEmail() );
+        LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+        return AvatarService.getAvatarUrl( user.getEmail( ) );
     }
 
+    /**
+     * return IdentityDto from strConnectionId
+     * 
+     * @param strConnectionId
+     *            user connection id
+     * @return IdentityDto
+     * @throws UserNotSignedException
+     */
+    private IdentityDto getIdentityDto( String strConnectionId )
+    {
+        IdentityDto identityDto = null;
+
+        try
+        {
+            identityDto = _identityService.getIdentity( strConnectionId, 0, DASHBOARD_APP_CODE );
+        }
+        catch( IdentityNotFoundException infe )
+        {
+            identityDto = new IdentityDto( );
+            identityDto.setConnectionId( strConnectionId );
+            AppLogService.error( "Identity Not Found for guig:" + strConnectionId, infe );
+        }
+
+        return identityDto;
+    }
 
 }
