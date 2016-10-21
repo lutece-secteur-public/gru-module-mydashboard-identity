@@ -473,7 +473,7 @@ public class IdentityXPage extends MVCApplication
         String strPreferredContactMode = dashboardIdentity.getPreferredContactMode(  );
 
         // Case preferred Contact Mode = email. Check if email is empty
-        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 1 ).getName(  ) ) == 0 )
+        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 0 ).getName(  ) ) == 0 )
         {
             if ( dashboardIdentity.getEmail(  ).isEmpty(  ) )
             {
@@ -483,7 +483,7 @@ public class IdentityXPage extends MVCApplication
         }
 
         // Case preferred Contact Mode = telephone. Check if at least telephone or mobile is populated
-        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 2 ).getName(  ) ) == 0 )
+        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 1 ).getName(  ) ) == 0 )
         {
             if ( ( dashboardIdentity.getPhone(  ).isEmpty(  ) ) &&
                     ( dashboardIdentity.getMobilePhone(  ).getMobilePhoneNumber(  ).isEmpty(  ) ) )
