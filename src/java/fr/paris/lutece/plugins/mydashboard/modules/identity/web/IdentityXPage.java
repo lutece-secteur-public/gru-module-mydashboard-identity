@@ -65,7 +65,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * MyDashboardIdentity application
  */
@@ -91,7 +90,7 @@ public class IdentityXPage extends MVCApplication
     private static final String PROPERTY_AVATERSERVER_POST_URL = "mydashboard.identity.avatarserver.post.url";
     private static final String AVATARSERVER_POST_URL = AppPropertiesService.getProperty( PROPERTY_AVATERSERVER_POST_URL );
 
-    //Views
+    // Views
     private static final String VIEW_VALIDATE_LAST_NAME = "validate_lastName";
     private static final String VIEW_VALIDATE_PREFERRED_USERNAME = "validate_preferredUsername";
     private static final String VIEW_VALIDATE_FISRTNAME = "validate_firstname";
@@ -117,29 +116,29 @@ public class IdentityXPage extends MVCApplication
     /**
      * Constructor
      */
-    public IdentityXPage(  )
+    public IdentityXPage( )
     {
-        super(  );
+        super( );
         _identityService = SpringContextService.getBean( BEAN_IDENTITYSTORE_SERVICE );
 
-        _lstGenderList = new ReferenceList(  );
+        _lstGenderList = new ReferenceList( );
 
         int i = 0;
 
         for ( String sItem : Constants.PROPERTY_KEY_GENDER_LIST.split( SPLIT_PATTERN ) )
         {
-            ReferenceItem refItm = new ReferenceItem(  );
+            ReferenceItem refItm = new ReferenceItem( );
             refItm.setName( sItem );
             refItm.setCode( String.valueOf( i ) );
             _lstGenderList.add( refItm );
             i++;
         }
 
-        _lstContactModeList = new ReferenceList(  );
+        _lstContactModeList = new ReferenceList( );
 
         for ( String sItem : Constants.PROPERTY_KEY_CONTACT_MODE_LIST.split( SPLIT_PATTERN ) )
         {
-            ReferenceItem refItm = new ReferenceItem(  );
+            ReferenceItem refItm = new ReferenceItem( );
             refItm.setName( sItem );
             refItm.setCode( sItem );
             _lstContactModeList.add( refItm );
@@ -150,19 +149,18 @@ public class IdentityXPage extends MVCApplication
      * Get the identity of the current user
      *
      * @param request
-     *          The request, with the user logged in
+     *            The request, with the user logged in
      * @return The XPage to display the identity of the user
      * @throws UserNotSignedException
-     *           If the user is not logged in
+     *             If the user is not logged in
      */
     @View( value = VIEW_GET_VIEW_IDENTITY, defaultView = true )
-    public XPage getViewIdentity( HttpServletRequest request )
-        throws UserNotSignedException
+    public XPage getViewIdentity( HttpServletRequest request ) throws UserNotSignedException
     {
         LuteceUser luteceUser = getConnectedUser( request );
 
-        Map<String, Object> model = getModel(  );
-        IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
+        Map<String, Object> model = getModel( );
+        IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
         _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
 
         model.put( MARK_IDENTITY, _dashboardIdentity );
@@ -171,33 +169,31 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
 
-        return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale(  ), model );
+        return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale( ), model );
     }
 
     /**
      * Get the XPage to modify the identity of the current user
      *
      * @param request
-     *          The request
+     *            The request
      * @return The XPage to display
      * @throws UserNotSignedException
-     *           If the user has not signed in
+     *             If the user has not signed in
      */
     @View( VIEW_GET_MODIFY_IDENTITY )
-    public XPage getModifyIdentity( HttpServletRequest request )
-        throws UserNotSignedException
+    public XPage getModifyIdentity( HttpServletRequest request ) throws UserNotSignedException
     {
         LuteceUser luteceUser = getConnectedUser( request );
 
-        if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId(  ) == null ) ||
-                !_dashboardIdentity.getConnectionId(  ).equals( luteceUser.getName(  ) ) )
+        if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId( ) == null )
+                || !_dashboardIdentity.getConnectionId( ).equals( luteceUser.getName( ) ) )
         {
-            IdentityDto identityDto = getIdentityDto( luteceUser.getName(  ) );
+            IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
             _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
         }
 
-        
-        Map<String, Object> model = getModel(  );
+        Map<String, Object> model = getModel( );
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_VIEW_MODE, Boolean.FALSE );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
@@ -205,21 +201,20 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
 
-        return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale(  ), model );
+        return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale( ), model );
     }
 
     /**
      * Do the modification of the user identity
      *
      * @param request
-     *          The request
+     *            The request
      * @return The next view to redirect to
      * @throws UserNotSignedException
-     *           If the user has not signed in
+     *             If the user has not signed in
      */
     @Action( ACTION_DO_MODIFY_IDENTITY )
-    public XPage doModifyIdentity( HttpServletRequest request )
-        throws UserNotSignedException
+    public XPage doModifyIdentity( HttpServletRequest request ) throws UserNotSignedException
     {
         checkUserAuthentication( request );
 
@@ -242,36 +237,34 @@ public class IdentityXPage extends MVCApplication
         {
             updateIdentity( identityDto );
         }
-        catch ( Exception appEx )
+        catch( Exception appEx )
         {
-            addError( Constants.MESSAGE_ERROR_UPDATE_IDENTITY, request.getLocale(  ) );
+            addError( Constants.MESSAGE_ERROR_UPDATE_IDENTITY, request.getLocale( ) );
 
             return redirectView( request, VIEW_GET_MODIFY_IDENTITY );
         }
 
-        addInfo( Constants.MESSAGE_INFO_IDENTITY_UPDATED, request.getLocale(  ) );
+        addInfo( Constants.MESSAGE_INFO_IDENTITY_UPDATED, request.getLocale( ) );
 
         return redirectView( request, VIEW_GET_VIEW_IDENTITY );
     }
 
     /**
-    * get connected user
-    *
-    * @param request
-    *          request
-    * @return lutece user
-    * @throws UserNotSignedException
-    *           if user is not connected
-    */
-    private LuteceUser getConnectedUser( HttpServletRequest request )
-        throws UserNotSignedException
+     * get connected user
+     *
+     * @param request
+     *            request
+     * @return lutece user
+     * @throws UserNotSignedException
+     *             if user is not connected
+     */
+    private LuteceUser getConnectedUser( HttpServletRequest request ) throws UserNotSignedException
     {
-        LuteceUser luteceUser = SecurityService.isAuthenticationEnable(  )
-            ? SecurityService.getInstance(  ).getRegisteredUser( request ) : null;
+        LuteceUser luteceUser = SecurityService.isAuthenticationEnable( ) ? SecurityService.getInstance( ).getRegisteredUser( request ) : null;
 
         if ( luteceUser == null )
         {
-            throw new UserNotSignedException(  );
+            throw new UserNotSignedException( );
         }
 
         return luteceUser;
@@ -281,7 +274,7 @@ public class IdentityXPage extends MVCApplication
      * return IdentityDto from strConnectionId
      *
      * @param strConnectionId
-     *          user connection id
+     *            user connection id
      * @return IdentityDto
      * @throws UserNotSignedException
      */
@@ -291,11 +284,11 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            identityDto = _identityService.getIdentity( strConnectionId, 0, DASHBOARD_APP_CODE );
+            identityDto = _identityService.getIdentity( strConnectionId, Constants.NO_CUSTOMER_ID, DASHBOARD_APP_CODE );
         }
-        catch ( IdentityNotFoundException infe )
+        catch( IdentityNotFoundException infe )
         {
-            identityDto = new IdentityDto(  );
+            identityDto = new IdentityDto( );
             identityDto.setConnectionId( strConnectionId );
         }
 
@@ -306,7 +299,7 @@ public class IdentityXPage extends MVCApplication
      * Update Identity from an IdentityDto
      *
      * @param identityDto
-     *          identity Data transfer Object
+     *            identity Data transfer Object
      * @throws IdentityNotFoundException
      */
     private void updateIdentity( IdentityDto identityDto )
@@ -315,19 +308,17 @@ public class IdentityXPage extends MVCApplication
 
         _identityService.updateIdentity( identityChangeDto, null );
 
-
     }
 
     /**
      * check if user is authenticated
      *
      * @param request
-     *          request
+     *            request
      * @throws UserNotSignedException
-     *           if user is not connected
+     *             if user is not connected
      */
-    private void checkUserAuthentication( HttpServletRequest request )
-        throws UserNotSignedException
+    private void checkUserAuthentication( HttpServletRequest request ) throws UserNotSignedException
     {
         getConnectedUser( request );
     }
@@ -336,16 +327,16 @@ public class IdentityXPage extends MVCApplication
      * build a changeDto from Identity
      *
      * @param identity
-     *          identity to update
+     *            identity to update
      * @return IdentityChangeDto
      */
     private IdentityChangeDto buildIdentityChangeDto( IdentityDto identity )
     {
-        IdentityChangeDto identityChange = new IdentityChangeDto(  );
-        AuthorDto author = new AuthorDto(  );
+        IdentityChangeDto identityChange = new IdentityChangeDto( );
+        AuthorDto author = new AuthorDto( );
         author.setApplicationCode( DASHBOARD_APP_CODE );
         author.setApplicationName( DASHBOARD_APP_NAME );
-        author.setType( AuthorType.TYPE_USER_OWNER.getTypeValue(  ) );
+        author.setType( AuthorType.TYPE_USER_OWNER.getTypeValue( ) );
 
         identityChange.setIdentity( identity );
         identityChange.setAuthor( author );
@@ -357,150 +348,149 @@ public class IdentityXPage extends MVCApplication
      * Check fields format of dashboardIdentity
      *
      * @param dashboardIdentity
-     *          dashboardIdentity to check
+     *            dashboardIdentity to check
      * @param request
-     *                         the httpServletrequest to add errors
+     *            the httpServletrequest to add errors
      * @return IdentityChangeDto
      */
     private boolean checkDashboardIdentityFields( DashboardIdentity dashboardIdentity, HttpServletRequest request )
     {
         boolean bStatus = true;
 
-        String strValidateLastName = validateLastName( request ).getContent(  );
+        String strValidateLastName = validateLastName( request ).getContent( );
 
-        if ( !strValidateLastName.isEmpty(  ) )
+        if ( !strValidateLastName.isEmpty( ) )
         {
             addError( strValidateLastName );
             bStatus = false;
         }
 
-        String strValidatePreferredUsername = validatePreferredUserName( request ).getContent(  );
+        String strValidatePreferredUsername = validatePreferredUserName( request ).getContent( );
 
-        if ( !strValidatePreferredUsername.isEmpty(  ) )
+        if ( !strValidatePreferredUsername.isEmpty( ) )
         {
             addError( strValidatePreferredUsername );
             bStatus = false;
         }
 
-        String strValidateFirstname = validateFirstName( request ).getContent(  );
+        String strValidateFirstname = validateFirstName( request ).getContent( );
 
-        if ( !strValidateFirstname.isEmpty(  ) )
+        if ( !strValidateFirstname.isEmpty( ) )
         {
             addError( strValidateFirstname );
             bStatus = false;
         }
 
-        String strValidateBirthplace = validateBirthPlace( request ).getContent(  );
+        String strValidateBirthplace = validateBirthPlace( request ).getContent( );
 
-        if ( !strValidateBirthplace.isEmpty(  ) )
+        if ( !strValidateBirthplace.isEmpty( ) )
         {
             addError( strValidateBirthplace );
             bStatus = false;
         }
 
-        String strValidateBirthDate = validateBirthDate( request ).getContent(  );
+        String strValidateBirthDate = validateBirthDate( request ).getContent( );
 
-        if ( !strValidateBirthDate.isEmpty(  ) )
+        if ( !strValidateBirthDate.isEmpty( ) )
         {
             addError( strValidateBirthDate );
             bStatus = false;
         }
 
-        String strValidateBirthCountry = validateBirthCountry( request ).getContent(  );
+        String strValidateBirthCountry = validateBirthCountry( request ).getContent( );
 
-        if ( !strValidateBirthCountry.isEmpty(  ) )
+        if ( !strValidateBirthCountry.isEmpty( ) )
         {
             addError( strValidateBirthCountry );
             bStatus = false;
         }
 
-        String strValidateEmail = validateEmail( request ).getContent(  );
+        String strValidateEmail = validateEmail( request ).getContent( );
 
-        if ( !strValidateEmail.isEmpty(  ) )
+        if ( !strValidateEmail.isEmpty( ) )
         {
             addError( strValidateEmail );
             bStatus = false;
         }
 
-        String strValidatePhone = validatePhone( request ).getContent(  );
+        String strValidatePhone = validatePhone( request ).getContent( );
 
-        if ( !strValidatePhone.isEmpty(  ) )
+        if ( !strValidatePhone.isEmpty( ) )
         {
             addError( strValidatePhone );
             bStatus = false;
         }
 
-        String strValidateMobilePhone = validateMobilePhone( request ).getContent(  );
+        String strValidateMobilePhone = validateMobilePhone( request ).getContent( );
 
-        if ( !strValidateMobilePhone.isEmpty(  ) )
+        if ( !strValidateMobilePhone.isEmpty( ) )
         {
             addError( strValidateMobilePhone );
             bStatus = false;
         }
 
-        String strValidateAdresse = validateAddress( request ).getContent(  );
+        String strValidateAdresse = validateAddress( request ).getContent( );
 
-        if ( !strValidateAdresse.isEmpty(  ) )
+        if ( !strValidateAdresse.isEmpty( ) )
         {
             addError( strValidateAdresse );
             bStatus = false;
         }
 
-        String strValidateAdresseDetail = validateAddressDetail( request ).getContent(  );
+        String strValidateAdresseDetail = validateAddressDetail( request ).getContent( );
 
-        if ( !strValidateAdresseDetail.isEmpty(  ) )
+        if ( !strValidateAdresseDetail.isEmpty( ) )
         {
             addError( strValidateAdresseDetail );
             bStatus = false;
         }
 
-        String strValidateAdressePostalcode = validateAddressPostalCode( request ).getContent(  );
+        String strValidateAdressePostalcode = validateAddressPostalCode( request ).getContent( );
 
-        if ( !strValidateAdressePostalcode.isEmpty(  ) )
+        if ( !strValidateAdressePostalcode.isEmpty( ) )
         {
             addError( strValidateAdressePostalcode );
             bStatus = false;
         }
 
-        String strValidateCity = validateAddressCity( request ).getContent(  );
+        String strValidateCity = validateAddressCity( request ).getContent( );
 
-        if ( !strValidateCity.isEmpty(  ) )
+        if ( !strValidateCity.isEmpty( ) )
         {
             addError( strValidateCity );
             bStatus = false;
         }
 
-        String strPreferredContactMode = dashboardIdentity.getPreferredContactMode(  );
+        String strPreferredContactMode = dashboardIdentity.getPreferredContactMode( );
 
         // Case preferred Contact Mode = email. Check if email is empty
-        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 0 ).getName(  ) ) == 0 )
+        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 0 ).getName( ) ) == 0 )
         {
-            if ( dashboardIdentity.getEmail(  ).isEmpty(  ) )
+            if ( dashboardIdentity.getEmail( ).isEmpty( ) )
             {
-                addError( I18nService.getLocalizedString( Constants.MESSAGE_ERROR_EMAIL_EMPTY, request.getLocale(  ) ) );
+                addError( I18nService.getLocalizedString( Constants.MESSAGE_ERROR_EMAIL_EMPTY, request.getLocale( ) ) );
                 bStatus = false;
             }
         }
 
         // Case preferred Contact Mode = telephone. Check if at least telephone or mobile is populated
-        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 1 ).getName(  ) ) == 0 )
+        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 1 ).getName( ) ) == 0 )
         {
-            if ( ( dashboardIdentity.getPhone(  ).isEmpty(  ) ) &&
-                    ( dashboardIdentity.getMobilePhone(  ).getMobilePhoneNumber(  ).isEmpty(  ) ) )
+            if ( ( dashboardIdentity.getPhone( ).isEmpty( ) ) && ( dashboardIdentity.getMobilePhone( ).getMobilePhoneNumber( ).isEmpty( ) ) )
             {
-                addError( I18nService.getLocalizedString( Constants.MESSAGE_ERROR_TELEPHONE_EMPTY, request.getLocale(  ) ) );
+                addError( I18nService.getLocalizedString( Constants.MESSAGE_ERROR_TELEPHONE_EMPTY, request.getLocale( ) ) );
                 bStatus = false;
             }
         }
 
-        //Populate gender with list codes {0,1,2}  instead of values 
-        String strGender = dashboardIdentity.getGender(  );
+        // Populate gender with list codes {0,1,2} instead of values
+        String strGender = dashboardIdentity.getGender( );
 
         for ( ReferenceItem rItem : _lstGenderList )
         {
-            if ( strGender.compareTo( rItem.getName(  ) ) == 0 )
+            if ( strGender.compareTo( rItem.getName( ) ) == 0 )
             {
-                dashboardIdentity.setGender( rItem.getCode(  ) );
+                dashboardIdentity.setGender( rItem.getCode( ) );
             }
         }
 
@@ -508,8 +498,9 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_LAST_NAME )
     public XPage validateLastName( HttpServletRequest request )
@@ -518,11 +509,10 @@ public class IdentityXPage extends MVCApplication
 
         if ( !request.getParameter( "lastName" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_LAST_NAME ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_LASTNAME,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_LASTNAME, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -530,22 +520,21 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_PREFERRED_USERNAME )
     public XPage validatePreferredUserName( HttpServletRequest request )
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "preferredUsername" )
-                         .matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_PREFERREDUSERNAME ) )
+        if ( !request.getParameter( "preferredUsername" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_PREFERREDUSERNAME ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_PREFFEREDUSERNAME,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_PREFFEREDUSERNAME, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -553,8 +542,9 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_FISRTNAME )
     public XPage validateFirstName( HttpServletRequest request )
@@ -563,11 +553,10 @@ public class IdentityXPage extends MVCApplication
 
         if ( !request.getParameter( "firstname" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_FIRSTNAME ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_FIRSTNAME,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_FIRSTNAME, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -575,8 +564,9 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_BIRTHDATE )
     public XPage validateBirthDate( HttpServletRequest request )
@@ -585,11 +575,10 @@ public class IdentityXPage extends MVCApplication
 
         if ( !request.getParameter( "birthdate" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHDATE ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHDATE,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHDATE, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -597,8 +586,9 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_BIRTHPLACE )
     public XPage validateBirthPlace( HttpServletRequest request )
@@ -607,11 +597,10 @@ public class IdentityXPage extends MVCApplication
 
         if ( !request.getParameter( "birthplace" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHPLACE ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHPLACE,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHPLACE, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -619,8 +608,9 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_BIRTHCOUNTRY )
     public XPage validateBirthCountry( HttpServletRequest request )
@@ -629,11 +619,10 @@ public class IdentityXPage extends MVCApplication
 
         if ( !request.getParameter( "birthcountry" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHCOUNTRY ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -641,8 +630,9 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_ADDRESS )
     public XPage validateAddress( HttpServletRequest request )
@@ -651,11 +641,10 @@ public class IdentityXPage extends MVCApplication
 
         if ( !request.getParameter( "address" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -663,8 +652,9 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_ADDRESS_DETAIL )
     public XPage validateAddressDetail( HttpServletRequest request )
@@ -673,11 +663,10 @@ public class IdentityXPage extends MVCApplication
 
         if ( !request.getParameter( "address_detail" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_DETAIL ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_DETAIL,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_DETAIL, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -685,22 +674,21 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_ADDRESS_POSTALCODE )
     public XPage validateAddressPostalCode( HttpServletRequest request )
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "address_postalcode" )
-                         .matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_POSTALCODE ) )
+        if ( !request.getParameter( "address_postalcode" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_POSTALCODE ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_POSTALCODE,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_POSTALCODE, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -708,8 +696,9 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_ADDRESS_CITY )
     public XPage validateAddressCity( HttpServletRequest request )
@@ -718,11 +707,10 @@ public class IdentityXPage extends MVCApplication
 
         if ( !request.getParameter( "address_city" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_CITY ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_CITY,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_CITY, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -730,23 +718,23 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_EMAIL )
     public XPage validateEmail( HttpServletRequest request )
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        EmailValidator emailValidator = new EmailValidator(  );
+        EmailValidator emailValidator = new EmailValidator( );
 
         if ( !emailValidator.isValid( request.getParameter( "email" ), null ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_EMAIL,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_EMAIL, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -754,8 +742,9 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_PHONE )
     public XPage validatePhone( HttpServletRequest request )
@@ -764,11 +753,10 @@ public class IdentityXPage extends MVCApplication
 
         if ( !request.getParameter( "phone" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_PHONE ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_PHONE,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_PHONE, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -776,22 +764,21 @@ public class IdentityXPage extends MVCApplication
     }
 
     /**
-     * @param request the request
-     * @return  an XPage object with validation error message
+     * @param request
+     *            the request
+     * @return an XPage object with validation error message
      */
     @View( VIEW_VALIDATE_MOBILEPHONE )
     public XPage validateMobilePhone( HttpServletRequest request )
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "mobilePhone.mobilePhoneNumber" )
-                         .matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_MOBILEPHONE ) )
+        if ( !request.getParameter( "mobilePhone.mobilePhoneNumber" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_MOBILEPHONE ) )
         {
-            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_MOBILEPHONE,
-                    request.getLocale(  ) );
+            errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_MOBILEPHONE, request.getLocale( ) );
         }
 
-        XPage xpContent = getXPage(  );
+        XPage xpContent = getXPage( );
         xpContent.setContent( errorValidationMessage );
         xpContent.setStandalone( true );
 
@@ -800,60 +787,70 @@ public class IdentityXPage extends MVCApplication
 
     /**
      * Return the avatar URL
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The URL
      */
     private String getAvatarUrl( HttpServletRequest request )
     {
-        LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
+        LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
 
-        return AvatarService.getAvatarUrl( user.getEmail(  ) );
+        return AvatarService.getAvatarUrl( user.getEmail( ) );
     }
 
     /**
      * Update the accept_news attribute of the current Identity
-     * @param request the request
+     * 
+     * @param request
+     *            the request
      */
     @View( VIEW_UPDATE_ACCEPT_NEWS )
     public void updateAcceptNews( HttpServletRequest request )
     {
-        if ( !request.getParameter( "bAccept" ).isEmpty(  ) )
+        if ( !request.getParameter( "bAccept" ).isEmpty( ) )
         {
             updateIdentityAttribute( Constants.PROPERTY_KEY_ACCEPT_NEWS, request.getParameter( "bAccept" ) );
-            _dashboardIdentity.setAcceptNews( Boolean.parseBoolean( request.getParameter( "bAccept" ) ));
+            _dashboardIdentity.setAcceptNews( Boolean.parseBoolean( request.getParameter( "bAccept" ) ) );
         }
     }
 
     /**
      * Update the accept_survey attribute of the current Identity
-     * @param request the request
+     * 
+     * @param request
+     *            the request
      */
     @View( VIEW_UPDATE_ACCEPT_SURVEY )
     public void updateAcceptSurvey( HttpServletRequest request )
     {
-        if ( !request.getParameter( "bAccept" ).isEmpty(  ) )
+        if ( !request.getParameter( "bAccept" ).isEmpty( ) )
         {
             updateIdentityAttribute( Constants.PROPERTY_KEY_ACCEPT_SURVEY, request.getParameter( "bAccept" ) );
-            _dashboardIdentity.setAcceptSurvey( Boolean.parseBoolean( request.getParameter( "bAccept" ) ));
+            _dashboardIdentity.setAcceptSurvey( Boolean.parseBoolean( request.getParameter( "bAccept" ) ) );
 
         }
     }
 
-    /** Update an attribute of current Identity with provided key/value
-     * @param propertyKeyToUpdate the attribute key in IdentityStore
-     * @param value the attribute value to set
+    /**
+     * Update an attribute of current Identity with provided key/value
+     * 
+     * @param propertyKeyToUpdate
+     *            the attribute key in IdentityStore
+     * @param value
+     *            the attribute value to set
      */
     private void updateIdentityAttribute( String propertyKeyToUpdate, String value )
     {
-        IdentityDto identityDto = new IdentityDto(  );
-        identityDto.setConnectionId( _dashboardIdentity.getConnectionId(  ) );
-        identityDto.setCustomerId( _dashboardIdentity.getCustomerId(  ) );
+        IdentityDto identityDto = new IdentityDto( );
+        identityDto.setConnectionId( _dashboardIdentity.getConnectionId( ) );
+        identityDto.setCustomerId( _dashboardIdentity.getCustomerId( ) );
 
-        Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>(  );
-        AttributeDto attribute = new AttributeDto(  );
+        Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>( );
+        AttributeDto attribute = new AttributeDto( );
         attribute.setKey( propertyKeyToUpdate );
         attribute.setValue( value );
-        mapAttributes.put( attribute.getKey(  ), attribute );
+        mapAttributes.put( attribute.getKey( ), attribute );
         identityDto.setAttributes( mapAttributes );
 
         updateIdentity( identityDto );

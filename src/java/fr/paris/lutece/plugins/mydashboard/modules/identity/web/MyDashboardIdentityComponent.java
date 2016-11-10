@@ -145,7 +145,7 @@ public class MyDashboardIdentityComponent extends MyDashboardComponent
 
         try
         {
-            identityDto = _identityService.getIdentity( strConnectionId, 0, DASHBOARD_APP_CODE );
+            identityDto = _identityService.getIdentity( strConnectionId, Constants.NO_CUSTOMER_ID, DASHBOARD_APP_CODE );
         }
         catch( IdentityNotFoundException infe )
         {

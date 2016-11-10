@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.business;
 
-
 /**
  *
  * DashboardIdentity
@@ -42,7 +41,7 @@ package fr.paris.lutece.plugins.mydashboard.modules.identity.business;
 public class DashboardIdentity
 {
     private String _strConnectionId;
-    private int _nCustomerId;
+    private String _strCustomerId;
     private String _strLastName;
     private String _strPreferredUsername;
     private String _strFirstname;
@@ -69,14 +68,14 @@ public class DashboardIdentity
     /**
      * @return the _strConnectionId
      */
-    public String getConnectionId(  )
+    public String getConnectionId( )
     {
         return _strConnectionId;
     }
 
     /**
      * @param strConnectionId
-     *          the _strConnectionId to set
+     *            the _strConnectionId to set
      */
     public void setConnectionId( String strConnectionId )
     {
@@ -84,33 +83,33 @@ public class DashboardIdentity
     }
 
     /**
-     * @return the _nCustomerId
+     * @return the _strCustomerId
      */
-    public int getCustomerId(  )
+    public String getCustomerId( )
     {
-        return _nCustomerId;
+        return _strCustomerId;
     }
 
     /**
-     * @param nCustomerId
-     *          the _nCustomerId to set
+     * @param strCustomerId
+     *            the _strCustomerId to set
      */
-    public void setCustomerId( int nCustomerId )
+    public void setCustomerId( String strCustomerId )
     {
-        this._nCustomerId = nCustomerId;
+        this._strCustomerId = strCustomerId;
     }
 
     /**
      * @return the _strLastName
      */
-    public String getLastName(  )
+    public String getLastName( )
     {
         return _strLastName;
     }
 
     /**
      * @param strLastName
-     *          the _strLastName to set
+     *            the _strLastName to set
      */
     public void setLastName( String strLastName )
     {
@@ -120,14 +119,14 @@ public class DashboardIdentity
     /**
      * @return the Preferred Username
      */
-    public String getPreferredUsername(  )
+    public String getPreferredUsername( )
     {
         return _strPreferredUsername;
     }
 
     /**
      * @param strPreferredUsername
-     *          the Preferred Username to set
+     *            the Preferred Username to set
      */
     public void setPreferredUsername( String strPreferredUsername )
     {
@@ -137,14 +136,14 @@ public class DashboardIdentity
     /**
      * @return the _strFirstname
      */
-    public String getFirstname(  )
+    public String getFirstname( )
     {
         return _strFirstname;
     }
 
     /**
      * @param strFirstname
-     *          the _strFirstname to set
+     *            the _strFirstname to set
      */
     public void setFirstname( String strFirstname )
     {
@@ -154,14 +153,14 @@ public class DashboardIdentity
     /**
      * @return the _strGender
      */
-    public String getGender(  )
+    public String getGender( )
     {
         return _strGender;
     }
 
     /**
      * @param strGender
-     *          the _strGender to set
+     *            the _strGender to set
      */
     public void setGender( String strGender )
     {
@@ -171,14 +170,14 @@ public class DashboardIdentity
     /**
      * @return the _strBirthdate
      */
-    public String getBirthdate(  )
+    public String getBirthdate( )
     {
         return _strBirthdate;
     }
 
     /**
      * @param strBirthdate
-     *          the _strBirthdate to set
+     *            the _strBirthdate to set
      */
     public void setBirthdate( String strBirthdate )
     {
@@ -188,14 +187,14 @@ public class DashboardIdentity
     /**
      * @return the _strBirthplace
      */
-    public String getBirthplace(  )
+    public String getBirthplace( )
     {
         return _strBirthplace;
     }
 
     /**
      * @param strBirthplace
-     *          the _strBirthplace to set
+     *            the _strBirthplace to set
      */
     public void setBirthplace( String strBirthplace )
     {
@@ -205,14 +204,14 @@ public class DashboardIdentity
     /**
      * @return the strBirthcountry
      */
-    public String getBirthcountry(  )
+    public String getBirthcountry( )
     {
         return _strBirthcountry;
     }
 
     /**
      * @param strBirthcountry
-     *          the _strBirthcountry to set
+     *            the _strBirthcountry to set
      */
     public void setBirthcountry( String strBirthcountry )
     {
@@ -220,15 +219,16 @@ public class DashboardIdentity
     }
 
     /**
-         * @return the Address
-         */
-    public String getAddress(  )
+     * @return the Address
+     */
+    public String getAddress( )
     {
         return _strAddress;
     }
 
     /**
-     * @param strAddress the Address to set
+     * @param strAddress
+     *            the Address to set
      */
     public void setAddress( String strAddress )
     {
@@ -238,13 +238,14 @@ public class DashboardIdentity
     /**
      * @return the AddressDetail
      */
-    public String getAddressDetail(  )
+    public String getAddressDetail( )
     {
         return _strAddressDetail;
     }
 
     /**
-     * @param strAddressDetail the AddressDetail to set
+     * @param strAddressDetail
+     *            the AddressDetail to set
      */
     public void setAddressDetail( String strAddressDetail )
     {
@@ -254,14 +255,14 @@ public class DashboardIdentity
     /**
      * @return the _strAddressPostalcode
      */
-    public String getAddressPostalcode(  )
+    public String getAddressPostalcode( )
     {
         return _strAddressPostalcode;
     }
 
     /**
      * @param strAddressPostalcode
-     *          the _strAddressPostalcode to set
+     *            the _strAddressPostalcode to set
      */
     public void setAddressPostalcode( String strAddressPostalcode )
     {
@@ -269,15 +270,16 @@ public class DashboardIdentity
     }
 
     /**
-         * @return the AddressCity
-         */
-    public String getAddressCity(  )
+     * @return the AddressCity
+     */
+    public String getAddressCity( )
     {
         return _strAddressCity;
     }
 
     /**
-     * @param strAddressCity the AddressCity to set
+     * @param strAddressCity
+     *            the AddressCity to set
      */
     public void setAddressCity( String strAddressCity )
     {
@@ -287,13 +289,14 @@ public class DashboardIdentity
     /**
      * @return the BillingAddress
      */
-    public String getBillingAddress(  )
+    public String getBillingAddress( )
     {
         return _strBillingAddress;
     }
 
     /**
-     * @param strBillingAddress the BillingAddress to set
+     * @param strBillingAddress
+     *            the BillingAddress to set
      */
     public void setBillingAddress( String strBillingAddress )
     {
@@ -303,13 +306,14 @@ public class DashboardIdentity
     /**
      * @return the BillingAddressDetail
      */
-    public String getBillingAddressDetail(  )
+    public String getBillingAddressDetail( )
     {
         return _strBillingAddressDetail;
     }
 
     /**
-     * @param strBillingAddressDetail the BillingAddressDetail to set
+     * @param strBillingAddressDetail
+     *            the BillingAddressDetail to set
      */
     public void setBillingAddressDetail( String strBillingAddressDetail )
     {
@@ -319,13 +323,14 @@ public class DashboardIdentity
     /**
      * @return the BillingAddressPostalcode
      */
-    public String getBillingAddressPostalcode(  )
+    public String getBillingAddressPostalcode( )
     {
         return _strBillingAddressPostalcode;
     }
 
     /**
-     * @param strBillingAddressPostalcode the BillingAddressPostalcode to set
+     * @param strBillingAddressPostalcode
+     *            the BillingAddressPostalcode to set
      */
     public void setBillingAddressPostalcode( String strBillingAddressPostalcode )
     {
@@ -335,13 +340,14 @@ public class DashboardIdentity
     /**
      * @return the BillingAddressCity
      */
-    public String getBillingAddressCity(  )
+    public String getBillingAddressCity( )
     {
         return _strBillingAddressCity;
     }
 
     /**
-     * @param strBillingAddressCity the BillingAddressCity to set
+     * @param strBillingAddressCity
+     *            the BillingAddressCity to set
      */
     public void setBillingAddressCity( String strBillingAddressCity )
     {
@@ -349,16 +355,16 @@ public class DashboardIdentity
     }
 
     /**
-    * @return the _strEmail
-    */
-    public String getEmail(  )
+     * @return the _strEmail
+     */
+    public String getEmail( )
     {
         return _strEmail;
     }
 
     /**
      * @param strEmail
-     *          the _strEmail to set
+     *            the _strEmail to set
      */
     public void setEmail( String strEmail )
     {
@@ -368,14 +374,14 @@ public class DashboardIdentity
     /**
      * @return the _strPhone
      */
-    public String getPhone(  )
+    public String getPhone( )
     {
         return _strPhone;
     }
 
     /**
      * @param strPhone
-     *          the strPhone to set
+     *            the strPhone to set
      */
     public void setPhone( String strPhone )
     {
@@ -385,14 +391,14 @@ public class DashboardIdentity
     /**
      * @return the _strMobilePhone
      */
-    public MobilePhone getMobilePhone(  )
+    public MobilePhone getMobilePhone( )
     {
         return _mobilePhone;
     }
 
     /**
      * @param mobilePhone
-     *          the mobilePhone to set
+     *            the mobilePhone to set
      */
     public void setMobilePhone( MobilePhone mobilePhone )
     {
@@ -402,13 +408,14 @@ public class DashboardIdentity
     /**
      * @return the PreferredContactMode
      */
-    public String getPreferredContactMode(  )
+    public String getPreferredContactMode( )
     {
         return _strPreferredContactMode;
     }
 
     /**
-     * @param strPreferredContactMode thePreferred Contact Mode to set
+     * @param strPreferredContactMode
+     *            thePreferred Contact Mode to set
      */
     public void setPreferredContactMode( String strPreferredContactMode )
     {
@@ -418,13 +425,14 @@ public class DashboardIdentity
     /**
      * @return the Login
      */
-    public String getLogin(  )
+    public String getLogin( )
     {
         return _strLogin;
     }
 
     /**
-     * @param strLogin the Login to set
+     * @param strLogin
+     *            the Login to set
      */
     public void setLogin( String strLogin )
     {
@@ -434,13 +442,14 @@ public class DashboardIdentity
     /**
      * @return the AcceptNews flag
      */
-    public boolean getAcceptNews(  )
+    public boolean getAcceptNews( )
     {
         return _bAcceptNews;
     }
 
     /**
-     * @param bAcceptNews the AcceptNews flag to set
+     * @param bAcceptNews
+     *            the AcceptNews flag to set
      */
     public void setAcceptNews( boolean bAcceptNews )
     {
@@ -450,13 +459,14 @@ public class DashboardIdentity
     /**
      * @return the AcceptSurvey flag
      */
-    public boolean getAcceptSurvey(  )
+    public boolean getAcceptSurvey( )
     {
         return _bAcceptSurvey;
     }
 
     /**
-     * @param bAcceptSurvey the AcceptSurvey flag to set
+     * @param bAcceptSurvey
+     *            the AcceptSurvey flag to set
      */
     public void setAcceptSurvey( boolean bAcceptSurvey )
     {
