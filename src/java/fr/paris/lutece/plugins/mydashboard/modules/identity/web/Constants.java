@@ -143,8 +143,6 @@ public final class Constants
             "mydashboard.identity.application.validation.regex.address-postalcode" );
     public static final String PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_CITY = AppPropertiesService.getProperty( 
             "mydashboard.identity.application.validation.regex.address-city" );
-
-    public static final String NO_CUSTOMER_ID = StringUtils.EMPTY;
     
     /**
      * Default constructor

@@ -284,7 +284,7 @@ public class IdentityXPage extends MVCApplication
 
         try
         {
-            identityDto = _identityService.getIdentity( strConnectionId, Constants.NO_CUSTOMER_ID, DASHBOARD_APP_CODE );
+            identityDto = _identityService.getIdentityByConnectionId( strConnectionId, DASHBOARD_APP_CODE );
         }
         catch( IdentityNotFoundException infe )
         {
