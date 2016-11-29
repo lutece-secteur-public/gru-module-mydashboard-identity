@@ -58,7 +58,7 @@ import fr.paris.lutece.util.ReferenceList;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.hibernate.validator.constraints.impl.EmailValidator;
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 
 import java.util.HashMap;
 import java.util.Map;
