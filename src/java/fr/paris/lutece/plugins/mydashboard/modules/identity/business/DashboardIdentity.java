@@ -64,6 +64,7 @@ public class DashboardIdentity
     private String _strLogin;
     private boolean _bAcceptNews;
     private boolean _bAcceptSurvey;
+    private boolean _bFranceConnectCertified;
 
     /**
      * @return the _strConnectionId
@@ -79,7 +80,7 @@ public class DashboardIdentity
      */
     public void setConnectionId( String strConnectionId )
     {
-        this._strConnectionId = strConnectionId;
+        _strConnectionId = strConnectionId;
     }
 
     /**
@@ -96,7 +97,7 @@ public class DashboardIdentity
      */
     public void setCustomerId( String strCustomerId )
     {
-        this._strCustomerId = strCustomerId;
+        _strCustomerId = strCustomerId;
     }
 
     /**
@@ -113,7 +114,7 @@ public class DashboardIdentity
      */
     public void setLastName( String strLastName )
     {
-        this._strLastName = strLastName;
+        _strLastName = strLastName;
     }
 
     /**
@@ -130,7 +131,7 @@ public class DashboardIdentity
      */
     public void setPreferredUsername( String strPreferredUsername )
     {
-        this._strPreferredUsername = strPreferredUsername;
+        _strPreferredUsername = strPreferredUsername;
     }
 
     /**
@@ -147,7 +148,7 @@ public class DashboardIdentity
      */
     public void setFirstname( String strFirstname )
     {
-        this._strFirstname = strFirstname;
+        _strFirstname = strFirstname;
     }
 
     /**
@@ -164,7 +165,7 @@ public class DashboardIdentity
      */
     public void setGender( String strGender )
     {
-        this._strGender = strGender;
+        _strGender = strGender;
     }
 
     /**
@@ -181,7 +182,7 @@ public class DashboardIdentity
      */
     public void setBirthdate( String strBirthdate )
     {
-        this._strBirthdate = strBirthdate;
+        _strBirthdate = strBirthdate;
     }
 
     /**
@@ -198,7 +199,7 @@ public class DashboardIdentity
      */
     public void setBirthplace( String strBirthplace )
     {
-        this._strBirthplace = strBirthplace;
+        _strBirthplace = strBirthplace;
     }
 
     /**
@@ -215,7 +216,7 @@ public class DashboardIdentity
      */
     public void setBirthcountry( String strBirthcountry )
     {
-        this._strBirthcountry = strBirthcountry;
+        _strBirthcountry = strBirthcountry;
     }
 
     /**
@@ -232,7 +233,7 @@ public class DashboardIdentity
      */
     public void setAddress( String strAddress )
     {
-        this._strAddress = strAddress;
+        _strAddress = strAddress;
     }
 
     /**
@@ -249,7 +250,7 @@ public class DashboardIdentity
      */
     public void setAddressDetail( String strAddressDetail )
     {
-        this._strAddressDetail = strAddressDetail;
+        _strAddressDetail = strAddressDetail;
     }
 
     /**
@@ -266,7 +267,7 @@ public class DashboardIdentity
      */
     public void setAddressPostalcode( String strAddressPostalcode )
     {
-        this._strAddressPostalcode = strAddressPostalcode;
+        _strAddressPostalcode = strAddressPostalcode;
     }
 
     /**
@@ -283,7 +284,7 @@ public class DashboardIdentity
      */
     public void setAddressCity( String strAddressCity )
     {
-        this._strAddressCity = strAddressCity;
+        _strAddressCity = strAddressCity;
     }
 
     /**
@@ -300,7 +301,7 @@ public class DashboardIdentity
      */
     public void setBillingAddress( String strBillingAddress )
     {
-        this._strBillingAddress = strBillingAddress;
+        _strBillingAddress = strBillingAddress;
     }
 
     /**
@@ -317,7 +318,7 @@ public class DashboardIdentity
      */
     public void setBillingAddressDetail( String strBillingAddressDetail )
     {
-        this._strBillingAddressDetail = strBillingAddressDetail;
+        _strBillingAddressDetail = strBillingAddressDetail;
     }
 
     /**
@@ -334,7 +335,7 @@ public class DashboardIdentity
      */
     public void setBillingAddressPostalcode( String strBillingAddressPostalcode )
     {
-        this._strBillingAddressPostalcode = strBillingAddressPostalcode;
+        _strBillingAddressPostalcode = strBillingAddressPostalcode;
     }
 
     /**
@@ -351,7 +352,7 @@ public class DashboardIdentity
      */
     public void setBillingAddressCity( String strBillingAddressCity )
     {
-        this._strBillingAddressCity = strBillingAddressCity;
+        _strBillingAddressCity = strBillingAddressCity;
     }
 
     /**
@@ -368,7 +369,7 @@ public class DashboardIdentity
      */
     public void setEmail( String strEmail )
     {
-        this._strEmail = strEmail;
+        _strEmail = strEmail;
     }
 
     /**
@@ -385,7 +386,7 @@ public class DashboardIdentity
      */
     public void setPhone( String strPhone )
     {
-        this._strPhone = strPhone;
+        _strPhone = strPhone;
     }
 
     /**
@@ -402,7 +403,7 @@ public class DashboardIdentity
      */
     public void setMobilePhone( MobilePhone mobilePhone )
     {
-        this._mobilePhone = mobilePhone;
+        _mobilePhone = mobilePhone;
     }
 
     /**
@@ -419,7 +420,7 @@ public class DashboardIdentity
      */
     public void setPreferredContactMode( String strPreferredContactMode )
     {
-        this._strPreferredContactMode = strPreferredContactMode;
+        _strPreferredContactMode = strPreferredContactMode;
     }
 
     /**
@@ -436,7 +437,7 @@ public class DashboardIdentity
      */
     public void setLogin( String strLogin )
     {
-        this._strLogin = strLogin;
+        _strLogin = strLogin;
     }
 
     /**
@@ -453,7 +454,7 @@ public class DashboardIdentity
      */
     public void setAcceptNews( boolean bAcceptNews )
     {
-        this._bAcceptNews = bAcceptNews;
+        _bAcceptNews = bAcceptNews;
     }
 
     /**
@@ -470,6 +471,24 @@ public class DashboardIdentity
      */
     public void setAcceptSurvey( boolean bAcceptSurvey )
     {
-        this._bAcceptSurvey = bAcceptSurvey;
+        _bAcceptSurvey = bAcceptSurvey;
     }
+    
+    /**
+     * @return the FranceConnectCertified flag
+     */
+    public boolean getFranceConnectCertified( )
+    {
+        return _bFranceConnectCertified;
+    }
+
+    /**
+     * @param bFranceConnectCertified
+     *            the FranceConnectCertified flag to set
+     */
+    public void setFranceConnectCertified( boolean bFranceConnectCertified )
+    {
+        _bFranceConnectCertified = bFranceConnectCertified;
+    }
+    
 }

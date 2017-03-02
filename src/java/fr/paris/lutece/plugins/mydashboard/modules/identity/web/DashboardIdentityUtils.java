@@ -78,6 +78,10 @@ public final class DashboardIdentityUtils
             if ( attribute != null )
             {
                 dashboardIdentity.setLastName( attribute.getValue(  ) );
+                if( attribute.isCertified() )
+                {
+                    dashboardIdentity.setFranceConnectCertified( true );
+                }
             }
             else
             {

@@ -1,0 +1,18 @@
+
+<#macro franceconnect_certificat certified>
+    <#if certified> 
+        <i class="fa fa-check" style="color:green" aria-hidden="true"></i>
+        <img src="images/skin/plugins/identitystore/modules/fccertifier/franceconnect_certif_logo.png" width="24" alt="logo FranceConnect"/>
+    </#if>
+</#macro>
+
+<#macro franceconnect_badge certified>
+    <#if certified> 
+        Etat civil certifi&eacute; par <img src="images/skin/plugins/identitystore/modules/fccertifier/franceconnect.png" width="120" alt="logo FranceConnect"/>
+    <#else>
+        <a href="jsp/site/Portal.jsp?page=fccertifier&cid=${identity.customerId!}" class="btn btn-primary btn-xs">
+            <span class="fa fa-check"></span>
+            Certifier mon &eacute;tat civil
+        </a> &nbsp; via &nbsp; <img src="images/skin/plugins/identitystore/modules/fccertifier/franceconnect.png" width="120" alt="logo FranceConnect"/>
+    </#if>
+</#macro>
