@@ -192,10 +192,11 @@ public class IdentityXPage extends MVCApplication
             IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
             _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
         }
-
+        
+        _dashboardIdentity.getMobilePhone().setMobilePhoneCertifiable( true );
         Map<String, Object> model = getModel( );
         model.put( MARK_IDENTITY, _dashboardIdentity );
-        model.put( MARK_VIEW_MODE, Boolean.FALSE );
+        model.put( MARK_VIEW_MODE, Boolean.TRUE );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );

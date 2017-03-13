@@ -1,6 +1,7 @@
 <@messages errors=errors />
 <@messages infos=infos />
 <#include "include/popins.html">
+<#include "include/franceconnect.html">
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="box box-primary">
@@ -8,144 +9,165 @@
                 <h3 class="box-title">#i18n{module.mydashboard.identity.component.identity.description}</h3>
             </div>
             <div class="box-body">
-				 <#if viewMode>
-                    <form class="form-horizontal" method="post" action="jsp/site/Portal.jsp?page=mydashboardIdentity&view=getModifyIdentity">
-                 <#else>
+                <#if viewMode>
+                <form class="form-horizontal" method="post" action="jsp/site/Portal.jsp?page=mydashboardIdentity&view=getModifyIdentity">
+                    <#else>
                     <form class="form-horizontal" method="post" action="jsp/site/Portal.jsp?page=mydashboardIdentity&action=doModifyIdentity">
-				 </#if>               
-                
-                    <input type="hidden" id="customerId" name="customerId" value="${identity.customerId!''}" />
-                    <input type="hidden" id="connectionId" name="connectionId" value="${identity.connectionId!''}" />       
-					<div class="col-xs-12 col-sm-5 col-sm-offset-1">
-						<div class="form-group">
-							<i class="fa fa-user fa-5x" aria-hidden="true"></i>
-						</div>
-						<h4 class="box-title form-group">#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.label}</h4>
-					   <div class="form-group">
-							<label class="control-label" for="gender" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelGenre} :</label>
-							<#if viewMode>
-							<@comboWithParams name="gender" default_value="${identity.gender!}" additionalParameters=" id=\"gender\"  class=\"form-control\" disabled" items=genderlist />
-							<#else>							
-							<@comboWithParams name="gender" default_value="${identity.gender!}" additionalParameters=" id=\"gender\"  class=\"form-control\" " items=genderlist  />
-							</#if>
-						</div>
-    				<div class="form-group">
-    					<label for="preferredUsername" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelName} :</label>
-    					<input class="form-control input-sm" type="text" id="preferredUsername" name="preferredUsername" value="${identity.preferredUsername!''}" <#if viewMode>readonly</#if>>
-    				</div>
-    				<div class="form-group">
-    					<label for="lastName" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthName} :</label>
-    					<input class="form-control input-sm" type="text" id="lastName" name="lastName" value="${identity.lastName!}"  <#if viewMode>readonly</#if>>
-    				</div>
-						<div class="form-group">
-							<label class="control-label" for="firstname" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelFirstName} :</label>
-							<input class="form-control" type="text" id="firstname" name="firstname" value="${identity.firstname!}"  <#if viewMode>readonly</#if> />
-						</div>
-						 <div class="form-group">
-							<label class="control-label" for="birthdate" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthdate} :</label>
-							<input class="form-control" type="text" id="birthdate" name="birthdate" value="${identity.birthdate!}" <#if viewMode>readonly</#if> />
-						</div>
-						<div class="form-group">
-							<label class="control-label" for="birthplace" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthPlace} :</label>
-							<input class="form-control" type="text" id="birthplace" name="birthplace" value="${identity.birthplace!}" <#if viewMode>readonly</#if> />
-						</div>
-						<div class="form-group">
-							<label class="control-label" for="birthcountry" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthCountry} :</label>
-							<input class="form-control" type="text" id="birthcountry" name="birthcountry" value="${identity.birthcountry!}" <#if viewMode>readonly</#if> />
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-5 col-sm-offset-1">
-						<div>
-							<h4 class="box-title form-group">#i18n{module.mydashboard.identity.xpage.edit_identity.address.label}</h4>
-							<div class="form-group">
-								<label class="control-label" for="address" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelAdress} :</label>
-								<input class="form-control" type="text" id="address" name="address" value="${identity.address!}" <#if viewMode>readonly</#if> />
-							</div>
-							<div class="form-group">
-								<label class="control-label" for="address_detail" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelAdressDetail} :</label>
-								<input class="form-control" type="text" id="address_detail" name="address_detail" value="${identity.addressDetail!}" <#if viewMode>readonly</#if> />
-							</div>
-							<div class="form-group">
-								<label class="control-label" for="address_postalcode" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelPostalCode} :</label>
-								<input class="form-control" type="text" id="address_postalcode" name="address_postalcode" value="${identity.addressPostalcode!}" <#if viewMode>readonly</#if> />
-							</div>
-							<div class="form-group">
-								<label class="control-label" for="address_city" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelCity} :</label>
-								<input class="form-control" type="text" id="address_city" name="address_city" value="${identity.addressCity!}" <#if viewMode>readonly</#if> />
-							</div>
-						</div>
-						<div>
-								<br>
-								<h4 class="box-title form-group">#i18n{module.mydashboard.identity.xpage.edit_identity.contact.label}</h4>
-								<div class="form-group">
-									<label class="control-label" for="email" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelEmail} :</label>
-									<input class="form-control" type="text" id="email" name="email" value="${identity.email!}" <#if viewMode>readonly</#if> />
-								</div>
-								<div class="form-group">
-									<label class="control-label" for="mobile_phone" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone} :</label>
-									<input class="form-control" type="text" id="mobilePhone.mobilePhoneNumber" name="mobilePhone.mobilePhoneNumber" value="<#if identity.mobilePhone??>${identity.mobilePhone.mobilePhoneNumber!}</#if>" <#if viewMode>readonly</#if> />
-                                    <#if viewMode>
-                                        <#if identity.mobilePhone?? && identity.mobilePhone.mobilePhoneCertified?? && identity.mobilePhone.mobilePhoneCertified>
-                                            <i class="fa fa-check" style="color:green" aria-hidden="true"></i> #i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.certified}
-                                        <#else>
-                                            <#if identity.mobilePhone?? && identity.mobilePhone.mobilePhoneCertifiable?? && identity.mobilePhone.mobilePhoneCertifiable>
-                                                <a data-target="#mydashboard-identity-modal-certifier" data-toggle="modal" data-remote="false" href="jsp/site/Portal.jsp?page=mobilecertifier&action=certify&view_mode=ajax&mobile_number=${identity.mobilePhone.mobilePhoneNumber!}&cid=${identity.customerId!}" data-title="#i18n{module.mydashboard.identity.xpage.edit_identity.popin.mobilePhoneCertifyTitle}">#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.toCertify}</a>
-                                            </#if>                                          
-                                        </#if>
-									</#if>
-								</div>
-								<div class="form-group">
-									<label class="control-label" for="phone" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelPhone} :</label>
-										<input class="form-control" type="text" id="phone" name="phone" value="${identity.phone!}" <#if viewMode>readonly</#if> />
-								</div>
-								<div class="form-group">
-									<label class="control-label" for="preferred_contact_mode" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.preferredContactMode} :</label>
-		   							<#if viewMode>
-		   							<@comboWithParams name="preferred_contact_mode" default_value="${identity.preferredContactMode!}" additionalParameters=" id=\"preferred_contact_mode\"  class=\"form-control\" disabled" items=contact_modeList  />
-		   							<#else>							
-									<@comboWithParams name="preferred_contact_mode" default_value="${identity.preferredContactMode!}" additionalParameters=" id=\"preferred_contact_mode\"  class=\"form-control\" " items=contact_modeList  />
-									</#if>
-								</div>
-								
-						</div>
-						
-						<div>
-								<br>
-								<h4 class="box-title form-group">#i18n{module.mydashboard.identity.xpage.edit_identity.authentication.label}</h4>
-								<div class="form-group">
-									<label class="control-label" for="login" >#i18n{module.mydashboard.identity.xpage.edit_identity.authentication.labelLogin} :</label>
-									<input class="form-control" type="text" id="login" name="login" value="${identity.login!}" readonly />
-								</div>
+                        </#if>               
 
-								<div class="form-group">
-									<label class="control-label" for="password" >#i18n{module.mydashboard.identity.xpage.edit_identity.authentication.labelPassword} :</label>
-										<input class="form-control" type="password" id="password" name="password" value="password" readonly />
-								</div>
-								<div class="form-group">
-									<#if viewMode>
-									<#else>
-									<button type="button" class="btn btn-small btn-primary"><i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{module.mydashboard.identity.xpage.edit_identity.authentication.labelButtonModifyPassword}</button> 
-									</#if>
-								</div>
-															
-						</div>
-						
-					</div>
-					<div class="row">
-						<div class="col-xs-12 col-sm-12">
-						  <div class="form-group text-center">
-							<#if viewMode>
-								<button type="submit" class="btn btn-small btn-primary"><i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{module.mydashboard.identity.xpage.edit_identity.labelButtonModify}</button> 
-							<#else>
-								<button type="submit" class="btn btn-small btn-primary"><i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{module.mydashboard.identity.xpage.edit_identity.labelButtonValidate}</button> 
-								<button class="btn btn-small" name="back" id="back" value="back" title="#i18n{portal.util.labelBack}">
-									<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{module.mydashboard.identity.xpage.edit_identity.labelButtonCancel}
-								</button>
-							</#if>
-						</div>
-					</div>
-					</div>					
-                </form>
+                        <input type="hidden" id="customerId" name="customerId" value="${identity.customerId!''}" />
+                        <input type="hidden" id="connectionId" name="connectionId" value="${identity.connectionId!''}" />       
+                        <div class="col-xs-12 col-sm-5 col-sm-offset-1">
+                            <div class="form-group">
+                                <i class="fa fa-user fa-5x" aria-hidden="true"></i>
+                            </div>
+                            <h4 class="box-title form-group">#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.label}</h4>
+                            <div class="form-group">
+                                <label class="control-label" for="gender" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelGenre} :</label>
+                                <#if viewMode>
+                                    <@comboWithParams name="gender" default_value="${identity.gender!}" additionalParameters=" id=\"gender\"  class=\"form-control\" disabled" items=genderlist />
+                                <#else>							
+                                    <@comboWithParams name="gender" default_value="${identity.gender!}" additionalParameters=" id=\"gender\"  class=\"form-control\" " items=genderlist  />
+                                </#if>
+                            </div>
+                            <div class="form-group">
+                                <label for="preferredUsername" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelName} :</label>
+                                <input class="form-control input-sm" type="text" id="preferredUsername" name="preferredUsername" value="${identity.preferredUsername!''}" <#if viewMode>readonly</#if>>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lastName" >
+                                    #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthName} 
+                                    <@franceconnect_certificat identity.franceConnectCertified /> :
+                                </label>
+                                <input class="form-control input-sm" type="text" id="lastName" name="lastName" value="${identity.lastName!}"  <#if viewMode>readonly</#if>>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label" for="firstname" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelFirstName} :</label>
+                                <input class="form-control" type="text" id="firstname" name="firstname" value="${identity.firstname!}"  <#if viewMode>readonly</#if> />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label" for="birthdate" >
+                                    #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthdate} 
+                                    <@franceconnect_certificat identity.franceConnectCertified /> :
+                                </label>
+                                <input class="form-control" type="text" id="birthdate" name="birthdate" value="${identity.birthdate!}" <#if viewMode>readonly</#if> />
+
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="birthplace" >
+                                    #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthPlace}
+                                    <@franceconnect_certificat identity.franceConnectCertified /> :
+                                </label>
+                                <input class="form-control" type="text" id="birthplace" name="birthplace" value="${identity.birthplace!}" <#if viewMode>readonly</#if> />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="birthcountry" >
+                                    #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthCountry} 
+                                    <@franceconnect_certificat identity.franceConnectCertified /> :
+                                </label>
+                                <input class="form-control" type="text" id="birthcountry" name="birthcountry" value="${identity.birthcountry!}" <#if viewMode>readonly</#if> />
+                            </div>
+                            <@franceconnect_badge identity.franceConnectCertified />
+                        </div>
+                        <div class="col-xs-12 col-sm-5 col-sm-offset-1">
+                            <div>
+                                <h4 class="box-title form-group">#i18n{module.mydashboard.identity.xpage.edit_identity.address.label}</h4>
+                                <div class="form-group">
+                                    <label class="control-label" for="address" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelAdress} :</label>
+                                    <input class="form-control" type="text" id="address" name="address" value="${identity.address!}" <#if viewMode>readonly</#if> />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="address_detail" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelAdressDetail} :</label>
+                                    <input class="form-control" type="text" id="address_detail" name="address_detail" value="${identity.addressDetail!}" <#if viewMode>readonly</#if> />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="address_postalcode" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelPostalCode} :</label>
+                                    <input class="form-control" type="text" id="address_postalcode" name="address_postalcode" value="${identity.addressPostalcode!}" <#if viewMode>readonly</#if> />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="address_city" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelCity} :</label>
+                                    <input class="form-control" type="text" id="address_city" name="address_city" value="${identity.addressCity!}" <#if viewMode>readonly</#if> />
+                                </div>
+                            </div>
+                            <div>
+                                <br>
+                                <h4 class="box-title form-group">#i18n{module.mydashboard.identity.xpage.edit_identity.contact.label}</h4>
+                                <div class="form-group">
+                                    <label class="control-label" for="email" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelEmail} :</label>
+                                    <input class="form-control" type="text" id="email" name="email" value="${identity.email!}" <#if viewMode>readonly</#if> />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="mobile_phone" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone} :</label>
+                                    <#if viewMode>
+                                    <#if identity.mobilePhone?? && identity.mobilePhone.mobilePhoneCertified?? && identity.mobilePhone.mobilePhoneCertified>
+                                    <i class="fa fa-check" style="color:green" aria-hidden="true"></i> #i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.certified}
+                                    <#else>
+                                    <#if identity.mobilePhone?? && identity.mobilePhone.mobilePhoneCertifiable?? && identity.mobilePhone.mobilePhoneCertifiable>
+                                    <a class="btn btn-xs btn-primary pull-right" role="button" data-target="#mydashboard-identity-modal-certifier" data-toggle="modal" data-remote="false" href="jsp/site/Portal.jsp?page=mobilecertifier&action=certify&view_mode=ajax&mobile_number=${identity.mobilePhone.mobilePhoneNumber!}&cid=${identity.customerId!}" data-title="#i18n{module.mydashboard.identity.xpage.edit_identity.popin.mobilePhoneCertifyTitle}">
+                                        <span class="fa fa-check"></span>
+                                        #i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.toCertify}
+                                    </a>
+                                    </#if>                                          
+                                    </#if>
+                                    </#if>
+                                    <input class="form-control" type="text" id="mobilePhone.mobilePhoneNumber" name="mobilePhone.mobilePhoneNumber" value="<#if identity.mobilePhone??>${identity.mobilePhone.mobilePhoneNumber!}</#if>" <#if viewMode>readonly</#if> />
+                                           <p class="help-block"><small>#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.certify.help}</small></p>       
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="phone" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelPhone} :</label>
+                                    <input class="form-control" type="text" id="phone" name="phone" value="${identity.phone!}" <#if viewMode>readonly</#if> />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="preferred_contact_mode" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.preferredContactMode} :</label>
+                                    <#if viewMode>
+                                    <@comboWithParams name="preferred_contact_mode" default_value="${identity.preferredContactMode!}" additionalParameters=" id=\"preferred_contact_mode\"  class=\"form-control\" disabled" items=contact_modeList  />
+                                    <#else>							
+                                    <@comboWithParams name="preferred_contact_mode" default_value="${identity.preferredContactMode!}" additionalParameters=" id=\"preferred_contact_mode\"  class=\"form-control\" " items=contact_modeList  />
+                                    </#if>
+                                </div>
+
+                            </div>
+
+                            <div>
+                                <br>
+                                <h4 class="box-title form-group">#i18n{module.mydashboard.identity.xpage.edit_identity.authentication.label}</h4>
+                                <div class="form-group">
+                                    <label class="control-label" for="login" >#i18n{module.mydashboard.identity.xpage.edit_identity.authentication.labelLogin} :</label>
+                                    <input class="form-control" type="text" id="login" name="login" value="${identity.login!}" readonly />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label" for="password" >#i18n{module.mydashboard.identity.xpage.edit_identity.authentication.labelPassword} :</label>
+                                    <input class="form-control" type="password" id="password" name="password" value="password" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <#if viewMode>
+                                    <#else>
+                                    <button type="button" class="btn btn-small btn-primary"><i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{module.mydashboard.identity.xpage.edit_identity.authentication.labelButtonModifyPassword}</button> 
+                                    </#if>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12">
+                                <div class="form-group text-center">
+                                    <#if viewMode>
+                                    <button type="submit" class="btn btn-small btn-primary"><i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{module.mydashboard.identity.xpage.edit_identity.labelButtonModify}</button> 
+                                    <#else>
+                                    <button type="submit" class="btn btn-small btn-primary"><i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{module.mydashboard.identity.xpage.edit_identity.labelButtonValidate}</button> 
+                                    <button class="btn btn-small" name="back" id="back" value="back" title="#i18n{portal.util.labelBack}">
+                                        <i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{module.mydashboard.identity.xpage.edit_identity.labelButtonCancel}
+                                    </button>
+                                    </#if>
+                                </div>
+                            </div>
+                        </div>					
+                    </form>
             </div>
         </div>
     </div>
@@ -163,17 +185,17 @@
     loadresource.setAttribute("href", "js/jquery/plugins/ui/css/jquery-ui.css");
     document.getElementsByTagName("head")[0].appendChild(loadresource);
 
-    $(window).load(function() {
-     var jAdresse = $('#address');
-     var jAdressePostalcode =  $('#address_postalcode');
-     var jAdresseCity = $('#address_city');
-     jAdresse.suggestPOI();
-     jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
-         //Use properties from BAN apiinput type. Would not work with suggestPOI.
-         jAdresse.val(event.poi.sourcePOI.properties.name);
-         jAdressePostalcode.val(event.poi.sourcePOI.properties.postcode);
-         jAdresseCity.val(event.poi.sourcePOI.properties.city);
-     });
+    $(window).load(function () {
+        var jAdresse = $('#address');
+        var jAdressePostalcode = $('#address_postalcode');
+        var jAdresseCity = $('#address_city');
+        jAdresse.suggestPOI();
+        jAdresse.bind($.suggestPOI.EVT_SELECT, function (event) {
+            //Use properties from BAN apiinput type. Would not work with suggestPOI.
+            jAdresse.val(event.poi.sourcePOI.properties.name);
+            jAdressePostalcode.val(event.poi.sourcePOI.properties.postcode);
+            jAdresseCity.val(event.poi.sourcePOI.properties.city);
+        });
     });
 </script>
 </#if>
