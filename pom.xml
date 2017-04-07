@@ -26,7 +26,7 @@
         <dependency>
             <artifactId>lutece-core</artifactId>
             <groupId>fr.paris.lutece</groupId>
-            <version>[6.0.0-RC-01]</version>
+            <version>[6.0.0-RC-01,)</version>
             <type>lutece-core</type>
         </dependency>
         <dependency>
@@ -52,6 +52,11 @@
             <artifactId>plugin-avatar</artifactId>
             <version>[1.3.0,)</version>
             <type>lutece-plugin</type>
+        </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.6</version>
         </dependency>
     </dependencies>
 

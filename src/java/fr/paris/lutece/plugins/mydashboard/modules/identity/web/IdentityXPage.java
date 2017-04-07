@@ -58,7 +58,7 @@ import fr.paris.lutece.util.ReferenceList;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.hibernate.validator.constraints.impl.EmailValidator;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -728,9 +728,7 @@ public class IdentityXPage extends MVCApplication
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        EmailValidator emailValidator = new EmailValidator( );
-
-        if ( !emailValidator.isValid( request.getParameter( "email" ), null ) )
+        if ( !EmailValidator.getInstance( ).isValid( request.getParameter( "email" ) ) )
         {
             errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_EMAIL, request.getLocale( ) );
         }
