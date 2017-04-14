@@ -2,16 +2,16 @@
  * Copyright (c) 2002-2016, Mairie de Paris
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
+ * Rediibution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
  *
- *  1. Redistributions of source code must retain the above copyright notice
+ *  1. Rediibutions of source code must retain the above copyright notice
  *     and the following disclaimer.
  *
- *  2. Redistributions in binary form must reproduce the above copyright notice
+ *  2. Rediibutions in binary form must reproduce the above copyright notice
  *     and the following disclaimer in the documentation and/or other materials
- *     provided with the distribution.
+ *     provided with the diibution.
  *
  *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
  *     contributors may be used to endorse or promote products derived from
@@ -33,6 +33,10 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.business;
 
+import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * DashboardIdentity
@@ -40,455 +44,466 @@ package fr.paris.lutece.plugins.mydashboard.modules.identity.business;
  */
 public class DashboardIdentity
 {
-    private String _strConnectionId;
-    private String _strCustomerId;
-    private String _strLastName;
-    private String _strPreferredUsername;
-    private String _strFirstname;
-    private String _strGender;
-    private String _strBirthdate;
-    private String _strBirthplace;
-    private String _strBirthcountry;
-    private String _strAddress;
-    private String _strAddressDetail;
-    private String _strAddressPostalcode;
-    private String _strAddressCity;
-    private String _strBillingAddress;
-    private String _strBillingAddressDetail;
-    private String _strBillingAddressPostalcode;
-    private String _strBillingAddressCity;
-    private String _strEmail;
-    private String _strPhone;
-    private MobilePhone _mobilePhone;
-    private String _strPreferredContactMode;
-    private String _strLogin;
-    private boolean _bAcceptNews;
-    private boolean _bAcceptSurvey;
-    private boolean _bFranceConnectCertified;
-
-    /**
-     * @return the _strConnectionId
-     */
-    public String getConnectionId( )
+    private Map<String, DashboardAttribute> _mapAttributes;
+    
+    public DashboardIdentity ()
     {
-        return _strConnectionId;
+        _mapAttributes = new HashMap<String, DashboardAttribute>( );
+    }
+    
+    /**
+     * Set a value to a specific attribute of DashboardIdentityAttribute
+     * @param key the name of the attribute
+     * @param value the value of the attribute
+     */
+    public void setAttributeValue ( String key, String value )
+    {
+        DashboardAttribute attribute = _mapAttributes.get( key );
+        if ( attribute != null )
+        {
+            attribute.setValue( value );
+            _mapAttributes.put( key, attribute );
+        }
+    }
+    
+    /**
+     * Get a DashboardAttribute for a key
+     * @param key the key
+     * @return the DashboardAttribute
+     */
+    public DashboardAttribute getAttribute ( String key )
+    {
+        return _mapAttributes.get( key );
+    }
+    
+    /**
+     * Set an attribute to DashboardIdentity attribute map
+     * @param key the key of the attribute
+     * @param attribute the DashboardAttribute to set
+     */
+    public void setAttribute ( String key, DashboardAttribute attribute )
+    {
+        if ( attribute != null )
+        {
+            _mapAttributes.put( key, attribute );
+        }
     }
 
     /**
-     * @param strConnectionId
-     *            the _strConnectionId to set
+     * @return the _ConnectionId
      */
-    public void setConnectionId( String strConnectionId )
+    public DashboardAttribute getConnectionId( )
     {
-        _strConnectionId = strConnectionId;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_CONNECTION_ID );
     }
 
     /**
-     * @return the _strCustomerId
+     * @param connectionId
+     *            the _ConnectionId to set
      */
-    public String getCustomerId( )
+    public void setConnectionId( DashboardAttribute connectionId )
     {
-        return _strCustomerId;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_CONNECTION_ID, connectionId );
     }
 
     /**
-     * @param strCustomerId
-     *            the _strCustomerId to set
+     * @return the _CustomerId
      */
-    public void setCustomerId( String strCustomerId )
+    public DashboardAttribute getCustomerId( )
     {
-        _strCustomerId = strCustomerId;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_CUSTOMER_ID );
     }
 
     /**
-     * @return the _strLastName
+     * @param customerId
+     *            the _customerId to set
      */
-    public String getLastName( )
+    public void setCustomerId( DashboardAttribute customerId )
     {
-        return _strLastName;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_CUSTOMER_ID, customerId );
     }
 
     /**
-     * @param strLastName
-     *            the _strLastName to set
+     * @return the _LastName
      */
-    public void setLastName( String strLastName )
+    public DashboardAttribute getLastName( )
     {
-        _strLastName = strLastName;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME );
+    }
+
+    /**
+     * @param lastName
+     *            the lastName to set
+     */
+    public void setLastName( DashboardAttribute lastName )
+    {
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME, lastName );
     }
 
     /**
      * @return the Preferred Username
      */
-    public String getPreferredUsername( )
+    public DashboardAttribute getPreferredUsername( )
     {
-        return _strPreferredUsername;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_USER_NAME );
     }
 
     /**
-     * @param strPreferredUsername
-     *            the Preferred Username to set
+     * @param preferredUsername
+     *            the preferredUsername to set
      */
-    public void setPreferredUsername( String strPreferredUsername )
+    public void setPreferredUsername( DashboardAttribute preferredUsername )
     {
-        _strPreferredUsername = strPreferredUsername;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_USER_NAME, preferredUsername );
     }
 
     /**
-     * @return the _strFirstname
+     * @return the _Firstname
      */
-    public String getFirstname( )
+    public DashboardAttribute getFirstname( )
     {
-        return _strFirstname;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_FIRSTNAME );
     }
 
     /**
-     * @param strFirstname
-     *            the _strFirstname to set
+     * @param firstname
+     *            the firstname to set
      */
-    public void setFirstname( String strFirstname )
+    public void setFirstname( DashboardAttribute firstname )
     {
-        _strFirstname = strFirstname;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_FIRSTNAME, firstname );
     }
 
     /**
-     * @return the _strGender
+     * @return the _Gender
      */
-    public String getGender( )
+    public DashboardAttribute getGender( )
     {
-        return _strGender;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_GENDER );
     }
 
     /**
-     * @param strGender
-     *            the _strGender to set
+     * @param gender
+     *            the gender to set
      */
-    public void setGender( String strGender )
+    public void setGender( DashboardAttribute gender )
     {
-        _strGender = strGender;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_GENDER, gender );
     }
 
     /**
-     * @return the _strBirthdate
+     * @return the _Birthdate
      */
-    public String getBirthdate( )
+    public DashboardAttribute getBirthdate( )
     {
-        return _strBirthdate;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHDATE );
     }
 
     /**
-     * @param strBirthdate
-     *            the _strBirthdate to set
+     * @param birthdate
+     *            the birthdate to set
      */
-    public void setBirthdate( String strBirthdate )
+    public void setBirthdate( DashboardAttribute birthdate )
     {
-        _strBirthdate = strBirthdate;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHDATE, birthdate );
     }
 
     /**
-     * @return the _strBirthplace
+     * @return the _Birthplace
      */
-    public String getBirthplace( )
+    public DashboardAttribute getBirthplace( )
     {
-        return _strBirthplace;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE );
     }
 
     /**
-     * @param strBirthplace
-     *            the _strBirthplace to set
+     * @param birthplace
+     *            the _birthplace to set
      */
-    public void setBirthplace( String strBirthplace )
+    public void setBirthplace( DashboardAttribute birthplace )
     {
-        _strBirthplace = strBirthplace;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE, birthplace );
     }
 
     /**
-     * @return the strBirthcountry
+     * @return the Birthcountry
      */
-    public String getBirthcountry( )
+    public DashboardAttribute getBirthcountry( )
     {
-        return _strBirthcountry;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY );
     }
 
     /**
-     * @param strBirthcountry
-     *            the _strBirthcountry to set
+     * @param birthcountry
+     *            the birthcountry to set
      */
-    public void setBirthcountry( String strBirthcountry )
+    public void setBirthcountry( DashboardAttribute birthcountry )
     {
-        _strBirthcountry = strBirthcountry;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY, birthcountry );
     }
 
     /**
      * @return the Address
      */
-    public String getAddress( )
+    public DashboardAttribute getAddress( )
     {
-        return _strAddress;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS );
     }
 
     /**
-     * @param strAddress
-     *            the Address to set
+     * @param address
+     *            the address to set
      */
-    public void setAddress( String strAddress )
+    public void setAddress( DashboardAttribute address )
     {
-        _strAddress = strAddress;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS, address );
     }
 
     /**
      * @return the AddressDetail
      */
-    public String getAddressDetail( )
+    public DashboardAttribute getAddressDetail( )
     {
-        return _strAddressDetail;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_DETAIL );
     }
 
     /**
-     * @param strAddressDetail
-     *            the AddressDetail to set
+     * @param addressDetail
+     *            the addressDetail to set
      */
-    public void setAddressDetail( String strAddressDetail )
+    public void setAddressDetail( DashboardAttribute addressDetail )
     {
-        _strAddressDetail = strAddressDetail;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_DETAIL, addressDetail );
     }
 
     /**
-     * @return the _strAddressPostalcode
+     * @return the _AddressPostalcode
      */
-    public String getAddressPostalcode( )
+    public DashboardAttribute getAddressPostalcode( )
     {
-        return _strAddressPostalcode;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE );
     }
 
     /**
-     * @param strAddressPostalcode
-     *            the _strAddressPostalcode to set
+     * @param addressPostalcode
+     *            the addressPostalcode to set
      */
-    public void setAddressPostalcode( String strAddressPostalcode )
+    public void setAddressPostalcode( DashboardAttribute addressPostalcode )
     {
-        _strAddressPostalcode = strAddressPostalcode;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE, addressPostalcode );
     }
 
     /**
      * @return the AddressCity
      */
-    public String getAddressCity( )
+    public DashboardAttribute getAddressCity( )
     {
-        return _strAddressCity;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY );
     }
 
     /**
-     * @param strAddressCity
-     *            the AddressCity to set
+     * @param addressCity
+     *            the addressCity to set
      */
-    public void setAddressCity( String strAddressCity )
+    public void setAddressCity( DashboardAttribute addressCity )
     {
-        _strAddressCity = strAddressCity;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY, addressCity );
     }
 
     /**
      * @return the BillingAddress
      */
-    public String getBillingAddress( )
+    public DashboardAttribute getBillingAddress( )
     {
-        return _strBillingAddress;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS );
     }
 
     /**
-     * @param strBillingAddress
-     *            the BillingAddress to set
+     * @param billingAddress
+     *            the billingAddress to set
      */
-    public void setBillingAddress( String strBillingAddress )
+    public void setBillingAddress( DashboardAttribute billingAddress )
     {
-        _strBillingAddress = strBillingAddress;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS, billingAddress );
     }
 
     /**
      * @return the BillingAddressDetail
      */
-    public String getBillingAddressDetail( )
+    public DashboardAttribute getBillingAddressDetail( )
     {
-        return _strBillingAddressDetail;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_DETAIL );
     }
 
     /**
-     * @param strBillingAddressDetail
-     *            the BillingAddressDetail to set
+     * @param billingAddressDetail
+     *            the billingAddressDetail to set
      */
-    public void setBillingAddressDetail( String strBillingAddressDetail )
+    public void setBillingAddressDetail( DashboardAttribute billingAddressDetail )
     {
-        _strBillingAddressDetail = strBillingAddressDetail;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_DETAIL, billingAddressDetail );
     }
 
     /**
      * @return the BillingAddressPostalcode
      */
-    public String getBillingAddressPostalcode( )
+    public DashboardAttribute getBillingAddressPostalcode( )
     {
-        return _strBillingAddressPostalcode;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_POSTAL_CODE );
     }
 
     /**
-     * @param strBillingAddressPostalcode
-     *            the BillingAddressPostalcode to set
+     * @param billingAddressPostalcode
+     *            the billingAddressPostalcode to set
      */
-    public void setBillingAddressPostalcode( String strBillingAddressPostalcode )
+    public void setBillingAddressPostalcode( DashboardAttribute billingAddressPostalcode )
     {
-        _strBillingAddressPostalcode = strBillingAddressPostalcode;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_POSTAL_CODE, billingAddressPostalcode );
     }
 
     /**
      * @return the BillingAddressCity
      */
-    public String getBillingAddressCity( )
+    public DashboardAttribute getBillingAddressCity( )
     {
-        return _strBillingAddressCity;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_CITY );
     }
 
     /**
-     * @param strBillingAddressCity
-     *            the BillingAddressCity to set
+     * @param billingAddressCity
+     *            the billingAddressCity to set
      */
-    public void setBillingAddressCity( String strBillingAddressCity )
+    public void setBillingAddressCity( DashboardAttribute billingAddressCity )
     {
-        _strBillingAddressCity = strBillingAddressCity;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_CITY, billingAddressCity );
     }
 
     /**
-     * @return the _strEmail
+     * @return the _Email
      */
-    public String getEmail( )
+    public DashboardAttribute getEmail( )
     {
-        return _strEmail;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL );
     }
 
     /**
-     * @param strEmail
-     *            the _strEmail to set
+     * @param email
+     *            the email to set
      */
-    public void setEmail( String strEmail )
+    public void setEmail( DashboardAttribute email )
     {
-        _strEmail = strEmail;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL, email );
     }
 
     /**
-     * @return the _strPhone
+     * @return the _Phone
      */
-    public String getPhone( )
+    public DashboardAttribute getPhone( )
     {
-        return _strPhone;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_PHONE );
     }
 
     /**
-     * @param strPhone
-     *            the strPhone to set
+     * @param phone
+     *            the phone to set
      */
-    public void setPhone( String strPhone )
+    public void setPhone( DashboardAttribute phone )
     {
-        _strPhone = strPhone;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_PHONE, phone );
     }
 
     /**
-     * @return the _strMobilePhone
+     * @return the _MobilePhone
      */
-    public MobilePhone getMobilePhone( )
+    public DashboardAttribute getMobilePhone( )
     {
-        return _mobilePhone;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE );
     }
 
     /**
      * @param mobilePhone
      *            the mobilePhone to set
      */
-    public void setMobilePhone( MobilePhone mobilePhone )
+    public void setMobilePhone( DashboardAttribute mobilePhone )
     {
-        _mobilePhone = mobilePhone;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE, mobilePhone );
     }
 
     /**
      * @return the PreferredContactMode
      */
-    public String getPreferredContactMode( )
+    public DashboardAttribute getPreferredContactMode( )
     {
-        return _strPreferredContactMode;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_CONTACT_MODE );
     }
 
     /**
-     * @param strPreferredContactMode
-     *            thePreferred Contact Mode to set
+     * @param preferredContactMode
+     *            the Preferred Contact Mode to set
      */
-    public void setPreferredContactMode( String strPreferredContactMode )
+    public void setPreferredContactMode( DashboardAttribute preferredContactMode )
     {
-        _strPreferredContactMode = strPreferredContactMode;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_CONTACT_MODE, preferredContactMode );
     }
 
     /**
      * @return the Login
      */
-    public String getLogin( )
+    public DashboardAttribute getLogin( )
     {
-        return _strLogin;
+        //In this implementation of MyDashboardIdentity, login == email of user.
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL );
     }
 
     /**
-     * @param strLogin
-     *            the Login to set
+     * @param login
+     *            the login to set
      */
-    public void setLogin( String strLogin )
+    public void setLogin( DashboardAttribute login )
     {
-        _strLogin = strLogin;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_LOGIN, login );
     }
 
     /**
      * @return the AcceptNews flag
      */
-    public boolean getAcceptNews( )
+    public DashboardAttribute getAcceptNews( )
     {
-        return _bAcceptNews;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_NEWS );
     }
 
     /**
      * @param bAcceptNews
      *            the AcceptNews flag to set
      */
-    public void setAcceptNews( boolean bAcceptNews )
+    public void setAcceptNews( DashboardAttribute bAcceptNews )
     {
-        _bAcceptNews = bAcceptNews;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_NEWS, bAcceptNews );
     }
 
     /**
      * @return the AcceptSurvey flag
      */
-    public boolean getAcceptSurvey( )
+    public DashboardAttribute getAcceptSurvey( )
     {
-        return _bAcceptSurvey;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY );
     }
 
     /**
      * @param bAcceptSurvey
      *            the AcceptSurvey flag to set
      */
-    public void setAcceptSurvey( boolean bAcceptSurvey )
+    public void setAcceptSurvey( DashboardAttribute bAcceptSurvey )
     {
-        _bAcceptSurvey = bAcceptSurvey;
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY, bAcceptSurvey );
     }
     
     /**
      * @return the FranceConnectCertified flag
      */
-    public boolean getFranceConnectCertified( )
+    public DashboardAttribute getFranceConnectCertified( )
     {
-        return _bFranceConnectCertified;
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_FRANCE_CONNECT_CERTIFIED );
     }
 
-    /**
-     * @param bFranceConnectCertified
-     *            the FranceConnectCertified flag to set
-     */
-    public void setFranceConnectCertified( boolean bFranceConnectCertified )
-    {
-        _bFranceConnectCertified = bFranceConnectCertified;
-    }
-    
 }

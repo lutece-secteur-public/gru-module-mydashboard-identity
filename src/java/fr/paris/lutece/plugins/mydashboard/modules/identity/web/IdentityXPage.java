@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
+import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.util.DashboardIdentityUtils;
 import fr.paris.lutece.plugins.avatar.service.AvatarService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
@@ -41,6 +43,7 @@ import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityChangeDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
 import fr.paris.lutece.plugins.identitystore.web.service.AuthorType;
 import fr.paris.lutece.plugins.identitystore.web.service.IdentityService;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
@@ -161,7 +164,7 @@ public class IdentityXPage extends MVCApplication
 
         Map<String, Object> model = getModel( );
         IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
-        _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
+        _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
 
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_VIEW_MODE, Boolean.TRUE );
@@ -190,13 +193,12 @@ public class IdentityXPage extends MVCApplication
                 || !_dashboardIdentity.getConnectionId( ).equals( luteceUser.getName( ) ) )
         {
             IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
-            _dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
+            _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
         }
         
-        _dashboardIdentity.getMobilePhone().setMobilePhoneCertifiable( true );
         Map<String, Object> model = getModel( );
         model.put( MARK_IDENTITY, _dashboardIdentity );
-        model.put( MARK_VIEW_MODE, Boolean.TRUE );
+        model.put( MARK_VIEW_MODE, Boolean.FALSE );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
@@ -225,14 +227,14 @@ public class IdentityXPage extends MVCApplication
         }
 
         // fill dashboardIdentity from submitted form
-        populate( _dashboardIdentity, request );
+        DashboardIdentityUtils.getInstance( ).populateDashboardIdentity( _dashboardIdentity, request );
 
         if ( !checkDashboardIdentityFields( _dashboardIdentity, request ) )
         {
             return redirectView( request, VIEW_GET_MODIFY_IDENTITY );
         }
 
-        IdentityDto identityDto = DashboardIdentityUtils.convertToIdentityDto( _dashboardIdentity );
+        IdentityDto identityDto = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( _dashboardIdentity );
 
         try
         {
@@ -462,12 +464,12 @@ public class IdentityXPage extends MVCApplication
             bStatus = false;
         }
 
-        String strPreferredContactMode = dashboardIdentity.getPreferredContactMode( );
+        String strPreferredContactMode = dashboardIdentity.getPreferredContactMode( ).getValue( );
 
         // Case preferred Contact Mode = email. Check if email is empty
         if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 0 ).getName( ) ) == 0 )
         {
-            if ( dashboardIdentity.getEmail( ).isEmpty( ) )
+            if ( dashboardIdentity.getEmail( ).getValue( ).isEmpty( ) )
             {
                 addError( I18nService.getLocalizedString( Constants.MESSAGE_ERROR_EMAIL_EMPTY, request.getLocale( ) ) );
                 bStatus = false;
@@ -477,7 +479,7 @@ public class IdentityXPage extends MVCApplication
         // Case preferred Contact Mode = telephone. Check if at least telephone or mobile is populated
         if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 1 ).getName( ) ) == 0 )
         {
-            if ( ( dashboardIdentity.getPhone( ).isEmpty( ) ) && ( dashboardIdentity.getMobilePhone( ).getMobilePhoneNumber( ).isEmpty( ) ) )
+            if ( ( dashboardIdentity.getPhone( ).getValue( ).isEmpty( ) ) && ( dashboardIdentity.getMobilePhone( ).getValue( ).isEmpty( ) ) )
             {
                 addError( I18nService.getLocalizedString( Constants.MESSAGE_ERROR_TELEPHONE_EMPTY, request.getLocale( ) ) );
                 bStatus = false;
@@ -485,13 +487,15 @@ public class IdentityXPage extends MVCApplication
         }
 
         // Populate gender with list codes {0,1,2} instead of values
-        String strGender = dashboardIdentity.getGender( );
+        String strGender = dashboardIdentity.getGender( ).getValue( );
 
         for ( ReferenceItem rItem : _lstGenderList )
         {
             if ( strGender.compareTo( rItem.getName( ) ) == 0 )
             {
-                dashboardIdentity.setGender( rItem.getCode( ) );
+                dashboardIdentity.setGender( new DashboardAttribute( 
+                        Constants.ATTRIBUTE_DB_IDENTITY_GENDER,
+                        rItem.getCode( ) ) );
             }
         }
 
@@ -508,7 +512,7 @@ public class IdentityXPage extends MVCApplication
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "lastName" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_LAST_NAME ) )
+        if ( !request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_LAST_NAME ) )
         {
             errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_LASTNAME, request.getLocale( ) );
         }
@@ -618,7 +622,7 @@ public class IdentityXPage extends MVCApplication
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "birthcountry" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHCOUNTRY ) )
+        if ( !request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHCOUNTRY ) )
         {
             errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY, request.getLocale( ) );
         }
@@ -640,7 +644,7 @@ public class IdentityXPage extends MVCApplication
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "address" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS ) )
+        if ( !request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS ) )
         {
             errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS, request.getLocale( ) );
         }
@@ -662,7 +666,7 @@ public class IdentityXPage extends MVCApplication
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "address_detail" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_DETAIL ) )
+        if ( !request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_DETAIL ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_DETAIL ) )
         {
             errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_DETAIL, request.getLocale( ) );
         }
@@ -684,7 +688,7 @@ public class IdentityXPage extends MVCApplication
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "address_postalcode" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_POSTALCODE ) )
+        if ( !request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_POSTALCODE ) )
         {
             errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_POSTALCODE, request.getLocale( ) );
         }
@@ -706,7 +710,7 @@ public class IdentityXPage extends MVCApplication
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "address_city" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_CITY ) )
+        if ( !request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_CITY ) )
         {
             errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_CITY, request.getLocale( ) );
         }
@@ -728,7 +732,7 @@ public class IdentityXPage extends MVCApplication
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !EmailValidator.getInstance( ).isValid( request.getParameter( "email" ) ) )
+        if ( !EmailValidator.getInstance( ).isValid( request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) ) )
         {
             errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_EMAIL, request.getLocale( ) );
         }
@@ -750,7 +754,7 @@ public class IdentityXPage extends MVCApplication
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "phone" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_PHONE ) )
+        if ( !request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_PHONE ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_PHONE ) )
         {
             errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_PHONE, request.getLocale( ) );
         }
@@ -772,7 +776,7 @@ public class IdentityXPage extends MVCApplication
     {
         String errorValidationMessage = StringUtils.EMPTY;
 
-        if ( !request.getParameter( "mobilePhone.mobilePhoneNumber" ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_MOBILEPHONE ) )
+        if ( !request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE ).matches( Constants.PROPERTY_KEY_VALIDATION_REGEXP_MOBILEPHONE ) )
         {
             errorValidationMessage = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_MOBILEPHONE, request.getLocale( ) );
         }
@@ -810,7 +814,13 @@ public class IdentityXPage extends MVCApplication
         if ( !request.getParameter( "bAccept" ).isEmpty( ) )
         {
             updateIdentityAttribute( Constants.PROPERTY_KEY_ACCEPT_NEWS, request.getParameter( "bAccept" ) );
-            _dashboardIdentity.setAcceptNews( Boolean.parseBoolean( request.getParameter( "bAccept" ) ) );
+            String strAcceptNews = (Boolean.parseBoolean( request.getParameter( "bAccept" ) ) == true ) ?
+                    Constants.TRUE : Constants.FALSE;
+                    
+            _dashboardIdentity.setAcceptNews( new DashboardAttribute (
+                Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_NEWS,
+                strAcceptNews
+            ) );
         }
     }
 
@@ -826,7 +836,12 @@ public class IdentityXPage extends MVCApplication
         if ( !request.getParameter( "bAccept" ).isEmpty( ) )
         {
             updateIdentityAttribute( Constants.PROPERTY_KEY_ACCEPT_SURVEY, request.getParameter( "bAccept" ) );
-            _dashboardIdentity.setAcceptSurvey( Boolean.parseBoolean( request.getParameter( "bAccept" ) ) );
+            String strAcceptSurveys = (Boolean.parseBoolean( request.getParameter( "bAccept" ) ) == true ) ?
+                    Constants.TRUE : Constants.FALSE;
+            _dashboardIdentity.setAcceptSurvey( new DashboardAttribute (
+                Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY,
+                strAcceptSurveys
+            ) );
 
         }
     }
@@ -842,8 +857,8 @@ public class IdentityXPage extends MVCApplication
     private void updateIdentityAttribute( String propertyKeyToUpdate, String value )
     {
         IdentityDto identityDto = new IdentityDto( );
-        identityDto.setConnectionId( _dashboardIdentity.getConnectionId( ) );
-        identityDto.setCustomerId( _dashboardIdentity.getCustomerId( ) );
+        identityDto.setConnectionId( _dashboardIdentity.getConnectionId( ).getValue( ) );
+        identityDto.setCustomerId( _dashboardIdentity.getCustomerId( ).getValue( ) );
 
         Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>( );
         AttributeDto attribute = new AttributeDto( );

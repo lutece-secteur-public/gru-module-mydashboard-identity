@@ -41,8 +41,8 @@ import org.junit.Test;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.web.Constants;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.web.DashboardIdentityUtils;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.util.DashboardIdentityUtils;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**
@@ -197,8 +197,8 @@ public class IdentityRestClientServiceTest extends LuteceTestCase
         attribute.setValue( VALUE_ACCEPTSURVEY );
         mapAttributes.put( attribute.getKey( ), attribute );
 
-        DashboardIdentity dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( identityDto );
-        IdentityDto identityDto2 = DashboardIdentityUtils.convertToIdentityDto( dashboardIdentity );
+        DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
+        IdentityDto identityDto2 = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity );
 
         assertEquals( VALUE_NAME, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_NAME ).getValue( ) );
         assertEquals( VALUE_PREFERREDUSERNAME, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_PREFERREDUSERNAME ).getValue( ) );

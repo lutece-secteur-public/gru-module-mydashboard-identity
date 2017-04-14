@@ -31,9 +31,7 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
-
-import org.apache.commons.lang.StringUtils;
+package fr.paris.lutece.plugins.mydashboard.modules.identity.util;
 
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
@@ -44,8 +42,12 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
  */
 public final class Constants
 {
-    // properties
     
+    public static final String TRUE = "1";
+    public static final String FALSE = "0";
+
+    // properties
+ 
     
     public static final String PROPERTY_APPLICATION_CODE = "mydashboard.identity.application.code";
     public static final String PROPERTY_APPLICATION_NAME = "mydashboard.identity.application.name";
@@ -143,6 +145,33 @@ public final class Constants
             "mydashboard.identity.application.validation.regex.address-postalcode" );
     public static final String PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_CITY = AppPropertiesService.getProperty( 
             "mydashboard.identity.application.validation.regex.address-city" );
+    
+    //Fields for dashboard Identity
+    public static final String ATTRIBUTE_DB_IDENTITY_CONNECTION_ID = "connectionId";
+    public static final String ATTRIBUTE_DB_IDENTITY_CUSTOMER_ID = "customerId";
+    public static final String ATTRIBUTE_DB_IDENTITY_LAST_NAME = "lastName";
+    public static final String ATTRIBUTE_DB_IDENTITY_PREFERRED_USER_NAME = "preferredUsername";
+    public static final String ATTRIBUTE_DB_IDENTITY_FIRSTNAME = "firstname";
+    public static final String ATTRIBUTE_DB_IDENTITY_GENDER = "gender";
+    public static final String ATTRIBUTE_DB_IDENTITY_BIRTHDATE = "birthdate";
+    public static final String ATTRIBUTE_DB_IDENTITY_BIRTHPLACE = "birthplace";
+    public static final String ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY = "birthcountry";
+    public static final String ATTRIBUTE_DB_IDENTITY_ADDRESS = "address";
+    public static final String ATTRIBUTE_DB_IDENTITY_ADDRESS_DETAIL = "address_detail";
+    public static final String ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE = "address_postalcode";
+    public static final String ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY = "address_city";
+    public static final String ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS = "billing_address";
+    public static final String ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_DETAIL = "billing_address_detail";
+    public static final String ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_POSTAL_CODE = "billing_address_postal_code";
+    public static final String ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_CITY = "billing_address_city";
+    public static final String ATTRIBUTE_DB_IDENTITY_EMAIL = "email";
+    public static final String ATTRIBUTE_DB_IDENTITY_PHONE = "phone";
+    public static final String ATTRIBUTE_DB_IDENTITY_PREFERRED_CONTACT_MODE = "preferred_contact_mode";
+    public static final String ATTRIBUTE_DB_IDENTITY_LOGIN = "login";
+    public static final String ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE = "mobile_phone";
+    public static final String ATTRIBUTE_DB_IDENTITY_ACCEPT_NEWS = "accept_news";
+    public static final String ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY = "accept_survey";
+    public static final String ATTRIBUTE_DB_IDENTITY_FRANCE_CONNECT_CERTIFIED = "franceconnect_certified";
     
     /**
      * Default constructor

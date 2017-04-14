@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
+import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.util.DashboardIdentityUtils;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -91,7 +93,7 @@ public class MyDashboardIdentityComponent extends MyDashboardComponent
         {
 
             model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
-            DashboardIdentity dashboardIdentity = DashboardIdentityUtils.convertToDashboardIdentity( getIdentityDto( luteceUser.getName( ) ) );
+            DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( getIdentityDto( luteceUser.getName( ) ) );
             model.put( MARK_IDENTITY, dashboardIdentity );
             HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD_COMPONENT, LocaleService.getDefault( ), model );
 
