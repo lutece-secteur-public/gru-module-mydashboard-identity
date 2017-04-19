@@ -1,18 +1,35 @@
+<#macro displayFranceConnectCertifierButton identity>
+    <#assign franceconnectEnable = mydashboard_site_properties['module.mydashboard.identity.site_property.franceconnectCertifier.enable'] >
+    <#if franceconnectEnable == "1">
+        <#assign FranceConnectCertified = false >
+        <#if identity.lastName.certifierCode??>
+            <#if identity.lastName.certifierCode == "fccertifier">
+                <#assign FranceConnectCertified = true >
+            </#if>
+        </#if>
+        <#if identity.birthdate.certifierCode??>
+            <#if identity.birthdate.certifierCode == "fccertifier">
+                <#assign FranceConnectCertified = true >
+            </#if>
+        </#if>
+        <#if identity.birthplace.certifierCode??>
+            <#if identity.birthplace.certifierCode == "fccertifier">
+                <#assign FranceConnectCertified = true >
+            </#if>
+        </#if>
+        <#if identity.birthcountry.certifierCode??>
+            <#if identity.birthcountry.certifierCode == "fccertifier">
+                <#assign FranceConnectCertified = true >
+            </#if>
+        </#if>
 
-<#macro franceconnect_certificat certified>
-    <#if certified> 
-        <i class="fa fa-check" style="color:green" aria-hidden="true"></i>
-        <img src="images/skin/plugins/fccertifier/franceconnect_certif_logo.png" width="24" alt="logo FranceConnect"/>
-    </#if>
-</#macro>
-
-<#macro franceconnect_badge certified>
-    <#if certified> 
-        Etat civil certifi&eacute; par <img src="images/skin/plugins/fccertifier/franceconnect.png" width="120" alt="logo FranceConnect"/>
-    <#else>
-        <a href="jsp/site/Portal.jsp?page=fccertifier&cid=${identity.customerId!}" class="btn btn-primary btn-xs">
-            <span class="fa fa-check"></span>
-            Certifier mon &eacute;tat civil
-        </a> &nbsp; via &nbsp; <img src="images/skin/plugins/fccertifier/franceconnect.png" width="120" alt="logo FranceConnect"/>
+        <#if FranceConnectCertified == true >
+Etat civil certifi&eacute; par <img src="images/skin/plugins/fccertifier/franceconnect.png" width="120" alt="logo FranceConnect"/>  
+        <#else>
+            <a href="jsp/site/Portal.jsp?page=fccertifier&cid=${identity.customerId!}" class="btn btn-primary btn-xs">
+                <span class="fa fa-check"></span>
+                Certifier mon &eacute;tat civil
+            </a> &nbsp; via &nbsp; <img src="images/skin/plugins/fccertifier/franceconnect.png" width="120" alt="logo FranceConnect"/>
+        </#if>
     </#if>
 </#macro>

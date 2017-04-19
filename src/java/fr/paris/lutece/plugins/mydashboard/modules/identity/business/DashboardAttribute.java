@@ -44,6 +44,7 @@ public class DashboardAttribute
     private String _strKey;
     private String _strValue;
     private String _strCertifierCode;
+    private String _strCertifierName;
     private Date _tExpirationDate;
     
     public DashboardAttribute( )
@@ -51,11 +52,12 @@ public class DashboardAttribute
         
     }
 
-    public DashboardAttribute( String key, String value, String certifier, Date expirtationDate)
+    public DashboardAttribute( String key, String value, String certifierCode, String certifierName, Date expirtationDate)
     {
         _strKey = key;
         _strValue = value;
-        _strCertifierCode = certifier;
+        _strCertifierCode = certifierCode;
+        _strCertifierName = certifierName;
         _tExpirationDate = expirtationDate;
     }
     
@@ -63,6 +65,7 @@ public class DashboardAttribute
     {
         _strKey = key;
         _strValue = value;
+        _strCertifierName = null;
         _strCertifierCode = null;
         _tExpirationDate = null;
     }
@@ -119,6 +122,24 @@ public class DashboardAttribute
     public void setCertifierCode( String strCertifierCode )
     {
         _strCertifierCode = strCertifierCode;
+    }
+    
+       /**
+        * Returns the CertifierName
+        * @return The CertifierName
+        */ 
+    public String getCertifierName()
+    {
+        return _strCertifierName;
+    }
+    
+       /**
+        * Sets the CertifierName
+        * @param strCertifierName The CertifierName
+        */ 
+    public void setCertifierName( String strCertifierName )
+    {
+        _strCertifierName = strCertifierName;
     }
     
        /**

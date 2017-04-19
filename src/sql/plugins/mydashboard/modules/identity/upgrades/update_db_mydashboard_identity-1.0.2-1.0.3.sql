@@ -1,0 +1,2 @@
+INSERT INTO core_datastore VALUES ('module.mydashboard.identity.site_property.mobileCertifier.enable', '1');
+INSERT INTO core_datastore VALUES ('module.mydashboard.identity.site_property.franceconnectCertifier.enable', '1');

@@ -1,6 +1,7 @@
 <@messages errors=errors />
 <@messages infos=infos />
 <#include "include/popins.html">
+<#include "include/certificate.html">
 <#include "include/franceconnect.html">
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
@@ -38,7 +39,7 @@
                             <div class="form-group">
                                 <label for="lastName" >
                                     #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthName} 
-                                    <#--<@franceconnect_certificat identity.franceConnectCertified /> :-->
+                                    <@certificate identity.lastName />
                                 </label>
                                 <input class="form-control input-sm" type="text" id="lastName" name="lastName" value="${identity.lastName.value!}"  <#if viewMode>readonly</#if>>
                             </div>
@@ -51,7 +52,7 @@
                             <div class="form-group">
                                 <label class="control-label" for="birthdate" >
                                     #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthdate} 
-                                    <#--<@franceconnect_certificat identity.franceConnectCertified /> :-->
+                                    <@certificate identity.birthdate />
                                 </label>
                                 <input class="form-control" type="text" id="birthdate" name="birthdate" value="${identity.birthdate.value!}" <#if viewMode>readonly</#if> />
 
@@ -59,18 +60,18 @@
                             <div class="form-group">
                                 <label class="control-label" for="birthplace" >
                                     #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthPlace}
-                                    <#--<@franceconnect_certificat identity.franceConnectCertified /> :-->
+                                    <@certificate identity.birthplace />
                                 </label>
                                 <input class="form-control" type="text" id="birthplace" name="birthplace" value="${identity.birthplace.value!}" <#if viewMode>readonly</#if> />
                             </div>
                             <div class="form-group">
                                 <label class="control-label" for="birthcountry" >
                                     #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthCountry} 
-                                    <#--<@franceconnect_certificat identity.franceConnectCertified />--> :
+                                    <@certificate identity.birthcountry />
                                 </label>
                                 <input class="form-control" type="text" id="birthcountry" name="birthcountry" value="${identity.birthcountry.value!}" <#if viewMode>readonly</#if> />
                             </div>
-                            <#-- <@franceconnect_badge identity.franceConnectCertified /> -->
+                            <@displayFranceConnectCertifierButton identity/> 
                         </div>
                         <div class="col-xs-12 col-sm-5 col-sm-offset-1">
                             <div>
@@ -101,19 +102,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label" for="mobile_phone" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone} :</label>
-                                    <#if viewMode>
-                                    <#--<#if identity.mobilePhone?? && identity.mobilePhone.mobilePhoneCertified?? && identity.mobilePhone.mobilePhoneCertified>
-                                    <i class="fa fa-check" style="color:green" aria-hidden="true"></i> #i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.certified}
-                                    <#else>
-                                    <#if identity.mobilePhone?? && identity.mobilePhone.mobilePhoneCertifiable?? && identity.mobilePhone.mobilePhoneCertifiable>
-                                    <a class="btn btn-xs btn-primary pull-right" role="button" data-target="#mydashboard-identity-modal-certifier" data-toggle="modal" data-remote="false" href="jsp/site/Portal.jsp?page=mobilecertifier&action=certify&view_mode=ajax&mobile_number=${identity.mobilePhone.mobilePhoneNumber!}&cid=${identity.customerId!}" data-title="#i18n{module.mydashboard.identity.xpage.edit_identity.popin.mobilePhoneCertifyTitle}">
-                                        <span class="fa fa-check"></span>
-                                        #i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone.toCertify}
-                                    </a>
-                                    </#if>                                          
-                                    </#if>-->
-                                    </#if>
-                                    <input class="form-control" type="text" id="mobile_phone" name="mobile_phone" value="${identity.mobilePhone.value!}" <#if viewMode>readonly</#if> />    
+                                    <input class="form-control" type="text" id="mobile_phone" name="mobile_phone" value="${identity.mobilePhone.value!}" <#if viewMode>readonly</#if> />
+                                    <@certificate identity.mobilePhone />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label" for="phone" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelPhone} :</label>

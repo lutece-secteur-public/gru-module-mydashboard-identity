@@ -45,10 +45,12 @@ import fr.paris.lutece.plugins.identitystore.web.service.AuthorType;
 import fr.paris.lutece.plugins.identitystore.web.service.IdentityService;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
+import fr.paris.lutece.portal.service.site.properties.SitePropertiesGroup;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -83,6 +85,9 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_VIEW_MODE = "viewMode";
     private static final String MARK_AVATAR_URL = "avatar_url";
     private static final String MARK_AVATARSERVER_POST_URL = "avatarserver_post_url";
+    private static final String MARK_MYDASHBOARD_SITE_PROPERTIES ="mydashboard_site_properties";
+    private static final String BEAN_MYDASHBOARD_IDENTITY_SITE_PROPERTIES = "mydashboard-identity.sitePropertiesGroup";
+    
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
     private static final String DASHBOARD_APP_NAME = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_NAME );
@@ -162,10 +167,14 @@ public class IdentityXPage extends MVCApplication
     {
         LuteceUser luteceUser = getConnectedUser( request );
 
+        SitePropertiesGroup dashboardPropertiesGroup = (SitePropertiesGroup)SpringContextService.getBean( BEAN_MYDASHBOARD_IDENTITY_SITE_PROPERTIES );
+        String strMyDashboardPropertiesPrefix = dashboardPropertiesGroup.getDatastoreKeysPrefix( );
+        
         Map<String, Object> model = getModel( );
         IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
         _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
 
+        model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( strMyDashboardPropertiesPrefix ).toMap( ) );
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_VIEW_MODE, Boolean.TRUE );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
@@ -196,7 +205,12 @@ public class IdentityXPage extends MVCApplication
             _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
         }
         
+        SitePropertiesGroup dashboardPropertiesGroup = (SitePropertiesGroup)SpringContextService.getBean( BEAN_MYDASHBOARD_IDENTITY_SITE_PROPERTIES );
+        String strMyDashboardPropertiesPrefix = dashboardPropertiesGroup.getDatastoreKeysPrefix( );
+        
         Map<String, Object> model = getModel( );
+        
+        model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( strMyDashboardPropertiesPrefix ).toMap( ) );
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_VIEW_MODE, Boolean.FALSE );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );

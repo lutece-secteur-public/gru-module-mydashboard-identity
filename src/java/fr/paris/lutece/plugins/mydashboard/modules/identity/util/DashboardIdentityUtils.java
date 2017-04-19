@@ -176,6 +176,7 @@ public class DashboardIdentityUtils
                     dashboardAttributeKey,
                     attribute.getValue( ),
                     attribute.getCertificate( ).getCertifierCode( ),
+                    attribute.getCertificate( ).getCertifierName( ),
                     attribute.getCertificate( ).getCertificateExpirationDate( ) );
             }
             else
