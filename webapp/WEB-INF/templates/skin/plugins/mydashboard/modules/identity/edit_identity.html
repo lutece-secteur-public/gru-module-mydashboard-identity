@@ -39,9 +39,9 @@
                             <div class="form-group">
                                 <label for="lastName" >
                                     #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthName} 
-                                    <@certificate identity.lastName />
                                 </label>
                                 <input class="form-control input-sm" type="text" id="lastName" name="lastName" value="${identity.lastName.value!}"  <#if viewMode>readonly</#if>>
+                                <@certificate identity.lastName />                           
                             </div>
 
                             <div class="form-group">
@@ -52,24 +52,23 @@
                             <div class="form-group">
                                 <label class="control-label" for="birthdate" >
                                     #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthdate} 
-                                    <@certificate identity.birthdate />
                                 </label>
                                 <input class="form-control" type="text" id="birthdate" name="birthdate" value="${identity.birthdate.value!}" <#if viewMode>readonly</#if> />
-
+                                 <@certificate identity.birthdate />                      
                             </div>
                             <div class="form-group">
                                 <label class="control-label" for="birthplace" >
                                     #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthPlace}
-                                    <@certificate identity.birthplace />
                                 </label>
                                 <input class="form-control" type="text" id="birthplace" name="birthplace" value="${identity.birthplace.value!}" <#if viewMode>readonly</#if> />
+                                <@certificate identity.birthplace />
                             </div>
                             <div class="form-group">
                                 <label class="control-label" for="birthcountry" >
-                                    #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthCountry} 
-                                    <@certificate identity.birthcountry />
+                                    #i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthCountry}   
                                 </label>
                                 <input class="form-control" type="text" id="birthcountry" name="birthcountry" value="${identity.birthcountry.value!}" <#if viewMode>readonly</#if> />
+                                <@certificate identity.birthcountry />
                             </div>
                             <@displayFranceConnectCertifierButton identity/> 
                         </div>
