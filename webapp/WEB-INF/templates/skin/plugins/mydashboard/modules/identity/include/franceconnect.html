@@ -1,5 +1,5 @@
 <#macro displayFranceConnectCertifierButton identity>
-    <#assign franceconnectEnable = mydashboard_site_properties['module.mydashboard.identity.site_property.franceconnectCertifier.enable'] >
+    <#assign franceconnectEnable = mydashboard_site_properties['module.mydashboard.identity.site_property.franceconnectCertifier.checkbox'] >
     <#if franceconnectEnable == "1">
         <#assign FranceConnectCertified = false >
         <#if identity.lastName.certifierCode??>

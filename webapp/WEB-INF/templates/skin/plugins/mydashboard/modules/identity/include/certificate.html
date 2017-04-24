@@ -1,6 +1,6 @@
 <#macro certificate attribute >
-    <#assign mobileEnable = mydashboard_site_properties['module.mydashboard.identity.site_property.mobileCertifier.enable'] > 
-    <#assign franceconnectEnable = mydashboard_site_properties['module.mydashboard.identity.site_property.franceconnectCertifier.enable'] > 
+    <#assign mobileEnable = mydashboard_site_properties['module.mydashboard.identity.site_property.mobileCertifier.checkbox'] > 
+    <#assign franceconnectEnable = mydashboard_site_properties['module.mydashboard.identity.site_property.franceconnectCertifier.checkbox'] > 
 
     <#if mobileEnable="1">
         <#if attribute.certifierCode??>
