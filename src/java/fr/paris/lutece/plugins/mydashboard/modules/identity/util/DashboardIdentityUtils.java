@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.mydashboard.modules.identity.util;
 
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
+import fr.paris.lutece.plugins.identitystore.web.rs.dto.CertificateDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
@@ -147,9 +148,21 @@ public class DashboardIdentityUtils
         
         for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
         {
+            DashboardAttribute dashboardAttribute = dashboardIdentity.getAttribute( attributeMatch.getKey( ) );
             AttributeDto attribute = new AttributeDto(  );
             attribute.setKey( attributeMatch.getValue( ) );
-            attribute.setValue( dashboardIdentity.getAttribute( attributeMatch.getKey( ) ).getValue( ) );
+            attribute.setValue( dashboardAttribute.getValue( ) );
+            attribute.setCertified( dashboardAttribute.getCertifierCode( ) != null );
+            
+            if ( attribute.getCertified( ) )
+            {
+                CertificateDto certificate = new CertificateDto( );
+                certificate.setCertificateExpirationDate( dashboardAttribute.getExpirationDate( ) );
+                certificate.setCertifierCode( dashboardAttribute.getCertifierCode( ) );
+                certificate.setCertifierLevel( dashboardAttribute.getCertifierLevel( ) );
+                certificate.setCertifierName( dashboardAttribute.getCertifierName( ) );
+                attribute.setCertificate( certificate );
+            }
             mapAttributes.put( attribute.getKey(  ), attribute );
         }
         
@@ -177,6 +190,7 @@ public class DashboardIdentityUtils
                     attribute.getValue( ),
                     attribute.getCertificate( ).getCertifierCode( ),
                     attribute.getCertificate( ).getCertifierName( ),
+                    attribute.getCertificate( ).getCertifierLevel( ),
                     attribute.getCertificate( ).getCertificateExpirationDate( ) );
             }
             else

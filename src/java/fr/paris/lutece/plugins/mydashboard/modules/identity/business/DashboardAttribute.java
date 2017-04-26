@@ -45,20 +45,22 @@ public class DashboardAttribute
     private String _strValue;
     private String _strCertifierCode;
     private String _strCertifierName;
-    private Date _tExpirationDate;
+    private int _nCertifierLevel;
+    private Date _tCertificateExpirationDate;
     
     public DashboardAttribute( )
     {
         
     }
 
-    public DashboardAttribute( String key, String value, String certifierCode, String certifierName, Date expirtationDate)
+    public DashboardAttribute( String key, String value, String certifierCode, String certifierName, int nCertifierLevel, Date tCertificateExpirtationDate )
     {
         _strKey = key;
         _strValue = value;
         _strCertifierCode = certifierCode;
         _strCertifierName = certifierName;
-        _tExpirationDate = expirtationDate;
+        _nCertifierLevel = nCertifierLevel;
+        _tCertificateExpirationDate = tCertificateExpirtationDate;
     }
     
     public DashboardAttribute( String key, String value )
@@ -67,7 +69,7 @@ public class DashboardAttribute
         _strValue = value;
         _strCertifierName = null;
         _strCertifierCode = null;
-        _tExpirationDate = null;
+        _tCertificateExpirationDate = null;
     }
     
        /**
@@ -142,21 +144,41 @@ public class DashboardAttribute
         _strCertifierName = strCertifierName;
     }
     
-       /**
-        * Returns the ExpirationDate
-        * @return The ExpirationDate
-        */ 
-    public Date getExpirationDate()
+    /**
+     * Returns the Certifier level
+     * @return The CertifierLevel
+     */ 
+    public int getCertifierLevel()
     {
-        return _tExpirationDate;
+        return _nCertifierLevel;
+    }
+    
+    /**
+     * Sets the CertifierLevel
+     * @param nCertifierLevel The CertifierLevel
+     */ 
+    public void setCertifierName( int nCertifierLevel )
+    {
+        _nCertifierLevel = nCertifierLevel;
     }
     
        /**
-        * Sets the ExpirationDate
-        * @param expirationDate The ExpirationDate
+        * Returns the ExpirationDate of the certificate
+        * @return The ExpirationDate of the certificate
         */ 
-    public void setExpirationDate( Date expirationDate )
+    public Date getExpirationDate()
     {
-        _tExpirationDate = expirationDate;
+        return _tCertificateExpirationDate;
     }
+    
+       /**
+        * Sets the ExpirationDate of the certificate
+        * @param tCertificateExpirationDate The ExpirationDate of the certificate
+        */ 
+    public void setExpirationDate( Date tCertificateExpirationDate )
+    {
+        _tCertificateExpirationDate = tCertificateExpirationDate;
+    }
+    
+    
  }
