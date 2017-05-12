@@ -452,7 +452,7 @@ public class DashboardIdentity
     public DashboardAttribute getLogin( )
     {
         //In this implementation of MyDashboardIdentity, login == email of user.
-        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL );
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_LOGIN );
     }
 
     /**
