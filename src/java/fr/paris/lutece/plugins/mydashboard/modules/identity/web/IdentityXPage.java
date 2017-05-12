@@ -249,6 +249,8 @@ public class IdentityXPage extends MVCApplication
         }
 
         IdentityDto identityDto = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( _dashboardIdentity );
+        
+        DashboardIdentityUtils.getInstance( ).filterByCertifier ( identityDto );
 
         try
         {

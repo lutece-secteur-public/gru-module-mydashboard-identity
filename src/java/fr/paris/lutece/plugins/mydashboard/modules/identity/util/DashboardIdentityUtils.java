@@ -79,12 +79,13 @@ public class DashboardIdentityUtils
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_DETAIL, Constants.PROPERTY_KEY_BILLING_ADDRESSDETAIL );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_POSTAL_CODE, Constants.PROPERTY_KEY_BILLING_ADDRESS_POSTAL_CODE );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_CITY, Constants.PROPERTY_KEY_BILLING_ADDRESS_CITY );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_EMAIL, Constants.PROPERTY_KEY_EMAIL );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_PHONE, Constants.PROPERTY_KEY_PHONE );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_CONTACT_MODE, Constants.PROPERTY_KEY_PREFERRED_CONTACT );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE, Constants.PROPERTY_KEY_MOBILE_PHONE );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_NEWS, Constants.PROPERTY_KEY_ACCEPT_NEWS );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY, Constants.PROPERTY_KEY_ACCEPT_SURVEY );
+        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LOGIN, Constants.PROPERTY_KEY_LOGIN );
+        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_EMAIL, Constants.PROPERTY_KEY_EMAIL );
     }
     
     public static DashboardIdentityUtils getInstance( )
@@ -234,5 +235,24 @@ public class DashboardIdentityUtils
                 identity.setAttributeValue( strAttributeKey, attributeValue );
             }
         }
+    }
+    
+    /**
+     * Drop attributes from IdentityDto if there is a certificate. This is used to not update identity when a certificate is found.
+     * @param identity 
+     */
+    
+    public void filterByCertifier ( IdentityDto identity )
+    {
+        Map<String,AttributeDto> mapAttributes = new HashMap<String,AttributeDto>( );
+        for ( Map.Entry<String,AttributeDto> attribute : identity.getAttributes( ).entrySet( ) )
+        {
+            if ( attribute.getValue( ).getCertificate( ) == null 
+                || StringUtils.isEmpty( attribute.getValue( ).getCertificate( ).getCertifierCode( ) ) )
+            {
+                mapAttributes.put( attribute.getKey( ), attribute.getValue( ) );
+            }
+        }
+        identity.setAttributes( mapAttributes );
     }
 }
