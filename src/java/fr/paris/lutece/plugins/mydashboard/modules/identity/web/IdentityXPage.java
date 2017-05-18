@@ -45,6 +45,7 @@ import fr.paris.lutece.plugins.identitystore.web.service.AuthorType;
 import fr.paris.lutece.plugins.identitystore.web.service.IdentityService;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
+import fr.paris.lutece.plugins.verifybackurl.service.AuthorizedUrlService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
@@ -69,6 +70,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * MyDashboardIdentity application
@@ -87,6 +89,8 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_AVATARSERVER_POST_URL = "avatarserver_post_url";
     private static final String MARK_MYDASHBOARD_SITE_PROPERTIES ="mydashboard_site_properties";
     private static final String BEAN_MYDASHBOARD_IDENTITY_SITE_PROPERTIES = "mydashboard-identity.sitePropertiesGroup";
+    private static final String MARK_SERVICE_URL = "service_url";
+    private static final String MARK_SERVICE_NAME = "service_name";
     
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
@@ -114,6 +118,10 @@ public class IdentityXPage extends MVCApplication
     private static final String VIEW_VALIDATE_MOBILEPHONE = "validate_mobilephone";
     private static final String VIEW_UPDATE_ACCEPT_NEWS = "update_acceptNews";
     private static final String VIEW_UPDATE_ACCEPT_SURVEY = "update_acceptSurvey";
+    
+    //Parameters
+    private static final String SESSION_ATTRIBUTE_BACK_URL = "back_url";
+    
     private ReferenceList _lstContactModeList;
     private ReferenceList _lstGenderList;
 
@@ -180,6 +188,21 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
+        
+        //check back url in session
+        HttpSession session = request.getSession( true );
+        
+        String strBackUrl = (String) session.getAttribute( SESSION_ATTRIBUTE_BACK_URL );
+        if ( !StringUtils.isEmpty( strBackUrl ) )
+        {
+            model.put ( MARK_SERVICE_URL, strBackUrl );
+            String strServiceName = AuthorizedUrlService.getInstance( ).getName( strBackUrl );
+            if ( !StringUtils.isEmpty( strServiceName ) )
+            {
+                model.put ( MARK_SERVICE_NAME, strServiceName );
+            }
+        }
+        
 
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale( ), model );
     }
@@ -217,7 +240,21 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
-
+        
+        //check back url in session
+        HttpSession session = request.getSession( true );
+        
+        String strBackUrl = (String) session.getAttribute( SESSION_ATTRIBUTE_BACK_URL );
+        if ( !StringUtils.isEmpty( strBackUrl ) )
+        {
+            model.put ( MARK_SERVICE_URL, strBackUrl );
+            String strServiceName = AuthorizedUrlService.getInstance( ).getName( strBackUrl );
+            if ( !StringUtils.isEmpty( strServiceName ) )
+            {
+                model.put ( MARK_SERVICE_NAME, strServiceName );
+            }
+        }
+        
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale( ), model );
     }
 

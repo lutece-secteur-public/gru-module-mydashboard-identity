@@ -10,6 +10,9 @@
                 <h3 class="box-title">#i18n{module.mydashboard.identity.component.identity.description}</h3>
             </div>
             <div class="box-body">
+                <#if service_url??>
+                    <a href="${service_url}" class="btn btn-primary">#i18n{module.mydashboard.identity.xpage.edit_identity.labelBackToService} ${service_name!'#i18n{module.mydashboard.identity.xpage.edit_identity.labelBackToService.default}'}</a>
+                </#if>
                 <#if viewMode>
                 <form class="form-horizontal" method="post" action="jsp/site/Portal.jsp?page=mydashboardIdentity&view=getModifyIdentity">
                     <#else>
