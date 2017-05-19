@@ -26,7 +26,7 @@
         <#if FranceConnectCertified == true >
 Etat civil certifi&eacute; par <img src="images/skin/plugins/fccertifier/franceconnect.png" width="120" alt="logo FranceConnect"/>  
         <#else>
-            <a href="jsp/site/Portal.jsp?page=fccertifier&cid=${identity.customerId!}" class="btn btn-primary btn-xs">
+            <a href="jsp/site/Portal.jsp?page=fccertifier&cid=${identity.customerId.value!}" class="btn btn-primary btn-xs">
                 <span class="fa fa-check"></span>
                 Certifier mon &eacute;tat civil
             </a> &nbsp; via &nbsp; <img src="images/skin/plugins/fccertifier/franceconnect.png" width="120" alt="logo FranceConnect"/>
