@@ -38,6 +38,9 @@ import fr.paris.lutece.plugins.identitystore.web.rs.dto.CertificateDto;
 import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
+import fr.paris.lutece.portal.service.security.LuteceUser;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -94,6 +97,30 @@ public class DashboardIdentityUtils
             _instance = new DashboardIdentityUtils( );
         }
             return _instance;
+    }
+    
+    /**
+     * Get the user connection id of given LuteceUser
+     * @param user the LuteceUser
+     * @return the user connection id of given LuteceUser.
+     */
+    public static String getUserConnectionId( LuteceUser user )
+    {
+        String strUserGuid = AppPropertiesService.getProperty( Constants.PROPERTY_LUTECE_USER_GUID );
+        if( strUserGuid == null || strUserGuid.isEmpty() )
+        {
+            return user.getName( );
+        }
+        else
+        {
+            String strUserAttributeGuid = user.getUserInfo( strUserGuid );
+            if ( strUserGuid.isEmpty( ) )
+            {
+                AppLogService.error( "The configured GUID field " + strUserGuid + " is empty for the user " + user.getName( ) );
+                return user.getName();
+            }
+            return strUserAttributeGuid;
+        }
     }
     
 

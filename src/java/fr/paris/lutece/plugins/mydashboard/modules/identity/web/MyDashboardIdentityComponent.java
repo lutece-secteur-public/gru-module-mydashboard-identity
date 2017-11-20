@@ -91,9 +91,9 @@ public class MyDashboardIdentityComponent extends MyDashboardComponent
 
         if ( luteceUser != null )
         {
-
+            String strGuid = DashboardIdentityUtils.getUserConnectionId( luteceUser );
             model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
-            DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( getIdentityDto( luteceUser.getName( ) ) );
+            DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( getIdentityDto( strGuid ) );
             model.put( MARK_IDENTITY, dashboardIdentity );
             HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD_COMPONENT, LocaleService.getDefault( ), model );
 

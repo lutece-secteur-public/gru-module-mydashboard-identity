@@ -171,7 +171,7 @@ public class IdentityXPage extends MVCApplication
         String strMyDashboardPropertiesPrefix = dashboardPropertiesGroup.getDatastoreKeysPrefix( );
         
         Map<String, Object> model = getModel( );
-        IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
+        IdentityDto identityDto = getIdentityDto( DashboardIdentityUtils.getUserConnectionId( luteceUser ) );
         _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
 
         model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( strMyDashboardPropertiesPrefix ).toMap( ) );
@@ -197,11 +197,12 @@ public class IdentityXPage extends MVCApplication
     public XPage getModifyIdentity( HttpServletRequest request ) throws UserNotSignedException
     {
         LuteceUser luteceUser = getConnectedUser( request );
+        String strGuid = DashboardIdentityUtils.getUserConnectionId( luteceUser );
 
         if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId( ) == null )
-                || !_dashboardIdentity.getConnectionId( ).equals( luteceUser.getName( ) ) )
+                || !_dashboardIdentity.getConnectionId( ).equals( strGuid ) )
         {
-            IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
+            IdentityDto identityDto = getIdentityDto( strGuid );
             _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
         }
         
