@@ -57,12 +57,7 @@ public class DashboardIdentityUtils
     
     //For matching on DBAttributes and Identity store attributes
     private static Map<String,String> _mapAttributeKeyMatch;
-    
-    /**
-     * private constructor for singleton
-     */
-    private DashboardIdentityUtils(  )
-    {
+    static {
         _mapAttributeKeyMatch = new HashMap<String,String>( );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME, Constants.PROPERTY_KEY_NAME );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_USER_NAME, Constants.PROPERTY_KEY_PREFERREDUSERNAME );
@@ -86,6 +81,13 @@ public class DashboardIdentityUtils
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY, Constants.PROPERTY_KEY_ACCEPT_SURVEY );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LOGIN, Constants.PROPERTY_KEY_LOGIN );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_EMAIL, Constants.PROPERTY_KEY_EMAIL );
+    }
+
+    /**
+     * private constructor for singleton
+     */
+    private DashboardIdentityUtils(  )
+    {
     }
     
     public static DashboardIdentityUtils getInstance( )
