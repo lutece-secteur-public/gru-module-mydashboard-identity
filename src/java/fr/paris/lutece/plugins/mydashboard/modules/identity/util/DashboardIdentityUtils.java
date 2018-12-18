@@ -33,9 +33,9 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.util;
 
-import fr.paris.lutece.plugins.identitystore.web.rs.dto.AttributeDto;
-import fr.paris.lutece.plugins.identitystore.web.rs.dto.CertificateDto;
-import fr.paris.lutece.plugins.identitystore.web.rs.dto.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.AttributeDto;
+import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.CertificateDto;
+import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityDto;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 
