@@ -8,12 +8,12 @@
 
     <bean id="mydashboard-identity.mydashboardIdentityComponent" class="fr.paris.lutece.plugins.mydashboard.modules.identity.web.MyDashboardIdentityComponent" />
      <!-- IDENTITYSTORE BEAN -->
-    <bean id="mydashboard-identity.identitystore.httpTransport" class="fr.paris.lutece.plugins.identitystore.web.rs.service.IdentityTransportRest">
+    <bean id="mydashboard-identity.identitystore.httpTransport" class="fr.paris.lutece.plugins.identitystore.v2.web.rs.service.IdentityTransportRest">
         <property name="IdentityStoreEndPoint">
             <value>http://localhost:8080/lutece/rest/identitystore</value>
         </property>
     </bean>       
-    <bean id="mydashboard-identity.identitystore.service" class="fr.paris.lutece.plugins.identitystore.web.service.IdentityService">
+    <bean id="mydashboard-identity.identitystore.service" class="fr.paris.lutece.plugins.identitystore.v2.web.service.IdentityService">
         <constructor-arg ref="mydashboard-identity.identitystore.httpTransport"/>
     </bean>
     
