@@ -271,7 +271,9 @@ public class IdentityXPage extends MVCApplication
     {
         checkUserAuthentication( request );
 
-        if ( request.getParameter( PARAMETER_BACK ) != null )
+        
+        
+        if (_dashboardIdentity==null || request.getParameter( PARAMETER_BACK ) != null )
         {
             return redirectView( request, VIEW_GET_VIEW_IDENTITY );
         }
