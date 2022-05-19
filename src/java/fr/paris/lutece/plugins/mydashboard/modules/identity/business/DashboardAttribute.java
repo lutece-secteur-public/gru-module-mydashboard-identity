@@ -47,6 +47,7 @@ public class DashboardAttribute
     private String _strCertifierName;
     private int _nCertifierLevel;
     private Date _tCertificateExpirationDate;
+    private boolean _bMandatory;
     
     public DashboardAttribute( )
     {
@@ -179,6 +180,22 @@ public class DashboardAttribute
     {
         _tCertificateExpirationDate = tCertificateExpirationDate;
     }
+
+    /**
+     * 
+     * @return true if the attribute is Mandatory
+     */
+	public boolean isMandatory() {
+		return _bMandatory;
+	}
+
+	/**
+	 * 
+	 * @param _bMandatory true if the attribute is mandatory
+	 */
+	public void setMandatory(boolean _bMandatory) {
+		this._bMandatory = _bMandatory;
+	}
     
     
  }

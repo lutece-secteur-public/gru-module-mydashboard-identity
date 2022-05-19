@@ -118,6 +118,7 @@ public final class Constants
     public static final String MESSAGE_ERROR_VALIDATION_EMAIL = "module.mydashboard.identity.message.error.identity.check.format.email";
     public static final String MESSAGE_ERROR_EMAIL_EMPTY = "module.mydashboard.identity.message.error.identity.check.empty.email";
     public static final String MESSAGE_ERROR_TELEPHONE_EMPTY = "module.mydashboard.identity.message.error.identity.check.empty.phone";
+    public static final String MESSAGE_ERROR_EMPTY_ERROR_PREFIX = "module.mydashboard.identity.message.error.identity.check.empty.";
 
     // FIELDS VALIDATION REGEXP
     public static final String PROPERTY_KEY_VALIDATION_REGEXP_LAST_NAME = AppPropertiesService.getProperty( 
@@ -144,6 +145,9 @@ public final class Constants
             "mydashboard.identity.application.validation.regex.address-postalcode" );
     public static final String PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_CITY = AppPropertiesService.getProperty( 
             "mydashboard.identity.application.validation.regex.address-city" );
+    
+    
+    
     
     //Fields for dashboard Identity
     public static final String ATTRIBUTE_DB_IDENTITY_CONNECTION_ID = "connectionId";

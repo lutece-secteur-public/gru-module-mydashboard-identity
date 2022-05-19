@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.util;
 
+import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.ApplicationRightsDto;
 import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.CertificateDto;
 import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityDto;
@@ -99,7 +100,9 @@ public class DashboardIdentityUtils
             return _instance;
     }
     
-
+    
+    
+    
     /**
      * return an dashboardIdentity from a identityDto
      *
@@ -108,6 +111,24 @@ public class DashboardIdentityUtils
      * @return dashboardIdentity initialized from provided identityDto
      */
     public DashboardIdentity convertToDashboardIdentity( IdentityDto identity )
+    {
+      
+    	return convertToDashboardIdentity(identity, null);
+    }
+    
+    
+    
+
+    /**
+     * return an dashboardIdentity from a identityDto
+     *
+     * @param identity
+     *          identityDto to convert
+     *          
+     * @param  applicationRightsDto The App rights        
+     * @return dashboardIdentity initialized from provided identityDto
+     */
+    public DashboardIdentity convertToDashboardIdentity( IdentityDto identity, ApplicationRightsDto applicationRightsDto )
     {
         DashboardIdentity dashboardIdentity = new DashboardIdentity(  );
         
@@ -120,6 +141,7 @@ public class DashboardIdentityUtils
                 Constants.ATTRIBUTE_DB_IDENTITY_CUSTOMER_ID,
                 identity.getCustomerId(  ) ) );
         
+        
         for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
         {
             dashboardIdentity.setAttribute( 
@@ -127,8 +149,8 @@ public class DashboardIdentityUtils
                     getDashboardAttributeFromAttributeDtoKey (
                         identity, 
                         attributeMatch.getValue( ), 
-                        attributeMatch.getKey( )
-                    ) );
+                        attributeMatch.getKey( ),applicationRightsDto ) 
+                    ) ;
         }
 
         return dashboardIdentity;
@@ -139,9 +161,10 @@ public class DashboardIdentityUtils
      *
      * @param dashboardIdentity
      *          dashboardIdentity to convert
+     *  @param bOnlyMandatory true the IdentitityDTO must contains only Mandatory informations
      * @return identityDto initialized from provided dashboardIdentity
      */
-    public IdentityDto convertToIdentityDto( DashboardIdentity dashboardIdentity )
+    public IdentityDto convertToIdentityDto( DashboardIdentity dashboardIdentity,boolean bOnlyMandatory )
     {
         IdentityDto identityDto = new IdentityDto(  );
         identityDto.setConnectionId( dashboardIdentity.getConnectionId(  ).getValue( ) );
@@ -152,21 +175,24 @@ public class DashboardIdentityUtils
         for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
         {
             DashboardAttribute dashboardAttribute = dashboardIdentity.getAttribute( attributeMatch.getKey( ) );
-            AttributeDto attribute = new AttributeDto(  );
-            attribute.setKey( attributeMatch.getValue( ) );
-            attribute.setValue( dashboardAttribute.getValue( ) );
-            attribute.setCertified( dashboardAttribute.getCertifierCode( ) != null );
-            
-            if ( attribute.getCertified( ) )
-            {
-                CertificateDto certificate = new CertificateDto( );
-                certificate.setCertificateExpirationDate( dashboardAttribute.getExpirationDate( ) );
-                certificate.setCertifierCode( dashboardAttribute.getCertifierCode( ) );
-                certificate.setCertifierLevel( dashboardAttribute.getCertifierLevel( ) );
-                certificate.setCertifierName( dashboardAttribute.getCertifierName( ) );
-                attribute.setCertificate( certificate );
+            if(!bOnlyMandatory || dashboardAttribute.isMandatory())
+            { 	
+	            AttributeDto attribute = new AttributeDto(  );
+	            attribute.setKey( attributeMatch.getValue( ) );
+	            attribute.setValue( dashboardAttribute.getValue( ) );
+	            attribute.setCertified( dashboardAttribute.getCertifierCode( ) != null );
+	            
+	            if ( attribute.getCertified( ) )
+	            {
+	                CertificateDto certificate = new CertificateDto( );
+	                certificate.setCertificateExpirationDate( dashboardAttribute.getExpirationDate( ) );
+	                certificate.setCertifierCode( dashboardAttribute.getCertifierCode( ) );
+	                certificate.setCertifierLevel( dashboardAttribute.getCertifierLevel( ) );
+	                certificate.setCertifierName( dashboardAttribute.getCertifierName( ) );
+	                attribute.setCertificate( certificate );
+	            }
+	            mapAttributes.put( attribute.getKey(  ), attribute );
             }
-            mapAttributes.put( attribute.getKey(  ), attribute );
         }
         
         identityDto.setAttributes( mapAttributes );
@@ -181,14 +207,15 @@ public class DashboardIdentityUtils
      * @param dashboardAttributeKey the Dashboard attribute key
      * @return 
      */
-    private DashboardAttribute getDashboardAttributeFromAttributeDtoKey ( IdentityDto identity, String identityDtoAttributeKey, String dashboardAttributeKey )
+    private DashboardAttribute getDashboardAttributeFromAttributeDtoKey ( IdentityDto identity, String identityDtoAttributeKey, String dashboardAttributeKey,ApplicationRightsDto applicationRightsDto )
     {
         AttributeDto attribute = identity.getAttributes( ).get( identityDtoAttributeKey );
+        DashboardAttribute dashboardAttribute=null;
         if ( attribute != null )
         {
             if ( attribute.getCertificate( ) != null )
             {
-                return new DashboardAttribute(
+            	dashboardAttribute= new DashboardAttribute(
                     dashboardAttributeKey,
                     attribute.getValue( ),
                     attribute.getCertificate( ).getCertifierCode( ),
@@ -198,16 +225,22 @@ public class DashboardIdentityUtils
             }
             else
             {
-                return new DashboardAttribute(
+            	dashboardAttribute= new DashboardAttribute(
                     dashboardAttributeKey,
                     attribute.getValue( ) );
             }
             
         }
-        return new DashboardAttribute(
-            dashboardAttributeKey,
-            StringUtils.EMPTY
-            );
+        else
+        {
+	        dashboardAttribute= new DashboardAttribute(
+	            dashboardAttributeKey,
+	            StringUtils.EMPTY
+	            );
+        }
+        
+        dashboardAttribute.setMandatory( applicationRightsDto!=null && applicationRightsDto.getAppRights() !=null && applicationRightsDto.getAppRights().stream().anyMatch(x-> x.getAttributeKey().equals( identityDtoAttributeKey) && x.isMandatory( )));
+        return dashboardAttribute;
     }
     
     /**

@@ -197,8 +197,8 @@ public class IdentityRestClientServiceTest extends LuteceTestCase
         attribute.setValue( VALUE_ACCEPTSURVEY );
         mapAttributes.put( attribute.getKey( ), attribute );
 
-        DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
-        IdentityDto identityDto2 = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity );
+        DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto,null );
+        IdentityDto identityDto2 = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,false );
 
         assertEquals( VALUE_NAME, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_NAME ).getValue( ) );
         assertEquals( VALUE_PREFERREDUSERNAME, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_PREFERREDUSERNAME ).getValue( ) );
