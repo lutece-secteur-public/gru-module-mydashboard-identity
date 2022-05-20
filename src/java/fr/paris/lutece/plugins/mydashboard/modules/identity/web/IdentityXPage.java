@@ -99,6 +99,8 @@ public class IdentityXPage extends MVCApplication
     private static final String BEAN_MYDASHBOARD_IDENTITY_SITE_PROPERTIES = "mydashboard-identity.sitePropertiesGroup";
     private static final String MARK_SERVICE_URL = "service_url";
     private static final String MARK_SERVICE_NAME = "service_name";
+    private static final String MARK_MANDATORY_INFORMATIONS_SAVED = "mandatory_informations_saved";
+    
     
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String TEMPLATE_GET_VIEW_CHECK_IDENTITY = "skin/plugins/mydashboard/modules/identity/check_identity.html";
@@ -138,10 +140,11 @@ public class IdentityXPage extends MVCApplication
     private DashboardIdentity _dashboardIdentity;
     private DashboardIdentity _checkdIdentity;
     private String _strAppCode;
+    private boolean _bMandatoryInformationsSaved;
     
     private IdentityService _identityService;
-    boolean _bReInitAppCode=false;
-    ApplicationRightsDto _applicationRightsDto;
+    private boolean _bReInitAppCode=false;
+    private ApplicationRightsDto _applicationRightsDto;
     /**
      * Constructor
      */
@@ -187,7 +190,7 @@ public class IdentityXPage extends MVCApplication
     public XPage getViewIdentity( HttpServletRequest request ) throws UserNotSignedException
     {
         LuteceUser luteceUser = getConnectedUser( request );
-
+         
         SitePropertiesGroup dashboardPropertiesGroup = (SitePropertiesGroup)SpringContextService.getBean( BEAN_MYDASHBOARD_IDENTITY_SITE_PROPERTIES );
         String strMyDashboardPropertiesPrefix = dashboardPropertiesGroup.getDatastoreKeysPrefix( );
         
@@ -202,10 +205,9 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         
-        //check back url in session
-        HttpSession session = request.getSession( true );
+        //check back url
+        String strBackUrl = AuthorizedUrlService.getInstance().getServiceBackUrl(request );
         
-        String strBackUrl = (String) session.getAttribute( SESSION_ATTRIBUTE_BACK_URL );
         if ( !StringUtils.isEmpty( strBackUrl ) )
         {
             model.put ( MARK_SERVICE_URL, strBackUrl );
@@ -254,10 +256,8 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
         
-        //check back url in session
-        HttpSession session = request.getSession( true );
-        
-        String strBackUrl = (String) session.getAttribute( SESSION_ATTRIBUTE_BACK_URL );
+        //get BackUrl
+        String strBackUrl = AuthorizedUrlService.getInstance().getServiceBackUrl(request );
         if ( !StringUtils.isEmpty( strBackUrl ) )
         {
             model.put ( MARK_SERVICE_URL, strBackUrl );
@@ -338,11 +338,12 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
+        model.put( MARK_MANDATORY_INFORMATIONS_SAVED, _bMandatoryInformationsSaved);
+        
         
         //check back url in session
-        HttpSession session = request.getSession( true );
         
-        String strBackUrl = (String) session.getAttribute( SESSION_ATTRIBUTE_BACK_URL );
+        String strBackUrl = AuthorizedUrlService.getInstance().getServiceBackUrl(request );
         if ( !StringUtils.isEmpty( strBackUrl ) )
         {
             model.put ( MARK_SERVICE_URL, strBackUrl );
@@ -352,6 +353,9 @@ public class IdentityXPage extends MVCApplication
                 model.put ( MARK_SERVICE_NAME, strServiceName );
             }
         }
+        //reinit Information
+        _bMandatoryInformationsSaved=false;
+        
         
         return getXPage( TEMPLATE_GET_VIEW_CHECK_IDENTITY, request.getLocale( ), model );
     }
@@ -370,9 +374,10 @@ public class IdentityXPage extends MVCApplication
     @Action( ACTION_DO_MODIFY_IDENTITY )
     public XPage doModifyIdentity( HttpServletRequest request ) throws UserNotSignedException
     {
+    	
+    	AuthorizedUrlService.getInstance().getServiceBackUrl(request );
         checkUserAuthentication( request );
 
-        
         
         if (_dashboardIdentity==null || request.getParameter( PARAMETER_BACK ) != null )
         {
@@ -425,8 +430,7 @@ public class IdentityXPage extends MVCApplication
     public XPage doCheckIdentity( HttpServletRequest request ) throws UserNotSignedException
     {
         checkUserAuthentication( request );
-
-        
+        AuthorizedUrlService.getInstance().getServiceBackUrl(request );
         
         if (_checkdIdentity==null || request.getParameter( PARAMETER_BACK ) != null )
         {
@@ -459,7 +463,10 @@ public class IdentityXPage extends MVCApplication
         _dashboardIdentity=null;
         _checkdIdentity=null;
         addInfo( Constants.MESSAGE_INFO_IDENTITY_UPDATED, request.getLocale( ) );
-
+        _bMandatoryInformationsSaved=true;
+      
+        
+        
         return redirectView( request, VIEW_GET_CHECK_IDENTITY );
     }
     

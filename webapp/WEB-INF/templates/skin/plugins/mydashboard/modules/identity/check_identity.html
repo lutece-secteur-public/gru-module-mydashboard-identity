@@ -3,6 +3,7 @@
 <#include "include/popins.html">
 <#include "include/certificate.html">
 <#include "include/franceconnect.html">
+
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="box box-primary">
@@ -10,10 +11,14 @@
                 <h3 class="box-title">#i18n{module.mydashboard.identity.component.checkidentity.description}</h3>
             </div>
             <div class="box-body">
-                <#if service_url??>
-                    <a href="${service_url}" class="btn btn-primary">#i18n{module.mydashboard.identity.xpage.check_identity.labelBackToService} ${service_name!'#i18n{module.mydashboard.identity.xpage.check_identity.labelBackToService.default}'}</a>
-                </#if>
-                <#if viewMode>
+                <#if mandatory_informations_saved>
+					   <#if service_url?? >
+						     <a href="${service_url}" class="btn btn-primary">#i18n{module.mydashboard.identity.xpage.check_identity.labelBackToService} ${service_name!'#i18n{module.mydashboard.identity.xpage.check_identity.labelBackToService.default}'}</a>
+						<#else>
+						     <a href="jsp/site/Portal.jsp?page=mydashboardIdentity&action=viewIdentity" class="btn btn-primary">#i18n{module.mydashboard.identity.xpage.check_identity.labelBackToService} ${service_name!'#i18n{module.mydashboard.identity.xpage.check_identity.labelBackToService.default}'}</a>
+						</#if>
+				<#else>
+               
                 	<form class="form-horizontal" method="post" action="jsp/site/Portal.jsp?page=mydashboardIdentity&action=doCheckIdentity">
                 
                         <input type="hidden" id="customerId" name="customerId" value="${identity.customerId.value!''}" />
@@ -27,12 +32,8 @@
                             <#if identity.gender.mandatory>
 	                            <div class="form-group">
 	                                <label class="control-label" for="gender" >#i18n{module.mydashboard.identity.xpage.check_identity.generalinfo.labelGenre} :</label>
-	                                <#if viewMode>
-	                                    <@comboWithParams name="gender" default_value="${identity.gender.value!}" additionalParameters=" id=\"gender\"  class=\"form-control\" disabled" items=genderlist />
-	                                <#else>							
-	                                    <@comboWithParams name="gender" default_value="${identity.gender.value!}" additionalParameters=" id=\"gender\"  class=\"form-control\" " items=genderlist  />
-	                                </#if>
-	                                <@certificate identity.gender />  
+	                                  <@comboWithParams name="gender" default_value="${identity.gender.value!}" additionalParameters=" id=\"gender\"  class=\"form-control\" " items=genderlist  />
+	                                  <@certificate identity.gender />  
 	                            </div>
 	                        </#if>
 	                        <#if identity.preferredUsername.mandatory>
@@ -41,7 +42,7 @@
 	                                <input class="form-control input-sm" type="text" id="preferredUsername" name="preferredUsername" value="${identity.preferredUsername.value!''}" >
 	                            </div>
 	                         </#if>   
-							<#if>
+							
 							<#if identity.lastName.mandatory>
 	                            <div class="form-group">
 	                                <label for="lastName" >
@@ -181,10 +182,12 @@
                             </div>
                         </div>					
                     </form>
+                  </#if>	  
             </div>
         </div>
     </div>
 </div>
+
 
 <script type="text/javascript" src="jsp/site/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp"></script>
 <script type="text/javascript" src="js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js"></script>
