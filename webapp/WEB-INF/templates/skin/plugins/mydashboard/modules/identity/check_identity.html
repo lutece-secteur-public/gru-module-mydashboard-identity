@@ -12,6 +12,9 @@
             </div>
             <div class="box-body">
                 <#if mandatory_informations_saved>
+              	 	<div class="alert alert-primary" role="alert">
+ 						#i18n{module.mydashboard.identity.xpage.check_identity.messageInformationsCompletedSuccessfuly}
+					 </div>
 					   <#if service_url?? >
 						     <a href="${service_url}" class="btn btn-primary">#i18n{module.mydashboard.identity.xpage.check_identity.labelBackToService} ${service_name!'#i18n{module.mydashboard.identity.xpage.check_identity.labelBackToService.default}'}</a>
 						<#else>

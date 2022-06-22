@@ -33,18 +33,30 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.util;
 
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.ApplicationRightsDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.AttributeDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.CertificateDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityDto;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.ApplicationRightsDto;
+import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.AttributeDto;
+import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.AuthorDto;
+import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.CertificateDto;
+import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityChangeDto;
+import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.v2.web.service.AuthorType;
+import fr.paris.lutece.plugins.identitystore.v2.web.service.IdentityService;
+import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
+import fr.paris.lutece.portal.service.security.UserNotSignedException;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
 
 
 /**
@@ -55,9 +67,11 @@ import javax.servlet.http.HttpServletRequest;
 public class DashboardIdentityUtils
 {
     private static DashboardIdentityUtils _instance;   
-    
+    private static final String BEAN_IDENTITYSTORE_SERVICE = "mydashboard-identity.identitystore.service";
     //For matching on DBAttributes and Identity store attributes
     private static Map<String,String> _mapAttributeKeyMatch;
+    private IdentityService _identityService;
+    private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
     static {
         _mapAttributeKeyMatch = new HashMap<String,String>( );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME, Constants.PROPERTY_KEY_NAME );
@@ -83,6 +97,9 @@ public class DashboardIdentityUtils
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LOGIN, Constants.PROPERTY_KEY_LOGIN );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_EMAIL, Constants.PROPERTY_KEY_EMAIL );
     }
+    private static ReferenceList _lstContactModeList;
+    private static ReferenceList _lstGenderList;
+    private static final String SPLIT_PATTERN = ";";
 
     /**
      * private constructor for singleton
@@ -96,6 +113,29 @@ public class DashboardIdentityUtils
         if ( _instance == null )
         {
             _instance = new DashboardIdentityUtils( );
+            _instance._identityService = SpringContextService.getBean( BEAN_IDENTITYSTORE_SERVICE );
+            _lstGenderList = new ReferenceList( );
+
+            int i = 0;
+
+            for ( String sItem : Constants.PROPERTY_KEY_GENDER_LIST.split( SPLIT_PATTERN ) )
+            {
+                ReferenceItem refItm = new ReferenceItem( );
+                refItm.setName( sItem );
+                refItm.setCode( String.valueOf( i ) );
+                _lstGenderList.add( refItm );
+                i++;
+            }
+
+            _lstContactModeList = new ReferenceList( );
+
+            for ( String sItem : Constants.PROPERTY_KEY_CONTACT_MODE_LIST.split( SPLIT_PATTERN ) )
+            {
+                ReferenceItem refItm = new ReferenceItem( );
+                refItm.setName( sItem );
+                refItm.setCode( sItem );
+                _lstContactModeList.add( refItm );
+            }
         }
             return _instance;
     }
@@ -116,6 +156,7 @@ public class DashboardIdentityUtils
     	return convertToDashboardIdentity(identity, null);
     }
     
+   
     
     
 
@@ -209,7 +250,7 @@ public class DashboardIdentityUtils
      */
     private DashboardAttribute getDashboardAttributeFromAttributeDtoKey ( IdentityDto identity, String identityDtoAttributeKey, String dashboardAttributeKey,ApplicationRightsDto applicationRightsDto )
     {
-        AttributeDto attribute = identity.getAttributes( ).get( identityDtoAttributeKey );
+        AttributeDto attribute = identity.getAttributes( )!=null?identity.getAttributes( ).get( identityDtoAttributeKey ):null;
         DashboardAttribute dashboardAttribute=null;
         if ( attribute != null )
         {
@@ -250,17 +291,6 @@ public class DashboardIdentityUtils
      */
     public void populateDashboardIdentity ( DashboardIdentity identity, HttpServletRequest request )
     {
-        String connectionId = request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_CONNECTION_ID );
-        String customerId = request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_CUSTOMER_ID );
-        
-        if ( connectionId != null )
-        {
-            identity.setAttributeValue( Constants.ATTRIBUTE_DB_IDENTITY_CONNECTION_ID, connectionId );
-        }
-        if ( customerId != null )
-        {
-            identity.setAttributeValue( Constants.ATTRIBUTE_DB_IDENTITY_CUSTOMER_ID, customerId );
-        }
         
         for ( String strAttributeKey : _mapAttributeKeyMatch.keySet( ) )
         {
@@ -290,4 +320,75 @@ public class DashboardIdentityUtils
         }
         identity.setAttributes( mapAttributes );
     }
+    
+    /**
+     * return IdentityDto from strConnectionId
+     *
+     * @param strConnectionId
+     *            user connection id
+     * @return IdentityDto
+     * @throws UserNotSignedException
+     */
+    public IdentityDto getIdentityDto( String strConnectionId )
+    {
+        IdentityDto identityDto = null;
+
+        try
+        {
+            identityDto = _identityService.getIdentityByConnectionId( strConnectionId, DASHBOARD_APP_CODE );
+        }
+        catch( IdentityNotFoundException infe )
+        {
+            identityDto = new IdentityDto( );
+            identityDto.setConnectionId( strConnectionId );
+        }
+
+        return identityDto;
+    }
+    
+    /**
+     * Update Identity from an IdentityDto.
+     *
+     * @param identityDto            identity Data transfer Object
+     * @throws IdentityNotFoundException the identity not found exception
+     * @throws AppException the app exception
+     */
+    public void updateIdentity( IdentityDto identityDto )throws IdentityNotFoundException, AppException
+    {
+        IdentityChangeDto identityChangeDto = buildIdentityChangeDto( identityDto );
+        if(!StringUtils.isEmpty( identityDto.getCustomerId()))
+        {
+        	_identityService.updateIdentity( identityChangeDto, null );
+        }
+        else
+        {
+        	_identityService.createIdentity(identityChangeDto);
+            
+        }
+        
+        	
+    }
+    
+    /**
+     * build a changeDto from Identity.
+     *
+     * @param identity            identity to update
+     * @return IdentityChangeDto
+     */
+    private IdentityChangeDto buildIdentityChangeDto( IdentityDto identity )
+    {
+        IdentityChangeDto identityChange = new IdentityChangeDto( );
+        AuthorDto author = new AuthorDto( );
+        author.setApplicationCode( DASHBOARD_APP_CODE );
+        author.setType( AuthorType.TYPE_USER_OWNER.getTypeValue( ) );
+        author.setId( AuthorDto.USER_DEFAULT_ID );
+
+        identityChange.setIdentity( identity );
+        identityChange.setAuthor( author );
+
+        return identityChange;
+    }
+    
+    
+    
 }

@@ -34,10 +34,10 @@
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -53,6 +53,7 @@ import fr.paris.lutece.plugins.identitystore.v2.web.service.IdentityService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.service.DashboardIdentityService;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.DashboardIdentityUtils;
 import fr.paris.lutece.plugins.verifybackurl.service.AuthorizedUrlService;
@@ -195,7 +196,7 @@ public class IdentityXPage extends MVCApplication
         String strMyDashboardPropertiesPrefix = dashboardPropertiesGroup.getDatastoreKeysPrefix( );
         
         Map<String, Object> model = getModel( );
-        IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
+        IdentityDto identityDto = DashboardIdentityUtils.getInstance().getIdentityDto( luteceUser.getName( ) );
         _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
 
         model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( strMyDashboardPropertiesPrefix ).toMap( ) );
@@ -239,7 +240,7 @@ public class IdentityXPage extends MVCApplication
         if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId( ) == null )
                 || !_dashboardIdentity.getConnectionId( ).getValue( ).equals( luteceUser.getName( ) ) )
         {
-            IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
+            IdentityDto identityDto = DashboardIdentityUtils.getInstance().getIdentityDto( luteceUser.getName( ) );
             _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
         }
         
@@ -295,33 +296,18 @@ public class IdentityXPage extends MVCApplication
         	_strAppCode=strAppCode;
         }
         
-    
-       
-        if( _bReInitAppCode )
-        {
-        
-	        try {
-	        	_applicationRightsDto=   _identityService.getApplicationRights(strAppCode);
-	        	
-			} catch (AppException e) {
-				AppLogService.error("An error Appear During retrieving App Rights for the APP  {}",strAppCode,e);
-			}
-        }
-        
-        if(_applicationRightsDto==null)
-        {
-        	return redirectView( request, VIEW_GET_VIEW_IDENTITY );
-        	
-        }
-        
-       
-        
 		if ((_checkdIdentity == null) || (_checkdIdentity.getConnectionId() == null)
 				|| !_checkdIdentity.getConnectionId().getValue().equals(luteceUser.getName())
 				|| _bReInitAppCode )    
 		{
-            IdentityDto identityDto = getIdentityDto( luteceUser.getName( ) );
-            _checkdIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto, _applicationRightsDto);
+			try {
+				_checkdIdentity=DashboardIdentityService.getInstance().getDashBoardIdentity(_strAppCode, luteceUser.getName( ));
+				
+			} catch (AppException e) {
+				AppLogService.error("An error appear during retreaving Identity information for app_code {} and user guid {} ",strAppCode,luteceUser.getName(),e);
+				return redirectView( request, VIEW_GET_VIEW_IDENTITY );
+			}
+				
         }
 		
 		
@@ -385,23 +371,24 @@ public class IdentityXPage extends MVCApplication
         }
 
         // fill dashboardIdentity from submitted form
-        DashboardIdentityUtils.getInstance( ).populateDashboardIdentity( _dashboardIdentity, request );
-
-        if ( !checkDashboardIdentityFields( _dashboardIdentity, request,false ) )
+        DashboardIdentityService.getInstance( ).populateDashboardIdentity( _dashboardIdentity, request );
+        Map<String,String> hashErros= DashboardIdentityService.getInstance( ).checkDashboardIdentityFields(_dashboardIdentity, request, false);
+        if ( !hashErros.isEmpty())
         {
+        	hashErros.forEach((x,y)->addError(y));
             return redirectView( request, VIEW_GET_MODIFY_IDENTITY );
         }
 
-        IdentityDto identityDto = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( _dashboardIdentity,false );
         
-        DashboardIdentityUtils.getInstance( ).filterByCertifier ( identityDto );
-
         try
         {
-            updateIdentity( identityDto );
+        	DashboardIdentityService.getInstance( ).updateDashboardIdentity(_dashboardIdentity, false);
         }
         catch( Exception appEx )
         {
+        	
+    		AppLogService.error("An error appear during updating Identity information for  user guid {} ",_dashboardIdentity.getConnectionId(),appEx);
+    		
             addError( Constants.MESSAGE_ERROR_UPDATE_IDENTITY, request.getLocale( ) );
 
             return redirectView( request, VIEW_GET_MODIFY_IDENTITY );
@@ -438,20 +425,17 @@ public class IdentityXPage extends MVCApplication
         }
 
         // fill dashboardIdentity from submitted form
-        DashboardIdentityUtils.getInstance( ).populateDashboardIdentity( _checkdIdentity, request );
-
-        if ( !checkDashboardIdentityFields( _checkdIdentity, request ,true) )
+        DashboardIdentityService.getInstance( ).populateDashboardIdentity( _checkdIdentity, request );
+        Map<String,String> hashErros= DashboardIdentityService.getInstance( ).checkDashboardIdentityFields(_checkdIdentity, request, true);
+        if ( !hashErros.isEmpty())
         {
+        	hashErros.forEach((x,y)->addError(y));
             return redirectView( request, VIEW_GET_CHECK_IDENTITY );
         }
 
-        IdentityDto identityDto = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( _checkdIdentity,true );
-        
-        DashboardIdentityUtils.getInstance( ).filterByCertifier ( identityDto );
-
         try
         {
-            updateIdentity( identityDto );
+        	DashboardIdentityService.getInstance( ).updateDashboardIdentity(_checkdIdentity, false);
         }
         catch( Exception appEx )
         {
@@ -493,45 +477,9 @@ public class IdentityXPage extends MVCApplication
         return luteceUser;
     }
 
-    /**
-     * return IdentityDto from strConnectionId
-     *
-     * @param strConnectionId
-     *            user connection id
-     * @return IdentityDto
-     * @throws UserNotSignedException
-     */
-    private IdentityDto getIdentityDto( String strConnectionId )
-    {
-        IdentityDto identityDto = null;
+   
 
-        try
-        {
-            identityDto = _identityService.getIdentityByConnectionId( strConnectionId, DASHBOARD_APP_CODE );
-        }
-        catch( IdentityNotFoundException infe )
-        {
-            identityDto = new IdentityDto( );
-            identityDto.setConnectionId( strConnectionId );
-        }
-
-        return identityDto;
-    }
-
-    /**
-     * Update Identity from an IdentityDto
-     *
-     * @param identityDto
-     *            identity Data transfer Object
-     * @throws IdentityNotFoundException
-     */
-    private void updateIdentity( IdentityDto identityDto )
-    {
-        IdentityChangeDto identityChangeDto = buildIdentityChangeDto( identityDto );
-
-        _identityService.updateIdentity( identityChangeDto, null );
-
-    }
+    
 
     /**
      * check if user is authenticated
@@ -546,186 +494,6 @@ public class IdentityXPage extends MVCApplication
         getConnectedUser( request );
     }
 
-    /**
-     * build a changeDto from Identity
-     *
-     * @param identity
-     *            identity to update
-     * @return IdentityChangeDto
-     */
-    private IdentityChangeDto buildIdentityChangeDto( IdentityDto identity )
-    {
-        IdentityChangeDto identityChange = new IdentityChangeDto( );
-        AuthorDto author = new AuthorDto( );
-        author.setApplicationCode( DASHBOARD_APP_CODE );
-        author.setType( AuthorType.TYPE_USER_OWNER.getTypeValue( ) );
-        author.setId( AuthorDto.USER_DEFAULT_ID );
-
-        identityChange.setIdentity( identity );
-        identityChange.setAuthor( author );
-
-        return identityChange;
-    }
-
-    /**
-     * Check fields format of dashboardIdentity
-     *
-     * @param dashboardIdentity
-     *            dashboardIdentity to check
-     * @param request
-     *            the httpServletrequest to add errors
-     * @param  bOnlyCheckMandatory only check mandatory field           
-     * @return IdentityChangeDto
-     */
-    private boolean checkDashboardIdentityFields( DashboardIdentity dashboardIdentity, HttpServletRequest request,boolean bOnlyCheckMandatory )
-    {
-        boolean bStatus = true;
-
-        String strValidateLastName = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME, Constants.PROPERTY_KEY_VALIDATION_REGEXP_LAST_NAME, Constants.MESSAGE_ERROR_VALIDATION_LASTNAME,dashboardIdentity.getLastName().isMandatory());
-        
-        if ( !strValidateLastName.isEmpty( ) && (! bOnlyCheckMandatory || dashboardIdentity.getLastName().isMandatory()))
-        {
-            addError( strValidateLastName );
-            bStatus = false;
-        }
-
-        String strValidatePreferredUsername = getErrorValidation(request, "preferredUsername", Constants.PROPERTY_KEY_VALIDATION_REGEXP_PREFERREDUSERNAME, Constants.MESSAGE_ERROR_VALIDATION_PREFFEREDUSERNAME,dashboardIdentity.getPreferredUsername().isMandatory());
-
-        if ( !strValidatePreferredUsername.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getPreferredUsername().isMandatory())  )
-        {
-            addError( strValidatePreferredUsername );
-            bStatus = false;
-        }
-
-        String strValidateFirstname = getErrorValidation(request, "firstname", Constants.PROPERTY_KEY_VALIDATION_REGEXP_FIRSTNAME, Constants.MESSAGE_ERROR_VALIDATION_FIRSTNAME,dashboardIdentity.getFirstname().isMandatory() );
-
-        if ( !strValidateFirstname.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getFirstname().isMandatory())  )
-        {
-            addError( strValidateFirstname );
-            bStatus = false;
-        }
-
-        String strValidateBirthplace = getErrorValidation(request, "birthplace", Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHPLACE, Constants.MESSAGE_ERROR_VALIDATION_BIRTHPLACE,dashboardIdentity.getBirthplace().isMandatory() );
-
-        if ( !strValidateBirthplace.isEmpty( )  &&  (! bOnlyCheckMandatory || dashboardIdentity.getBirthplace().isMandatory())   )
-        {
-            addError( strValidateBirthplace );
-            bStatus = false;
-        }
-
-        String strValidateBirthDate = getErrorValidation(request, "birthdate", Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHDATE, Constants.MESSAGE_ERROR_VALIDATION_BIRTHDATE,dashboardIdentity.getBirthdate().isMandatory());
-
-        if ( !strValidateBirthDate.isEmpty( )  &&  (! bOnlyCheckMandatory || dashboardIdentity.getBirthdate().isMandatory())  )
-        {
-            addError( strValidateBirthDate );
-            bStatus = false;
-        }
-        
-        
-
-        String strValidateBirthCountry = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY , Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHCOUNTRY, Constants.MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY ,dashboardIdentity.getBirthcountry().isMandatory());
-
-        if ( !strValidateBirthCountry.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getBirthcountry().isMandatory()))
-        {
-            addError( strValidateBirthCountry );
-            bStatus = false;
-        }
-
-        String strValidateEmail = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_EMAIL , null, Constants.MESSAGE_ERROR_VALIDATION_EMAIL,dashboardIdentity.getEmail().isMandatory() );
-
-        if ( !strValidateEmail.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getEmail( ).isMandatory()) )
-        {
-            addError( strValidateEmail );
-            bStatus = false;
-        }
-
-        String strValidatePhone =  getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_PHONE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_PHONE, Constants.MESSAGE_ERROR_VALIDATION_PHONE,dashboardIdentity.getPhone().isMandatory() );
-
-        if ( !strValidatePhone.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getPhone( ).isMandatory()))
-        {
-            addError( strValidatePhone );
-            bStatus = false;
-        }
-
-        String strValidateMobilePhone = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_MOBILEPHONE, Constants.MESSAGE_ERROR_VALIDATION_MOBILEPHONE ,dashboardIdentity.getMobilePhone().isMandatory());
-
-        if ( !strValidateMobilePhone.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getMobilePhone( ).isMandatory()))
-        {
-            addError( strValidateMobilePhone );
-            bStatus = false;
-        }
-
-        String strValidateAdresse = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS, Constants.MESSAGE_ERROR_VALIDATION_ADDRESS,dashboardIdentity.getAddress().isMandatory());
-
-        if ( !strValidateAdresse.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getAddress( ).isMandatory()))
-        {
-            addError( strValidateAdresse );
-            bStatus = false;
-        }
-
-        String strValidateAdresseDetail = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_DETAIL , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_DETAIL, Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_DETAIL,dashboardIdentity.getAddressDetail().isMandatory() );
-
-        if ( !strValidateAdresseDetail.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getAddressDetail( ).isMandatory()) )
-        {
-            addError( strValidateAdresseDetail );
-            bStatus = false;
-        }
-
-        
-        
-        String strValidateAdressePostalcode = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_POSTALCODE, Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_POSTALCODE,dashboardIdentity.getAddressPostalcode().isMandatory() );
-
-        if ( !strValidateAdressePostalcode.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getAddressPostalcode( ).isMandatory()) )
-        {
-            addError( strValidateAdressePostalcode );
-            bStatus = false;
-        }
-
-        String strValidateCity = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_CITY, Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_CITY,dashboardIdentity.getAddressCity().isMandatory() );
-
-        if ( !strValidateCity.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getAddressCity( ).isMandatory()) )
-        {
-            addError( strValidateCity );
-            bStatus = false;
-        }
-
-        String strPreferredContactMode = dashboardIdentity.getPreferredContactMode( ).getValue( );
-
-        // Case preferred Contact Mode = email. Check if email is empty
-        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 0 ).getName( ) ) == 0 )
-        {
-            if ( dashboardIdentity.getEmail( ).getValue( ).isEmpty( ) && (! bOnlyCheckMandatory || dashboardIdentity.getEmail( ).isMandatory()) )
-            {
-                addError( I18nService.getLocalizedString( Constants.MESSAGE_ERROR_EMAIL_EMPTY, request.getLocale( ) ) );
-                bStatus = false;
-            }
-        }
-
-        // Case preferred Contact Mode = telephone. Check if at least telephone or mobile is populated
-        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 1 ).getName( ) ) == 0 )
-        {
-            if ( ( dashboardIdentity.getPhone( ).getValue( ).isEmpty( ) ) && ( dashboardIdentity.getMobilePhone( ).getValue( ).isEmpty( ) ) &&   (! bOnlyCheckMandatory || dashboardIdentity.getPhone( ).isMandatory()||dashboardIdentity.getMobilePhone().isMandatory())  )
-            {
-                addError( I18nService.getLocalizedString( Constants.MESSAGE_ERROR_TELEPHONE_EMPTY, request.getLocale( ) ) );
-                bStatus = false;
-            }
-        }
-
-        // Populate gender with list codes {0,1,2} instead of values
-        String strGender = dashboardIdentity.getGender( ).getValue( );
-
-        for ( ReferenceItem rItem : _lstGenderList )
-        {
-            if ( strGender.compareTo( rItem.getName( ) ) == 0 )
-            {
-                dashboardIdentity.setGender( new DashboardAttribute( 
-                        Constants.ATTRIBUTE_DB_IDENTITY_GENDER,
-                        rItem.getCode( ) ) );
-            }
-        }
-
-        return bStatus;
-    }
 
     /**
      * @param request
@@ -1065,6 +833,6 @@ public class IdentityXPage extends MVCApplication
         mapAttributes.put( attribute.getKey( ), attribute );
         identityDto.setAttributes( mapAttributes );
 
-        updateIdentity( identityDto );
+        DashboardIdentityUtils.getInstance().updateIdentity(identityDto);
     }
 }
