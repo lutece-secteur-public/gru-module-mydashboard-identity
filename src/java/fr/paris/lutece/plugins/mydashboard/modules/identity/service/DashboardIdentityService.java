@@ -38,7 +38,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.ApplicationRightsDto;
@@ -68,6 +68,8 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     
     /** The Constant BEAN_IDENTITYSTORE_SERVICE. */
     private static final String BEAN_IDENTITYSTORE_SERVICE = "mydashboard-identity.identitystore.service";
+    private static final String DEFAULT_ERROR="error";
+    
     
     /** The identity service. */
     private IdentityService _identityService;
@@ -382,26 +384,35 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     private String getErrorValidation(HttpServletRequest request,String strAttributeKey,String strRegExp, String i18nErrorMessage,boolean bCheckMandatory)
     {
     	String strError= StringUtils.EMPTY;
+    	boolean bError=false;
     	if(strAttributeKey.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) 
     			&& ( request.getParameter( strAttributeKey ) == null 
     			     ||!EmailValidator.getInstance( ).isValid( request.getParameter( strAttributeKey ))))
     	{
+    		
     		strError = I18nService.getLocalizedString( i18nErrorMessage, request.getLocale( ) );
+    		 bError=true;
     		
     	}
-    		
-    	else if ( !strAttributeKey.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) && (request.getParameter( strAttributeKey ) == null || !request.getParameter( strAttributeKey ).matches( strRegExp )) )
-         {
-    		strError = I18nService.getLocalizedString( i18nErrorMessage, request.getLocale( ) );
-         }
     	else if(bCheckMandatory && StringUtils.isBlank(request.getParameter( strAttributeKey )))
     	{
     		
     		strError=  I18nService.getLocalizedString( Constants.MESSAGE_ERROR_EMPTY_ERROR_PREFIX+strAttributeKey, request.getLocale( ) );
+    		bError=true;
     		
     	}
+    		
+    	else if ( !strAttributeKey.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) && (request.getParameter( strAttributeKey ) != null && !request.getParameter( strAttributeKey ).matches( strRegExp )) )
+         {
+    		strError = I18nService.getLocalizedString( i18nErrorMessage, request.getLocale( ) );
+    		bError=true;
+         }
     	
     	
+    	if(bError && StringUtils.isEmpty(strError))
+    	{
+    		strError=DEFAULT_ERROR;
+    	}
     	return strError;
     	
     }

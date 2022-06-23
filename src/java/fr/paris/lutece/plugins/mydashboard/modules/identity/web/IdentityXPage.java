@@ -269,7 +269,7 @@ public class IdentityXPage extends MVCApplication
             }
         }
         
-        return getXPage( TEMPLATE_GET_VIEW_CHECK_IDENTITY, request.getLocale( ), model );
+        return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale( ), model );
     }
     
     
