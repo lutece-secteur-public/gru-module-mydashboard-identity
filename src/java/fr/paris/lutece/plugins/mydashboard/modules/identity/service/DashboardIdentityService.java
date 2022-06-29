@@ -386,8 +386,8 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     	String strError= StringUtils.EMPTY;
     	boolean bError=false;
     	if(strAttributeKey.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) 
-    			&& ( request.getParameter( strAttributeKey ) == null 
-    			     ||!EmailValidator.getInstance( ).isValid( request.getParameter( strAttributeKey ))))
+    			&& !StringUtils.isBlank(request.getParameter( strAttributeKey ))  
+    			&&   !EmailValidator.getInstance( ).isValid( request.getParameter( strAttributeKey )))
     	{
     		
     		strError = I18nService.getLocalizedString( i18nErrorMessage, request.getLocale( ) );
