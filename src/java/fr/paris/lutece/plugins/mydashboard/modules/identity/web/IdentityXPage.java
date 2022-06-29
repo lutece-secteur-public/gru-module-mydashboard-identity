@@ -729,8 +729,8 @@ public class IdentityXPage extends MVCApplication
     {
     	String strError= StringUtils.EMPTY;
     	if(strAttributeKey.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) 
-    			&& ( request.getParameter( strAttributeKey ) == null 
-    			     ||!EmailValidator.getInstance( ).isValid( request.getParameter( strAttributeKey ))))
+    			&& ( request.getParameter( strAttributeKey ) == null
+    			|| (StringUtils.isEmpty(strAttributeKey)  && !EmailValidator.getInstance( ).isValid( request.getParameter( strAttributeKey )))))
     	{
     		strError = I18nService.getLocalizedString( i18nErrorMessage, request.getLocale( ) );
     		
