@@ -430,23 +430,6 @@ public class DashboardIdentity
     }
 
     /**
-     * @return the PreferredContactMode
-     */
-    public DashboardAttribute getPreferredContactMode( )
-    {
-        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_CONTACT_MODE );
-    }
-
-    /**
-     * @param preferredContactMode
-     *            the Preferred Contact Mode to set
-     */
-    public void setPreferredContactMode( DashboardAttribute preferredContactMode )
-    {
-        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_CONTACT_MODE, preferredContactMode );
-    }
-
-    /**
      * @return the Login
      */
     public DashboardAttribute getLogin( )
@@ -463,41 +446,7 @@ public class DashboardIdentity
     {
         _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_LOGIN, login );
     }
-
-    /**
-     * @return the AcceptNews flag
-     */
-    public DashboardAttribute getAcceptNews( )
-    {
-        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_NEWS );
-    }
-
-    /**
-     * @param bAcceptNews
-     *            the AcceptNews flag to set
-     */
-    public void setAcceptNews( DashboardAttribute bAcceptNews )
-    {
-        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_NEWS, bAcceptNews );
-    }
-
-    /**
-     * @return the AcceptSurvey flag
-     */
-    public DashboardAttribute getAcceptSurvey( )
-    {
-        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY );
-    }
-
-    /**
-     * @param bAcceptSurvey
-     *            the AcceptSurvey flag to set
-     */
-    public void setAcceptSurvey( DashboardAttribute bAcceptSurvey )
-    {
-        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY, bAcceptSurvey );
-    }
-    
+  
     /**
      * @return the FranceConnectCertified flag
      */

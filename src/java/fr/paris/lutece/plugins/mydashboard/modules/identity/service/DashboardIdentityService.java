@@ -41,9 +41,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.ApplicationRightsDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.service.IdentityService;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.Identity;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchResponse;
+import fr.paris.lutece.plugins.identitystore.v3.web.service.ServiceContractService;
+import fr.paris.lutece.plugins.identitystore.web.exception.IdentityStoreException;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
@@ -51,7 +53,7 @@ import fr.paris.lutece.plugins.mydashboard.modules.identity.util.DashboardIdenti
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -66,16 +68,12 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     /** The instance od DashBoard Identity */
     private static DashboardIdentityService _instance;   
     
-    /** The Constant BEAN_IDENTITYSTORE_SERVICE. */
-    private static final String BEAN_IDENTITYSTORE_SERVICE = "mydashboard-identity.identitystore.service";
+    /** The Constant BEAN_SERVICE_CONTRACT_SERVICE. */
+    private static final String BEAN_SERVICE_CONTRACT_SERVICE = "mydashboard-identity.serviceContract.service";
     private static final String DEFAULT_ERROR="error";
     
-    
-    /** The identity service. */
-    private IdentityService _identityService;
-    
-    /** The Constant DASHBOARD_APP_CODE. */
-    private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
+    /** The ServiceContractService */
+    private ServiceContractService _serviceContractService;
   
     /** The lst contact mode list. */
     private static ReferenceList _lstContactModeList;
@@ -104,7 +102,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         if ( _instance == null )
         {
             _instance = new DashboardIdentityService( );
-            _instance._identityService = SpringContextService.getBean( BEAN_IDENTITYSTORE_SERVICE );
+            _instance._serviceContractService = SpringContextService.getBean( BEAN_SERVICE_CONTRACT_SERVICE );
             _lstGenderList = new ReferenceList( );
 
             int i = 0;
@@ -154,21 +152,25 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     @Override
 	public DashboardIdentity getDashBoardIdentity(String strApplicationCode,String strGuid)throws AppException
     {
-    	IdentityDto identityDto=null; 
-    	DashboardIdentity dashboardIdentity=null;
-    	 ApplicationRightsDto	applicationRightsDto=   _identityService.getApplicationRights(strApplicationCode);
-    	 if( !StringUtils.isEmpty( strGuid ))
-    	 {
-    		 identityDto = DashboardIdentityUtils.getInstance( ).getIdentityDto( strGuid );
-    	 }
-    	 else
-    	 {
-    		  identityDto = new IdentityDto( );
-              identityDto.setConnectionId( strGuid );
-           
-    	 }
-    	 dashboardIdentity= DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto, applicationRightsDto);
-         return dashboardIdentity;	
+        IdentitySearchResponse identitySearchResponse = null; 
+        DashboardIdentity dashboardIdentity = null;
+
+         ServiceContractSearchResponse serviceContractSearchResponse = null;
+        try
+        {
+            serviceContractSearchResponse = _serviceContractService.getActiveServiceContract( strApplicationCode ) ;
+        } catch ( IdentityStoreException e )
+        {
+            AppLogService.error( "Error ServiceContract for application {}", e.getMessage( ), strApplicationCode );
+        }
+         
+         if( !StringUtils.isEmpty( strGuid ))
+         {
+             identitySearchResponse = DashboardIdentityUtils.getInstance( ).getIdentity( strGuid );
+         }
+
+         dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identitySearchResponse, serviceContractSearchResponse );
+         return dashboardIdentity;  
     }
     
     
@@ -279,28 +281,6 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         	hashErrors.put( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY,strValidateCity );
         }
 
-        String strPreferredContactMode = dashboardIdentity.getPreferredContactMode( ).getValue( );
-
-        // Case preferred Contact Mode = email. Check if email is empty
-        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 0 ).getName( ) ) == 0 )
-        {
-            if ( dashboardIdentity.getEmail( ).getValue( ).isEmpty( ) && (! bOnlyCheckMandatory || dashboardIdentity.getEmail( ).isMandatory()) )
-            {
-            	hashErrors.put( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL,I18nService.getLocalizedString( Constants.MESSAGE_ERROR_EMAIL_EMPTY, request.getLocale( ) ) );
-            
-            }
-        }
-
-        // Case preferred Contact Mode = telephone. Check if at least telephone or mobile is populated
-        if ( strPreferredContactMode.compareTo( _lstContactModeList.get( 1 ).getName( ) ) == 0 )
-        {
-            if ( ( dashboardIdentity.getPhone( ).getValue( ).isEmpty( ) ) && ( dashboardIdentity.getMobilePhone( ).getValue( ).isEmpty( ) ) &&   (! bOnlyCheckMandatory || dashboardIdentity.getPhone( ).isMandatory()||dashboardIdentity.getMobilePhone().isMandatory())  )
-            {
-            	hashErrors.put(Constants.ATTRIBUTE_DB_IDENTITY_PHONE,I18nService.getLocalizedString( Constants.MESSAGE_ERROR_TELEPHONE_EMPTY, request.getLocale( ) ) );
-              
-            }
-        }
-
         // Populate gender with list codes {0,1,2} instead of values
         String strGender = dashboardIdentity.getGender( ).getValue( );
 
@@ -327,10 +307,10 @@ public class DashboardIdentityService implements IDashBoardIdentityService
 	public void updateDashboardIdentity(DashboardIdentity dashboardIdentity,boolean bUpdateOnlyManadtory) throws AppException
     {
     	
-    	 IdentityDto identityDto = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,bUpdateOnlyManadtory );
+         Identity identity = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,bUpdateOnlyManadtory );
          //do not update certifier fields
-    	 DashboardIdentityUtils.getInstance( ).filterByCertifier ( identityDto );
-         DashboardIdentityUtils.getInstance().updateIdentity( identityDto );
+    	 DashboardIdentityUtils.getInstance( ).filterByCertifier ( identity );
+         DashboardIdentityUtils.getInstance().updateIdentity( identity );
            	
     }
     
@@ -339,14 +319,14 @@ public class DashboardIdentityService implements IDashBoardIdentityService
      * {@inheritDoc}
      */
     @Override
-    public IdentityDto getIdentityToUpdate(DashboardIdentity dashboardIdentity,boolean bUpdateOnlyManadtory)
+    public Identity getIdentityToUpdate(DashboardIdentity dashboardIdentity,boolean bUpdateOnlyManadtory)
     {
     	
-    	 IdentityDto identityDto = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,bUpdateOnlyManadtory );
+         Identity identity = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,bUpdateOnlyManadtory );
          //do not update certifier fields
-    	 DashboardIdentityUtils.getInstance( ).filterByCertifier ( identityDto );
+    	 DashboardIdentityUtils.getInstance( ).filterByCertifier ( identity );
          
-    	 return identityDto;
+    	 return identity;
            	
     }
     

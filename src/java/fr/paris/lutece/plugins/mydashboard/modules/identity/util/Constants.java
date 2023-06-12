@@ -74,30 +74,16 @@ public final class Constants
             "mydashboard.identity.attribute.home-info.postal.postalcode" );
     public static final String PROPERTY_KEY_ADDRESS_CITY = AppPropertiesService.getProperty( 
             "mydashboard.identity.attribute.home-info.postal.city" );
-    public static final String PROPERTY_KEY_BILLING_ADDRESS = AppPropertiesService.getProperty( 
-            "mydashboard.identity.attribute.billing-info.postal.address" );
-    public static final String PROPERTY_KEY_BILLING_ADDRESSDETAIL = AppPropertiesService.getProperty( 
-            "mydashboard.identity.attribute.billing-info.postal.addressdetail" );
-    public static final String PROPERTY_KEY_BILLING_ADDRESS_POSTAL_CODE = AppPropertiesService.getProperty( 
-            "mydashboard.identity.attribute.billing-info.postal.postalcode" );
-    public static final String PROPERTY_KEY_BILLING_ADDRESS_CITY = AppPropertiesService.getProperty( 
-            "mydashboard.identity.attribute.billing-info.postal.city" );
     public static final String PROPERTY_KEY_EMAIL = AppPropertiesService.getProperty( 
             "mydashboard.identity.attribute.user.home-info.online.email" );
     public static final String PROPERTY_KEY_MOBILE_PHONE = AppPropertiesService.getProperty( 
             "mydashboard.identity.attribute.user.home-info.telecom.mobile.number" );
     public static final String PROPERTY_KEY_PHONE = AppPropertiesService.getProperty( 
             "mydashboard.identity.attribute.user.home-info.telecom.telephone.number" );
-    public static final String PROPERTY_KEY_PREFERRED_CONTACT = AppPropertiesService.getProperty( 
-            "mydashboard.identity.attribute.user.home-info.preferred-contact-mode" );
     public static final String PROPERTY_KEY_GENDER_LIST = AppPropertiesService.getProperty( 
             "mydashboard.identity.application.listref.gender" );
     public static final String PROPERTY_KEY_CONTACT_MODE_LIST = AppPropertiesService.getProperty( 
             "mydashboard.identity.application.listref.contact-mode" );
-    public static final String PROPERTY_KEY_ACCEPT_NEWS = AppPropertiesService.getProperty( 
-            "mydashboard.identity.application.user.acceptnews" );
-    public static final String PROPERTY_KEY_ACCEPT_SURVEY = AppPropertiesService.getProperty( 
-            "mydashboard.identity.application.user.acceptsurvey" );
 
     //Fields validation messages
     public static final String MESSAGE_ERROR_UPDATE_IDENTITY = "module.mydashboard.identity.message.error.identity.update";
@@ -169,12 +155,13 @@ public final class Constants
     public static final String ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_CITY = "billing_address_city";
     public static final String ATTRIBUTE_DB_IDENTITY_EMAIL = "email";
     public static final String ATTRIBUTE_DB_IDENTITY_PHONE = "phone";
-    public static final String ATTRIBUTE_DB_IDENTITY_PREFERRED_CONTACT_MODE = "preferred_contact_mode";
     public static final String ATTRIBUTE_DB_IDENTITY_LOGIN = "login";
     public static final String ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE = "mobile_phone";
-    public static final String ATTRIBUTE_DB_IDENTITY_ACCEPT_NEWS = "accept_news";
-    public static final String ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY = "accept_survey";
     public static final String ATTRIBUTE_DB_IDENTITY_FRANCE_CONNECT_CERTIFIED = "franceconnect_certified";
+    
+    //PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE
+    public static final String PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE = AppPropertiesService.getProperty(
+            "mydashboard.identity.application.certification.process.not_certifiable", "DEC");
     
     /**
      * Default constructor

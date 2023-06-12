@@ -4,7 +4,7 @@
 
     <#if mobileEnable="1">
         <#if attribute.certifierCode??>
-            <#if attribute.certifierCode == "mobilecertifier">
+            <#if attribute.certifierCode == "PMP">
                  <span><i class="fa fa-check-circle fa-lg" style="color:green"></i>  #i18n{module.mydashboard.identity.xpage.edit_identity.certificate.certified_by} ${attribute.certifierName!''} <#if attribute.expirationDate??>#i18n{module.mydashboard.identity.xpage.edit_identity.certificate.until} : ${attribute.expirationDate?date!''}</#if></span>
             <#elseif attribute.key="mobile_phone">
                  <@aButton class="" href="jsp/site/Portal.jsp?page=mobilecertifier" title="#i18n{module.mydashboard.identity.xpage.edit_identity.popin.mobilePhoneCertifyTitle}"/>
@@ -13,7 +13,7 @@
     </#if>         
     <#if franceconnectEnable="1">
         <#if attribute.certifierCode??>
-            <#if attribute.certifierCode == "fccertifier">
+            <#if attribute.certifierCode == "FC">
                  <span><i class="fa fa-check-circle fa-lg" style="color:green"></i><img src="images/skin/plugins/fccertifier/franceconnect_certif_logo.png" width="24" alt="logo FranceConnect"/> #i18n{module.mydashboard.identity.xpage.edit_identity.certificate.certified_by} ${attribute.certifierName!''} <#if attribute.expirationDate??>#i18n{module.mydashboard.identity.xpage.edit_identity.certificate.until} : ${attribute.expirationDate?date!''}</#if></span>
             </#if>
         </#if>

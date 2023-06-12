@@ -144,12 +144,6 @@
 	                                    <input class="form-control" type="text" id="phone" name="phone" value="${identity.phone.value!}"  />
 	                                </div>
 	                            </#if>
-	                              <#if identity.preferredContactMode.mandatory>    
-	                                <div class="form-group">
-	                                    <label class="control-label" for="preferred_contact_mode" >#i18n{module.mydashboard.identity.xpage.check_identity.contact.preferredContactMode} :</label>
-	                                    <@comboWithParams name="preferred_contact_mode" default_value="${identity.preferredContactMode.value!}" additionalParameters=" id=\"preferred_contact_mode\"  class=\"form-control\" " items=contact_modeList  />
-	                                 </div>
-	                              </#if>  
 
                             </div>
 

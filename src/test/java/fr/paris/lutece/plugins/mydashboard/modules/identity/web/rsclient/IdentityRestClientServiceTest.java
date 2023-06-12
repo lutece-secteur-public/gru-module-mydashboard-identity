@@ -33,13 +33,15 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web.rsclient;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.AttributeDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.Identity;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.CertifiedAttribute;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchResponse;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.QualifiedIdentity;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.DashboardIdentityUtils;
@@ -62,163 +64,165 @@ public class IdentityRestClientServiceTest extends LuteceTestCase
     private static final String VALUE_ADDRESSDETAIL = "detail";
     private static final String VALUE_ADDRESS_POSTAL_CODE = "addressPostalcode";
     private static final String VALUE_ADDRESS_CITY = "addressCity";
-    private static final String VALUE_BILLING_ADDRESS = "billingAddress";
-    private static final String VALUE_BILLING_ADDRESSDETAIL = "billingAddressDetail";
-    private static final String VALUE_BILLING_ADDRESS_POSTAL_CODE = "billingAddressPostalcode";
-    private static final String VALUE_BILLING_ADDRESS_CITY = "billingAddressCity";
     private static final String VALUE_PHONE = "phone";
     private static final String VALUE_EMAIL = "email";
     private static final String VALUE_LOGIN = "login";
     private static final String VALUE_MOBILE_PHONE = "mobilePhone";
-    private static final String VALUE_PREFERRED_CONTACT = "preferredContactMode";
-    private static final String VALUE_ACCEPTNEWS = "true";
-    private static final String VALUE_ACCEPTSURVEY = "false";
 
     /**
      * Test of getIdentityAttributes rest service of plugin-identitystore.
      */
     @Test
     public void testConvertDashboardDto( )
-    {
-        IdentityDto identityDto = new IdentityDto( );
-        identityDto.setConnectionId( "connectionId" );
-        identityDto.setCustomerId( "1" );
+    {       
+        IdentitySearchResponse identity = new IdentitySearchResponse( );
+        
+        List<QualifiedIdentity> listQualifiedIdentity = new ArrayList<>();
+        QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( );
+        qualifiedIdentity.setConnectionId( "connectionId" );
+        qualifiedIdentity.setCustomerId( "1" );
 
-        Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>( );
+        List<CertifiedAttribute> attributes = new ArrayList< >( );
 
-        AttributeDto attribute = new AttributeDto( );
+        CertifiedAttribute attribute = new CertifiedAttribute( );
+        
         attribute.setKey( Constants.PROPERTY_KEY_NAME );
         attribute.setValue( VALUE_NAME );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_PREFERREDUSERNAME );
         attribute.setValue( VALUE_PREFERREDUSERNAME );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_FIRSTNAME );
         attribute.setValue( VALUE_FIRSTNAME );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_GENDER );
         attribute.setValue( VALUE_GENDER );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_BIRTHDATE );
         attribute.setValue( VALUE_BIRTHDATE );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_BIRTHPLACE );
         attribute.setValue( VALUE_BIRTHPLACE );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_BIRTHCOUNTRY );
         attribute.setValue( VALUE_BIRTHCOUNTRY );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_ADDRESS );
         attribute.setValue( VALUE_ADDRESS );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_ADDRESSDETAIL );
         attribute.setValue( VALUE_ADDRESSDETAIL );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE );
         attribute.setValue( VALUE_ADDRESS_POSTAL_CODE );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_ADDRESS_CITY );
         attribute.setValue( VALUE_ADDRESS_CITY );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
-        attribute.setKey( Constants.PROPERTY_KEY_BILLING_ADDRESS );
-        attribute.setValue( VALUE_BILLING_ADDRESS );
-        mapAttributes.put( attribute.getKey( ), attribute );
-
-        attribute = new AttributeDto( );
-        attribute.setKey( Constants.PROPERTY_KEY_BILLING_ADDRESSDETAIL );
-        attribute.setValue( VALUE_BILLING_ADDRESSDETAIL );
-        mapAttributes.put( attribute.getKey( ), attribute );
-
-        attribute = new AttributeDto( );
-        attribute.setKey( Constants.PROPERTY_KEY_BILLING_ADDRESS_POSTAL_CODE );
-        attribute.setValue( VALUE_BILLING_ADDRESS_POSTAL_CODE );
-        mapAttributes.put( attribute.getKey( ), attribute );
-
-        attribute = new AttributeDto( );
-        attribute.setKey( Constants.PROPERTY_KEY_BILLING_ADDRESS_CITY );
-        attribute.setValue( VALUE_BILLING_ADDRESS_CITY );
-        mapAttributes.put( attribute.getKey( ), attribute );
-
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_PHONE );
         attribute.setValue( VALUE_PHONE );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_EMAIL );
         attribute.setValue( VALUE_EMAIL );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_LOGIN );
         attribute.setValue( VALUE_LOGIN );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
+        attribute = new CertifiedAttribute( );
         attribute.setKey( Constants.PROPERTY_KEY_MOBILE_PHONE );
         attribute.setValue( VALUE_MOBILE_PHONE );
-        mapAttributes.put( attribute.getKey( ), attribute );
+        attributes.add( attribute );
 
-        attribute = new AttributeDto( );
-        attribute.setKey( Constants.PROPERTY_KEY_PREFERRED_CONTACT );
-        attribute.setValue( VALUE_PREFERRED_CONTACT );
-        mapAttributes.put( attribute.getKey( ), attribute );
-        identityDto.setAttributes( mapAttributes );
+        qualifiedIdentity.setAttributes( attributes );
+        
+        identity.setIdentities( listQualifiedIdentity );
+        
+        DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity );
+        Identity identityDto2 = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,false );
 
-        attribute = new AttributeDto( );
-        attribute.setKey( Constants.PROPERTY_KEY_ACCEPT_NEWS );
-        attribute.setValue( VALUE_ACCEPTNEWS );
-        mapAttributes.put( attribute.getKey( ), attribute );
-
-        attribute = new AttributeDto( );
-        attribute.setKey( Constants.PROPERTY_KEY_ACCEPT_SURVEY );
-        attribute.setValue( VALUE_ACCEPTSURVEY );
-        mapAttributes.put( attribute.getKey( ), attribute );
-
-        DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto,null );
-        IdentityDto identityDto2 = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,false );
-
-        assertEquals( VALUE_NAME, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_NAME ).getValue( ) );
-        assertEquals( VALUE_PREFERREDUSERNAME, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_PREFERREDUSERNAME ).getValue( ) );
-        assertEquals( VALUE_FIRSTNAME, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_FIRSTNAME ).getValue( ) );
-        assertEquals( VALUE_GENDER, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_GENDER ).getValue( ) );
-        assertEquals( VALUE_BIRTHDATE, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_BIRTHDATE ).getValue( ) );
-        assertEquals( VALUE_BIRTHPLACE, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_BIRTHPLACE ).getValue( ) );
-        assertEquals( VALUE_BIRTHCOUNTRY, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_BIRTHCOUNTRY ).getValue( ) );
-        assertEquals( VALUE_ADDRESS, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_ADDRESS ).getValue( ) );
-        assertEquals( VALUE_ADDRESSDETAIL, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_ADDRESSDETAIL ).getValue( ) );
-        assertEquals( VALUE_ADDRESS_POSTAL_CODE, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE ).getValue( ) );
-        assertEquals( VALUE_ADDRESS_CITY, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_ADDRESS_CITY ).getValue( ) );
-        assertEquals( VALUE_BILLING_ADDRESS, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_BILLING_ADDRESS ).getValue( ) );
-        assertEquals( VALUE_BILLING_ADDRESSDETAIL, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_BILLING_ADDRESSDETAIL ).getValue( ) );
-        assertEquals( VALUE_BILLING_ADDRESS_POSTAL_CODE, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_BILLING_ADDRESS_POSTAL_CODE ).getValue( ) );
-        assertEquals( VALUE_BILLING_ADDRESS_CITY, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_BILLING_ADDRESS_CITY ).getValue( ) );
-        assertEquals( VALUE_PHONE, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_PHONE ).getValue( ) );
-        assertEquals( VALUE_PREFERRED_CONTACT, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_PREFERRED_CONTACT ).getValue( ) );
-        assertEquals( VALUE_MOBILE_PHONE, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_MOBILE_PHONE ).getValue( ) );
-
+        for ( fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.CertifiedAttribute att : identityDto2.getAttributes( ) )
+        {
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_NAME  ) )
+            {
+                assertEquals( VALUE_NAME, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_PREFERREDUSERNAME  ) )
+            {
+                assertEquals( VALUE_PREFERREDUSERNAME, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_FIRSTNAME  ) )
+            {
+                assertEquals( VALUE_FIRSTNAME, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_GENDER  ) )
+            {
+                assertEquals( VALUE_GENDER, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_BIRTHDATE  ) )
+            {
+                assertEquals( VALUE_BIRTHDATE, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE  ) )
+            {
+                assertEquals( VALUE_BIRTHPLACE, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY  ) )
+            {
+                assertEquals( VALUE_BIRTHCOUNTRY, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_ADDRESS ) )
+            {
+                assertEquals( VALUE_ADDRESS, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_ADDRESSDETAIL ) )
+            {
+                assertEquals( VALUE_ADDRESSDETAIL, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE  ) )
+            {
+                assertEquals( VALUE_ADDRESS_POSTAL_CODE, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_ADDRESS_CITY  ) )
+            {
+                assertEquals( VALUE_ADDRESS_CITY, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_PHONE  ) )
+            {
+                assertEquals( VALUE_PHONE, att.getValue( ) );
+            }
+            if( att.getKey( ).equals( Constants.PROPERTY_KEY_MOBILE_PHONE ) )
+            {
+                assertEquals( VALUE_MOBILE_PHONE, att.getValue( ) );
+            }
+        }
+        
         // PPY says it is normal that these attributes are not modified
         // assertEquals ( VALUE_LOGIN, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_LOGIN ).getValue() );
         // assertEquals ( VALUE_ACCEPTNEWS, identityDto2.getAttributes( ).get( Constants.PROPERTY_KEY_ACCEPT_NEWS ).getValue() );

@@ -47,6 +47,7 @@ public class DashboardAttribute
     private String _strCertifierName;
     private int _nCertifierLevel;
     private Date _tCertificateExpirationDate;
+    private Date _dCertificateDate;
     private boolean _bMandatory;
     
     public DashboardAttribute( )
@@ -54,7 +55,7 @@ public class DashboardAttribute
         
     }
 
-    public DashboardAttribute( String key, String value, String certifierCode, String certifierName, int nCertifierLevel, Date tCertificateExpirtationDate )
+    public DashboardAttribute( String key, String value, String certifierCode, String certifierName, int nCertifierLevel, Date tCertificateExpirtationDate, Date dCertificateDate )
     {
         _strKey = key;
         _strValue = value;
@@ -62,6 +63,7 @@ public class DashboardAttribute
         _strCertifierName = certifierName;
         _nCertifierLevel = nCertifierLevel;
         _tCertificateExpirationDate = tCertificateExpirtationDate;
+        _dCertificateDate = dCertificateDate;
     }
     
     public DashboardAttribute( String key, String value )
@@ -196,6 +198,21 @@ public class DashboardAttribute
 	public void setMandatory(boolean _bMandatory) {
 		this._bMandatory = _bMandatory;
 	}
-    
-    
+
+    /**
+     * @return the _dCertificateDate
+     */
+    public Date getCertificateDate( )
+    {
+        return _dCertificateDate;
+    }
+
+    /**
+     * @param dCertificateDate the _dCertificateDate to set
+     */
+    public void setCertificateDate( Date dCertificateDate )
+    {
+        this._dCertificateDate = dCertificateDate;
+    }
+
  }

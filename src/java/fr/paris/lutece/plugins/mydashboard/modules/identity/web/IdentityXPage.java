@@ -33,8 +33,6 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,15 +41,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import fr.paris.lutece.plugins.avatar.service.AvatarService;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.ApplicationRightsDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.AttributeDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.AuthorDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityChangeDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.service.AuthorType;
-import fr.paris.lutece.plugins.identitystore.v2.web.service.IdentityService;
-import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchResponse;
+import fr.paris.lutece.plugins.identitystore.v3.web.service.IdentityService;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.service.DashboardIdentityService;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
@@ -106,7 +97,6 @@ public class IdentityXPage extends MVCApplication
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String TEMPLATE_GET_VIEW_CHECK_IDENTITY = "skin/plugins/mydashboard/modules/identity/check_identity.html";
     
-    private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
     private static final String MARK_GENDER_LIST = "genderlist";
     private static final String MARK_CONTACT_MODE_LIST = "contact_modeList";
     private static final String BEAN_IDENTITYSTORE_SERVICE = "mydashboard-identity.identitystore.service";
@@ -128,11 +118,7 @@ public class IdentityXPage extends MVCApplication
     private static final String VIEW_VALIDATE_EMAIL = "validate_email";
     private static final String VIEW_VALIDATE_PHONE = "validate_phone";
     private static final String VIEW_VALIDATE_MOBILEPHONE = "validate_mobilephone";
-    private static final String VIEW_UPDATE_ACCEPT_NEWS = "update_acceptNews";
-    private static final String VIEW_UPDATE_ACCEPT_SURVEY = "update_acceptSurvey";
     
-    //Parameters
-    private static final String SESSION_ATTRIBUTE_BACK_URL = "back_url";
     
     private ReferenceList _lstContactModeList;
     private ReferenceList _lstGenderList;
@@ -145,7 +131,7 @@ public class IdentityXPage extends MVCApplication
     
     private IdentityService _identityService;
     private boolean _bReInitAppCode=false;
-    private ApplicationRightsDto _applicationRightsDto;
+    
     /**
      * Constructor
      */
@@ -196,8 +182,8 @@ public class IdentityXPage extends MVCApplication
         String strMyDashboardPropertiesPrefix = dashboardPropertiesGroup.getDatastoreKeysPrefix( );
         
         Map<String, Object> model = getModel( );
-        IdentityDto identityDto = DashboardIdentityUtils.getInstance().getIdentityDto( luteceUser.getName( ) );
-        _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
+        IdentitySearchResponse identitySearchResponse = DashboardIdentityUtils.getInstance().getIdentity( luteceUser.getName( ) );
+        _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identitySearchResponse );
 
         model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( strMyDashboardPropertiesPrefix ).toMap( ) );
         model.put( MARK_IDENTITY, _dashboardIdentity );
@@ -240,8 +226,8 @@ public class IdentityXPage extends MVCApplication
         if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId( ) == null )
                 || !_dashboardIdentity.getConnectionId( ).getValue( ).equals( luteceUser.getName( ) ) )
         {
-            IdentityDto identityDto = DashboardIdentityUtils.getInstance().getIdentityDto( luteceUser.getName( ) );
-            _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identityDto );
+            IdentitySearchResponse identity = DashboardIdentityUtils.getInstance().getIdentity( luteceUser.getName( ) );
+            _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity );
         }
         
         SitePropertiesGroup dashboardPropertiesGroup = (SitePropertiesGroup)SpringContextService.getBean( BEAN_MYDASHBOARD_IDENTITY_SITE_PROPERTIES );
@@ -768,71 +754,4 @@ public class IdentityXPage extends MVCApplication
         return AvatarService.getAvatarUrl( user.getEmail( ) );
     }
 
-    /**
-     * Update the accept_news attribute of the current Identity
-     * 
-     * @param request
-     *            the request
-     */
-    @View( VIEW_UPDATE_ACCEPT_NEWS )
-    public void updateAcceptNews( HttpServletRequest request )
-    {
-        if ( !request.getParameter( "bAccept" ).isEmpty( ) )
-        {
-            updateIdentityAttribute( Constants.PROPERTY_KEY_ACCEPT_NEWS, request.getParameter( "bAccept" ) );
-            String strAcceptNews = (Boolean.parseBoolean( request.getParameter( "bAccept" ) ) == true ) ?
-                    Constants.TRUE : Constants.FALSE;
-                    
-            _dashboardIdentity.setAcceptNews( new DashboardAttribute (
-                Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_NEWS,
-                strAcceptNews
-            ) );
-        }
-    }
-
-    /**
-     * Update the accept_survey attribute of the current Identity
-     * 
-     * @param request
-     *            the request
-     */
-    @View( VIEW_UPDATE_ACCEPT_SURVEY )
-    public void updateAcceptSurvey( HttpServletRequest request )
-    {
-        if ( !request.getParameter( "bAccept" ).isEmpty( ) )
-        {
-            updateIdentityAttribute( Constants.PROPERTY_KEY_ACCEPT_SURVEY, request.getParameter( "bAccept" ) );
-            String strAcceptSurveys = (Boolean.parseBoolean( request.getParameter( "bAccept" ) ) == true ) ?
-                    Constants.TRUE : Constants.FALSE;
-            _dashboardIdentity.setAcceptSurvey( new DashboardAttribute (
-                Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY,
-                strAcceptSurveys
-            ) );
-
-        }
-    }
-
-    /**
-     * Update an attribute of current Identity with provided key/value
-     * 
-     * @param propertyKeyToUpdate
-     *            the attribute key in IdentityStore
-     * @param value
-     *            the attribute value to set
-     */
-    private void updateIdentityAttribute( String propertyKeyToUpdate, String value )
-    {
-        IdentityDto identityDto = new IdentityDto( );
-        identityDto.setConnectionId( _dashboardIdentity.getConnectionId( ).getValue( ) );
-        identityDto.setCustomerId( _dashboardIdentity.getCustomerId( ).getValue( ) );
-
-        Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>( );
-        AttributeDto attribute = new AttributeDto( );
-        attribute.setKey( propertyKeyToUpdate );
-        attribute.setValue( value );
-        mapAttributes.put( attribute.getKey( ), attribute );
-        identityDto.setAttributes( mapAttributes );
-
-        DashboardIdentityUtils.getInstance().updateIdentity(identityDto);
-    }
 }
