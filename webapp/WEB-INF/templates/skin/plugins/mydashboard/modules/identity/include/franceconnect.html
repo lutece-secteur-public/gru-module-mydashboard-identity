@@ -3,22 +3,22 @@
     <#if franceconnectEnable == "1">
         <#assign FranceConnectCertified = false >
         <#if identity.lastName.certifierCode??>
-            <#if identity.lastName.certifierCode == "fccertifier">
+            <#if identity.lastName.certifierCode == "FC">
                 <#assign FranceConnectCertified = true >
             </#if>
         </#if>
         <#if identity.birthdate.certifierCode??>
-            <#if identity.birthdate.certifierCode == "fccertifier">
+            <#if identity.birthdate.certifierCode == "FC">
                 <#assign FranceConnectCertified = true >
             </#if>
         </#if>
         <#if identity.birthplace.certifierCode??>
-            <#if identity.birthplace.certifierCode == "fccertifier">
+            <#if identity.birthplace.certifierCode == "FC">
                 <#assign FranceConnectCertified = true >
             </#if>
         </#if>
         <#if identity.birthcountry.certifierCode??>
-            <#if identity.birthcountry.certifierCode == "fccertifier">
+            <#if identity.birthcountry.certifierCode == "FC">
                 <#assign FranceConnectCertified = true >
             </#if>
         </#if>

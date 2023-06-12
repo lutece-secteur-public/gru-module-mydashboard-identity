@@ -113,14 +113,6 @@
                                     <label class="control-label" for="phone" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelPhone} :</label>
                                     <input class="form-control" type="text" id="phone" name="phone" value="${identity.phone.value!}" <#if viewMode>readonly</#if> />
                                 </div>
-                                <div class="form-group">
-                                    <label class="control-label" for="preferred_contact_mode" >#i18n{module.mydashboard.identity.xpage.edit_identity.contact.preferredContactMode} :</label>
-                                    <#if viewMode>
-                                    <@comboWithParams name="preferred_contact_mode" default_value="${identity.preferredContactMode.value!}" additionalParameters=" id=\"preferred_contact_mode\"  class=\"form-control\" disabled" items=contact_modeList  />
-                                    <#else>							
-                                    <@comboWithParams name="preferred_contact_mode" default_value="${identity.preferredContactMode.value!}" additionalParameters=" id=\"preferred_contact_mode\"  class=\"form-control\" " items=contact_modeList  />
-                                    </#if>
-                                </div>
 
                             </div>
 

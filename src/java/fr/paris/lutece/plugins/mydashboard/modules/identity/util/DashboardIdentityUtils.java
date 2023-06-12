@@ -33,27 +33,33 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.ApplicationRightsDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.AttributeDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.AuthorDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.CertificateDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityChangeDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.rs.dto.IdentityDto;
-import fr.paris.lutece.plugins.identitystore.v2.web.service.AuthorType;
-import fr.paris.lutece.plugins.identitystore.v2.web.service.IdentityService;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.AuthorType;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.RequestAuthor;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.CertifiedAttribute;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.Identity;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeRequest;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchResponse;
+import fr.paris.lutece.plugins.identitystore.v3.web.service.IdentityService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
+import fr.paris.lutece.plugins.identitystore.web.exception.IdentityStoreException;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
@@ -85,15 +91,8 @@ public class DashboardIdentityUtils
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_DETAIL, Constants.PROPERTY_KEY_ADDRESSDETAIL );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE, Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY, Constants.PROPERTY_KEY_ADDRESS_CITY );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS, Constants.PROPERTY_KEY_BILLING_ADDRESS );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_DETAIL, Constants.PROPERTY_KEY_BILLING_ADDRESSDETAIL );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_POSTAL_CODE, Constants.PROPERTY_KEY_BILLING_ADDRESS_POSTAL_CODE );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BILLING_ADDRESS_CITY, Constants.PROPERTY_KEY_BILLING_ADDRESS_CITY );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_PHONE, Constants.PROPERTY_KEY_PHONE );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_CONTACT_MODE, Constants.PROPERTY_KEY_PREFERRED_CONTACT );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE, Constants.PROPERTY_KEY_MOBILE_PHONE );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_NEWS, Constants.PROPERTY_KEY_ACCEPT_NEWS );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ACCEPT_SURVEY, Constants.PROPERTY_KEY_ACCEPT_SURVEY );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LOGIN, Constants.PROPERTY_KEY_LOGIN );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_EMAIL, Constants.PROPERTY_KEY_EMAIL );
     }
@@ -146,14 +145,13 @@ public class DashboardIdentityUtils
     /**
      * return an dashboardIdentity from a identityDto
      *
-     * @param identity
-     *          identityDto to convert
+     * @param identitySearchResponse
+     *          identitySearchResponse to convert
      * @return dashboardIdentity initialized from provided identityDto
      */
-    public DashboardIdentity convertToDashboardIdentity( IdentityDto identity )
-    {
-      
-    	return convertToDashboardIdentity(identity, null);
+    public DashboardIdentity convertToDashboardIdentity( IdentitySearchResponse identitySearchResponse )
+    {     
+    	return convertToDashboardIdentity( identitySearchResponse, null);
     }
     
    
@@ -166,21 +164,21 @@ public class DashboardIdentityUtils
      * @param identity
      *          identityDto to convert
      *          
-     * @param  applicationRightsDto The App rights        
+     * @param  contractSearchResponse The App contract        
      * @return dashboardIdentity initialized from provided identityDto
      */
-    public DashboardIdentity convertToDashboardIdentity( IdentityDto identity, ApplicationRightsDto applicationRightsDto )
+    public DashboardIdentity convertToDashboardIdentity( IdentitySearchResponse identitySearchResponse, ServiceContractSearchResponse contractSearchResponse )
     {
         DashboardIdentity dashboardIdentity = new DashboardIdentity(  );
         
         dashboardIdentity.setConnectionId( new DashboardAttribute( 
                 Constants.ATTRIBUTE_DB_IDENTITY_CONNECTION_ID, 
-                identity.getConnectionId( ) ) );
+                identitySearchResponse.getIdentities( ).get( 0 ).getConnectionId( ) ) );
         
         
         dashboardIdentity.setCustomerId( new DashboardAttribute(
                 Constants.ATTRIBUTE_DB_IDENTITY_CUSTOMER_ID,
-                identity.getCustomerId(  ) ) );
+                identitySearchResponse.getIdentities( ).get( 0 ).getCustomerId( ) ) );
         
         
         for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
@@ -188,13 +186,14 @@ public class DashboardIdentityUtils
             dashboardIdentity.setAttribute( 
                     attributeMatch.getKey( ), 
                     getDashboardAttributeFromAttributeDtoKey (
-                        identity, 
+                        identitySearchResponse, 
                         attributeMatch.getValue( ), 
-                        attributeMatch.getKey( ),applicationRightsDto ) 
+                        attributeMatch.getKey( ),contractSearchResponse ) 
                     ) ;
         }
 
         return dashboardIdentity;
+        
     }
 
     /**
@@ -205,70 +204,71 @@ public class DashboardIdentityUtils
      *  @param bOnlyMandatory true the IdentitityDTO must contains only Mandatory informations
      * @return identityDto initialized from provided dashboardIdentity
      */
-    public IdentityDto convertToIdentityDto( DashboardIdentity dashboardIdentity,boolean bOnlyMandatory )
-    {
-        IdentityDto identityDto = new IdentityDto(  );
-        identityDto.setConnectionId( dashboardIdentity.getConnectionId(  ).getValue( ) );
-        identityDto.setCustomerId( dashboardIdentity.getCustomerId(  ).getValue( ) );
-
-        Map<String, AttributeDto> mapAttributes = new HashMap<String, AttributeDto>(  );
+    public Identity convertToIdentityDto( DashboardIdentity dashboardIdentity,boolean bOnlyMandatory )
+    {      
+        Identity identity = new Identity( );        
+        identity.setConnectionId( dashboardIdentity.getConnectionId(  ).getValue( ) );
+        identity.setCustomerId( dashboardIdentity.getCustomerId(  ).getValue( ) );
+        
+        List<CertifiedAttribute> listCertifiedAttribute = new ArrayList< >( );
         
         for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
         {
             DashboardAttribute dashboardAttribute = dashboardIdentity.getAttribute( attributeMatch.getKey( ) );
             if(!bOnlyMandatory || dashboardAttribute.isMandatory())
             { 	
-	            AttributeDto attribute = new AttributeDto(  );
-	            attribute.setKey( attributeMatch.getValue( ) );
-	            attribute.setValue( dashboardAttribute.getValue( ) );
-	            attribute.setCertified( dashboardAttribute.getCertifierCode( ) != null );
-	            
-	            if ( attribute.getCertified( ) )
-	            {
-	                CertificateDto certificate = new CertificateDto( );
-	                certificate.setCertificateExpirationDate( dashboardAttribute.getExpirationDate( ) );
-	                certificate.setCertifierCode( dashboardAttribute.getCertifierCode( ) );
-	                certificate.setCertifierLevel( dashboardAttribute.getCertifierLevel( ) );
-	                certificate.setCertifierName( dashboardAttribute.getCertifierName( ) );
-	                attribute.setCertificate( certificate );
-	            }
-	            mapAttributes.put( attribute.getKey(  ), attribute );
+                CertifiedAttribute certifiedAttribute = new CertifiedAttribute(  );
+                certifiedAttribute.setKey( attributeMatch.getKey( ) );
+                certifiedAttribute.setValue( dashboardAttribute.getValue( ) );
+                certifiedAttribute.setCertificationProcess( dashboardAttribute.getCertifierCode( ) );
+                certifiedAttribute.setCertificationDate( dashboardAttribute.getCertificateDate( ) );
+                                
+	            listCertifiedAttribute.add( certifiedAttribute );
             }
         }
+        identity.setAttributes( listCertifiedAttribute );
         
-        identityDto.setAttributes( mapAttributes );
 
-        return identityDto;
+
+        return identity;
     }
     
     /**
      * Get DashboardAttribute From AttributeDto
-     * @param identity the IdentityDto
+     * @param identitySearchResponse the identitySearchResponse
      * @param identityDtoAttributeKey the identityDto attribute key
      * @param dashboardAttributeKey the Dashboard attribute key
+     * @param contractSearchResponse the contractSearchResponse
      * @return 
      */
-    private DashboardAttribute getDashboardAttributeFromAttributeDtoKey ( IdentityDto identity, String identityDtoAttributeKey, String dashboardAttributeKey,ApplicationRightsDto applicationRightsDto )
+    private DashboardAttribute getDashboardAttributeFromAttributeDtoKey ( IdentitySearchResponse identitySearchResponse, String identityDtoAttributeKey, String dashboardAttributeKey, ServiceContractSearchResponse contractSearchResponse )
     {
-        AttributeDto attribute = identity.getAttributes( )!=null?identity.getAttributes( ).get( identityDtoAttributeKey ):null;
-        DashboardAttribute dashboardAttribute=null;
-        if ( attribute != null )
+        
+       Optional<fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.CertifiedAttribute> certifiedAttribute = identitySearchResponse.getIdentities( ).get( 0 ).getAttributes( )
+               .stream( )
+               .filter( attribute -> attribute.getKey( ).equals( identityDtoAttributeKey ) )
+               .findAny( );
+        
+        DashboardAttribute dashboardAttribute = null;
+        if ( certifiedAttribute.isPresent( ) )
         {
-            if ( attribute.getCertificate( ) != null )
+            if ( certifiedAttribute.get( ).getCertifier( ) != null )
             {
             	dashboardAttribute= new DashboardAttribute(
                     dashboardAttributeKey,
-                    attribute.getValue( ),
-                    attribute.getCertificate( ).getCertifierCode( ),
-                    attribute.getCertificate( ).getCertifierName( ),
-                    attribute.getCertificate( ).getCertifierLevel( ),
-                    attribute.getCertificate( ).getCertificateExpirationDate( ) );
+                    certifiedAttribute.get( ).getValue( ),
+                    certifiedAttribute.get( ).getCertifier( ),
+                    certifiedAttribute.get( ).getCertifier( ),
+                    certifiedAttribute.get( ).getCertificationLevel( ),
+                    null,
+                    certifiedAttribute.get( ).getCertificationDate( ) );
+            	
             }
             else
             {
             	dashboardAttribute= new DashboardAttribute(
                     dashboardAttributeKey,
-                    attribute.getValue( ) );
+                    certifiedAttribute.get( ).getValue( ) );
             }
             
         }
@@ -280,8 +280,27 @@ public class DashboardIdentityUtils
 	            );
         }
         
-        dashboardAttribute.setMandatory( applicationRightsDto!=null && applicationRightsDto.getAppRights() !=null && applicationRightsDto.getAppRights().stream().anyMatch(x-> x.getAttributeKey().equals( identityDtoAttributeKey) && x.isMandatory( )));
+        dashboardAttribute.setMandatory( isMandatoryAttribute( contractSearchResponse, dashboardAttributeKey ) );
+        
         return dashboardAttribute;
+    }
+    
+    /**
+     * Return true if the attribute is mandatory
+     * @param contractSearchResponse
+     * @param identityAttributeKey
+     * @return true if the attribute key is mandatory
+     */
+    public boolean isMandatoryAttribute ( ServiceContractSearchResponse contractSearchResponse, String identityAttributeKey )
+    {
+        if ( contractSearchResponse != null && contractSearchResponse.getServiceContract( ) != null 
+                && contractSearchResponse.getServiceContract( ).getAttributeDefinitions( ) != null  )
+        {
+            return contractSearchResponse.getServiceContract( ).getAttributeDefinitions( )
+                    .stream( )
+                    .anyMatch( x -> x.getKeyName( ).equals( identityAttributeKey ) && x.getAttributeRight( ).isMandatory( ) );
+        }
+        return false;
     }
     
     /**
@@ -307,43 +326,58 @@ public class DashboardIdentityUtils
      * @param identity 
      */
     
-    public void filterByCertifier ( IdentityDto identity )
+    public void filterByCertifier ( Identity identity )
     {
-        Map<String,AttributeDto> mapAttributes = new HashMap<String,AttributeDto>( );
-        for ( Map.Entry<String,AttributeDto> attribute : identity.getAttributes( ).entrySet( ) )
-        {
-            if ( attribute.getValue( ).getCertificate( ) == null 
-                || StringUtils.isEmpty( attribute.getValue( ).getCertificate( ).getCertifierCode( ) ) )
-            {
-                mapAttributes.put( attribute.getKey( ), attribute.getValue( ) );
-            }
-        }
-        identity.setAttributes( mapAttributes );
+        List<String> certificationProcessNotCertifiable = Arrays.asList( Constants.PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE.split( ";" ) );
+        filterByCertifier( identity, certificationProcessNotCertifiable );
     }
     
     /**
-     * return IdentityDto from strConnectionId
+     * Drop attributes from IdentityDto if there is a certificate. This is used to not update identity when a certificate is found.
+     * @param identity
+     * @param listCertificationProcessNotCertifiable
+     */
+    public void filterByCertifier ( Identity identity, List<String> listCertificationProcessNotCertifiable )
+    {
+        List<CertifiedAttribute> listCertifiedAttribute = new ArrayList< >();
+        
+        if( identity != null && identity.getAttributes( ) != null )
+        {        
+            for ( CertifiedAttribute certifiedAttribute : identity.getAttributes( ) )
+            {
+                if ( certifiedAttribute.getCertificationProcess( ) == null 
+                    || listCertificationProcessNotCertifiable.contains( certifiedAttribute.getCertificationProcess( ) ) )
+                {
+                    listCertifiedAttribute.add( certifiedAttribute );
+                }
+            }
+            identity.setAttributes( listCertifiedAttribute );
+        }
+    }
+    
+    
+    /**
+     * return identitySearchResponse from strConnectionId
      *
      * @param strConnectionId
      *            user connection id
-     * @return IdentityDto
+     * @return IdentitySearchResponse
      * @throws UserNotSignedException
      */
-    public IdentityDto getIdentityDto( String strConnectionId )
+    public IdentitySearchResponse getIdentity( String strConnectionId )
     {
-        IdentityDto identityDto = null;
-
+        IdentitySearchResponse identitySearchResponse = null;
+        
         try
         {
-            identityDto = _identityService.getIdentityByConnectionId( strConnectionId, DASHBOARD_APP_CODE );
+            identitySearchResponse = _identityService.getIdentityByConnectionId( strConnectionId, DASHBOARD_APP_CODE );
         }
-        catch( IdentityNotFoundException infe )
+        catch( IdentityStoreException | AppException infe )
         {
-            identityDto = new IdentityDto( );
-            identityDto.setConnectionId( strConnectionId );
+            AppLogService.error( "Identity Not Found for guig:" + strConnectionId, infe );
         }
 
-        return identityDto;
+        return identitySearchResponse;
     }
     
     /**
@@ -353,19 +387,24 @@ public class DashboardIdentityUtils
      * @throws IdentityNotFoundException the identity not found exception
      * @throws AppException the app exception
      */
-    public void updateIdentity( IdentityDto identityDto )throws IdentityNotFoundException, AppException
+    public void updateIdentity( Identity identity )
     {
-        IdentityChangeDto identityChangeDto = buildIdentityChangeDto( identityDto );
-        if(!StringUtils.isEmpty( identityDto.getCustomerId()))
-        {
-        	_identityService.updateIdentity( identityChangeDto, null );
-        }
-        else
-        {
-        	_identityService.createIdentity(identityChangeDto);
-            
-        }
+        IdentityChangeRequest identityChangeRequest = buildIdentityChangeDto( identity );
         
+        try
+        {
+            if( !StringUtils.isEmpty( identity.getCustomerId( ) ) )
+            {
+                _identityService.updateIdentity( identityChangeRequest.getIdentity( ).getCustomerId( ), identityChangeRequest, DASHBOARD_APP_CODE );
+            }
+            else
+            {
+                _identityService.createIdentity( identityChangeRequest, DASHBOARD_APP_CODE );               
+            }
+        } catch ( AppException | IdentityStoreException e )
+        {
+            AppLogService.error( "Error when creating or updating the identity for connectionId {}", e, identity.getConnectionId( ) );
+        }
         	
     }
     
@@ -375,20 +414,17 @@ public class DashboardIdentityUtils
      * @param identity            identity to update
      * @return IdentityChangeDto
      */
-    private IdentityChangeDto buildIdentityChangeDto( IdentityDto identity )
+    private IdentityChangeRequest buildIdentityChangeDto( Identity identity )
     {
-        IdentityChangeDto identityChange = new IdentityChangeDto( );
-        AuthorDto author = new AuthorDto( );
-        author.setApplicationCode( DASHBOARD_APP_CODE );
-        author.setType( AuthorType.TYPE_USER_OWNER.getTypeValue( ) );
-        author.setId( AuthorDto.USER_DEFAULT_ID );
+        IdentityChangeRequest identityChangeRequest = new IdentityChangeRequest( );
+                
+        RequestAuthor requestAuthor = new RequestAuthor( );
+        requestAuthor.setName( DASHBOARD_APP_CODE );
+        requestAuthor.setType( AuthorType.owner );
+        
+        identityChangeRequest.setOrigin( requestAuthor );
+        identityChangeRequest.setIdentity( identity );
 
-        identityChange.setIdentity( identity );
-        identityChange.setAuthor( author );
-
-        return identityChange;
+        return identityChangeRequest;
     }
-    
-    
-    
 }
