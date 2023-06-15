@@ -44,6 +44,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.Identity;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchResponse;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.QualifiedIdentity;
 import fr.paris.lutece.plugins.identitystore.v3.web.service.ServiceContractService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityStoreException;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
@@ -152,7 +153,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     @Override
 	public DashboardIdentity getDashBoardIdentity(String strApplicationCode,String strGuid)throws AppException
     {
-        IdentitySearchResponse identitySearchResponse = null; 
+        QualifiedIdentity identity = null; 
         DashboardIdentity dashboardIdentity = null;
 
          ServiceContractSearchResponse serviceContractSearchResponse = null;
@@ -166,10 +167,10 @@ public class DashboardIdentityService implements IDashBoardIdentityService
          
          if( !StringUtils.isEmpty( strGuid ))
          {
-             identitySearchResponse = DashboardIdentityUtils.getInstance( ).getIdentity( strGuid );
+              identity = DashboardIdentityUtils.getInstance( ).getIdentity( strGuid );
          }
 
-         dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identitySearchResponse, serviceContractSearchResponse );
+         dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity, serviceContractSearchResponse );
          return dashboardIdentity;  
     }
     

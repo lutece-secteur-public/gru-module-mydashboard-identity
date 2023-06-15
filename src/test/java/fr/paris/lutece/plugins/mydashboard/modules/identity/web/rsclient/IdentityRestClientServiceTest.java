@@ -75,7 +75,7 @@ public class IdentityRestClientServiceTest extends LuteceTestCase
     @Test
     public void testConvertDashboardDto( )
     {       
-        IdentitySearchResponse identity = new IdentitySearchResponse( );
+       
         
         List<QualifiedIdentity> listQualifiedIdentity = new ArrayList<>();
         QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( );
@@ -162,9 +162,9 @@ public class IdentityRestClientServiceTest extends LuteceTestCase
 
         qualifiedIdentity.setAttributes( attributes );
         
-        identity.setIdentities( listQualifiedIdentity );
+      
         
-        DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity );
+        DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( qualifiedIdentity );
         Identity identityDto2 = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,false );
 
         for ( fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.CertifiedAttribute att : identityDto2.getAttributes( ) )

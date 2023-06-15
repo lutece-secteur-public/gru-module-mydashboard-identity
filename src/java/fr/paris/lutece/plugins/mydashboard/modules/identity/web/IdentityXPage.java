@@ -42,6 +42,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import fr.paris.lutece.plugins.avatar.service.AvatarService;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchResponse;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.QualifiedIdentity;
 import fr.paris.lutece.plugins.identitystore.v3.web.service.IdentityService;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.service.DashboardIdentityService;
@@ -182,8 +183,8 @@ public class IdentityXPage extends MVCApplication
         String strMyDashboardPropertiesPrefix = dashboardPropertiesGroup.getDatastoreKeysPrefix( );
         
         Map<String, Object> model = getModel( );
-        IdentitySearchResponse identitySearchResponse = DashboardIdentityUtils.getInstance().getIdentity( luteceUser.getName( ) );
-        _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identitySearchResponse );
+        QualifiedIdentity  identity = DashboardIdentityUtils.getInstance().getIdentity( luteceUser.getName( ) );
+        _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity );
 
         model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( strMyDashboardPropertiesPrefix ).toMap( ) );
         model.put( MARK_IDENTITY, _dashboardIdentity );
@@ -226,7 +227,7 @@ public class IdentityXPage extends MVCApplication
         if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId( ) == null )
                 || !_dashboardIdentity.getConnectionId( ).getValue( ).equals( luteceUser.getName( ) ) )
         {
-            IdentitySearchResponse identity = DashboardIdentityUtils.getInstance().getIdentity( luteceUser.getName( ) );
+            QualifiedIdentity identity = DashboardIdentityUtils.getInstance().getIdentity( luteceUser.getName( ) );
             _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity );
         }
         
