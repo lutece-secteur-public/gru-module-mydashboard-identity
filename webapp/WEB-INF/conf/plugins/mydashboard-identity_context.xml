@@ -10,27 +10,27 @@
     
     <!-- library identitystore -->
 	<!-- IHttpTransportProvider declarations -->
-    <bean id="mydashboard-identity.identitystore.httpAccess" class="fr.paris.lutece.plugins.identitystore.v3.web.rs.service.IdentityTransportRest">
-        <property name="IdentityStoreEndPoint">
-            <value>http://localhost:8080/lutece/rest/identitystore</value>
+	<bean id="mydashboard-identity.identitystore.httpAccessTransport" class="fr.paris.lutece.plugins.identitystore.v3.web.rs.service.HttpAccessTransport" >
+        <property name="ApiEndPointUrl">
+           <value>${mydashboard.identity.identitystore.ApiEndPointUrl}</value>
         </property>
-    </bean>
-
+     </bean>
+	
     <!-- IdentityService impl -->
     <bean id="mydashboard-identity.identitystore.service" class="fr.paris.lutece.plugins.identitystore.v3.web.service.IdentityService">
-        <constructor-arg ref="mydashboard-identity.identitystore.httpAccess"/>
+		<constructor-arg ref="mydashboard-identity.identity.httpAccess"/>
+	</bean>
+	<bean id="mydashboard-identity.identity.httpAccess" class="fr.paris.lutece.plugins.identitystore.v3.web.rs.service.IdentityTransportRest">
+        <constructor-arg ref="mydashboard-identity.identitystore.httpAccessTransport"/>
     </bean>
     
-   	<!-- IHttpTransportProvider declarations -->
-    <bean id="mydashboard-identity.serviceContract.httpAccess" class="fr.paris.lutece.plugins.identitystore.v3.web.rs.service.ServiceContractTransportRest">
-        <property name="IdentityStoreEndPoint">
-            <value>http://localhost:8080/lutece/rest/identitystore</value>
-        </property>
-    </bean>
 
     <!-- ServiceContractService impl -->
-    <bean id="mydashboard-identity.serviceContract.service" class="fr.paris.lutece.plugins.identitystore.v3.web.service.ServiceContractService">
+     <bean id="mydashboard-identity.serviceContract.service" class="fr.paris.lutece.plugins.identitystore.v3.web.service.ServiceContractService">
         <constructor-arg ref="mydashboard-identity.serviceContract.httpAccess"/>
+    </bean>
+     <bean id="mydashboard-identity.serviceContract.httpAccess" class="fr.paris.lutece.plugins.identitystore.v3.web.rs.service.ServiceContractTransportRest">
+         <constructor-arg ref="mydashboard-identity.identitystore.httpAccessTransport"/>
     </bean>
     
     <!-- For MyDashboard Site properties -->

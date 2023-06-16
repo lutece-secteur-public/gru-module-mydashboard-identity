@@ -177,14 +177,17 @@ public class DashboardIdentityUtils
         DashboardIdentity dashboardIdentity = new DashboardIdentity(  );
        
         
+        if(identity!=null)
+        {
         	dashboardIdentity.setConnectionId( new DashboardAttribute( 
                 Constants.ATTRIBUTE_DB_IDENTITY_CONNECTION_ID, 
                 identity.getConnectionId( ) ) );
         
         
-        dashboardIdentity.setCustomerId( new DashboardAttribute(
+        	dashboardIdentity.setCustomerId( new DashboardAttribute(
                 Constants.ATTRIBUTE_DB_IDENTITY_CUSTOMER_ID,
                 identity.getCustomerId( ) ) );
+        }
         
         
         for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
@@ -213,8 +216,9 @@ public class DashboardIdentityUtils
     public Identity convertToIdentityDto( DashboardIdentity dashboardIdentity,boolean bOnlyMandatory )
     {      
         Identity identity = new Identity( );        
-        identity.setConnectionId( dashboardIdentity.getConnectionId(  ).getValue( ) );
-        identity.setCustomerId( dashboardIdentity.getCustomerId(  ).getValue( ) );
+        
+        identity.setConnectionId(dashboardIdentity.getConnectionId(  )!=null?  dashboardIdentity.getConnectionId(  ).getValue( ):null );
+        identity.setCustomerId( dashboardIdentity.getCustomerId(  )!=null? dashboardIdentity.getCustomerId(  ).getValue( ):null );
         
         List<CertifiedAttribute> listCertifiedAttribute = new ArrayList< >( );
         
@@ -250,13 +254,20 @@ public class DashboardIdentityUtils
     private DashboardAttribute getDashboardAttributeFromAttributeDtoKey ( QualifiedIdentity identity, String identityDtoAttributeKey, String dashboardAttributeKey, ServiceContractSearchResponse contractSearchResponse )
     {
         
-       Optional<fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.CertifiedAttribute> certifiedAttribute = identity.getAttributes( )
+    	
+    	Optional<fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.CertifiedAttribute> certifiedAttribute=null;
+    	
+    	if(identity!=null)
+    	{
+    		certifiedAttribute =
+    		   identity.getAttributes( )
                .stream( )
                .filter( attribute -> attribute.getKey( ).equals( identityDtoAttributeKey ) )
                .findAny( );
+    	}
         
         DashboardAttribute dashboardAttribute = null;
-        if ( certifiedAttribute.isPresent( ) )
+        if ( certifiedAttribute != null && certifiedAttribute.isPresent( ) )
         {
             if ( certifiedAttribute.get( ).getCertifier( ) != null )
             {
