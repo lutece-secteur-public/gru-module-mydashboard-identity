@@ -301,7 +301,7 @@ public class DashboardIdentityUtils
 	         }
         }
         
-        dashboardAttribute.setMandatory( isMandatoryAttribute( contractSearchResponse, dashboardAttributeKey ) );
+        dashboardAttribute.setMandatory( isMandatoryAttribute( contractSearchResponse, identityDtoAttributeKey ) );
         
         return dashboardAttribute;
     }
