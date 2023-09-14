@@ -45,17 +45,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.AuthorType;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.RequestAuthor;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.ResponseStatus;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.CertifiedAttribute;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.Identity;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeRequest;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeResponse;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeStatus;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchResponse;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchStatusType;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.QualifiedIdentity;
 import fr.paris.lutece.plugins.identitystore.v3.web.service.IdentityService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityStoreException;
@@ -154,7 +152,7 @@ public class DashboardIdentityUtils
      *          identitySearchResponse to convert
      * @return dashboardIdentity initialized from provided identityDto
      */
-    public DashboardIdentity convertToDashboardIdentity( QualifiedIdentity identity )
+    public DashboardIdentity convertToDashboardIdentity( IdentityDto identity )
     {     
     	return convertToDashboardIdentity( identity, null);
     }
@@ -172,7 +170,7 @@ public class DashboardIdentityUtils
      * @param  contractSearchResponse The App contract        
      * @return dashboardIdentity initialized from provided identityDto
      */
-    public DashboardIdentity convertToDashboardIdentity( QualifiedIdentity identity, ServiceContractSearchResponse contractSearchResponse )
+    public DashboardIdentity convertToDashboardIdentity( IdentityDto identity, ServiceContractSearchResponse contractSearchResponse )
     {
         DashboardIdentity dashboardIdentity = new DashboardIdentity(  );
        
@@ -213,24 +211,24 @@ public class DashboardIdentityUtils
      *  @param bOnlyMandatory true the IdentitityDTO must contains only Mandatory informations
      * @return identityDto initialized from provided dashboardIdentity
      */
-    public Identity convertToIdentityDto( DashboardIdentity dashboardIdentity,boolean bOnlyMandatory )
+    public IdentityDto convertToIdentityDto( DashboardIdentity dashboardIdentity,boolean bOnlyMandatory )
     {      
-        Identity identity = new Identity( );        
+        IdentityDto identity = new IdentityDto( );        
         
         identity.setConnectionId(dashboardIdentity.getConnectionId(  )!=null?  dashboardIdentity.getConnectionId(  ).getValue( ):null );
         identity.setCustomerId( dashboardIdentity.getCustomerId(  )!=null? dashboardIdentity.getCustomerId(  ).getValue( ):null );
         
-        List<CertifiedAttribute> listCertifiedAttribute = new ArrayList< >( );
+        List<AttributeDto> listCertifiedAttribute = new ArrayList< >( );
         
         for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
         {
             DashboardAttribute dashboardAttribute = dashboardIdentity.getAttribute( attributeMatch.getKey( ) );
             if(!bOnlyMandatory || dashboardAttribute.isMandatory())
             { 	
-                CertifiedAttribute certifiedAttribute = new CertifiedAttribute(  );
+            	AttributeDto certifiedAttribute = new AttributeDto(  );
                 certifiedAttribute.setKey( attributeMatch.getValue() );
                 certifiedAttribute.setValue( dashboardAttribute.getValue( ) );
-                certifiedAttribute.setCertificationProcess( dashboardAttribute.getCertifierCode( ) );
+                certifiedAttribute.setCertifier( dashboardAttribute.getCertifierCode( ) );
                 certifiedAttribute.setCertificationDate( new Date() );
                                 
 	            listCertifiedAttribute.add( certifiedAttribute );
@@ -251,11 +249,11 @@ public class DashboardIdentityUtils
      * @param contractSearchResponse the contractSearchResponse
      * @return 
      */
-    private DashboardAttribute getDashboardAttributeFromAttributeDtoKey ( QualifiedIdentity identity, String identityDtoAttributeKey, String dashboardAttributeKey, ServiceContractSearchResponse contractSearchResponse )
+    private DashboardAttribute getDashboardAttributeFromAttributeDtoKey ( IdentityDto identity, String identityDtoAttributeKey, String dashboardAttributeKey, ServiceContractSearchResponse contractSearchResponse )
     {
         
     	
-    	Optional<fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.CertifiedAttribute> certifiedAttribute=null;
+    	Optional<AttributeDto> certifiedAttribute=null;
     	
     	if(identity!=null)
     	{
@@ -347,7 +345,7 @@ public class DashboardIdentityUtils
      * @param identity 
      */
     
-    public void filterByCertifier ( Identity identity )
+    public void filterByCertifier ( IdentityDto identity )
     {
         List<String> certificationProcessNotCertifiable = Arrays.asList( Constants.PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE.split( ";" ) );
         filterByCertifier( identity, certificationProcessNotCertifiable );
@@ -358,16 +356,16 @@ public class DashboardIdentityUtils
      * @param identity
      * @param listCertificationProcessNotCertifiable
      */
-    public void filterByCertifier ( Identity identity, List<String> listCertificationProcessNotCertifiable )
+    public void filterByCertifier ( IdentityDto identity, List<String> listCertificationProcessNotCertifiable )
     {
-        List<CertifiedAttribute> listCertifiedAttribute = new ArrayList< >();
+        List<AttributeDto> listCertifiedAttribute = new ArrayList< >();
         
         if( identity != null && identity.getAttributes( ) != null )
         {        
-            for ( CertifiedAttribute certifiedAttribute : identity.getAttributes( ) )
+            for ( AttributeDto certifiedAttribute : identity.getAttributes( ) )
             {
-                if ( certifiedAttribute.getCertificationProcess( ) == null 
-                    || listCertificationProcessNotCertifiable.contains( certifiedAttribute.getCertificationProcess( ) ) )
+                if ( certifiedAttribute.getCertifier() == null 
+                    || listCertificationProcessNotCertifiable.contains( certifiedAttribute.getCertifier( ) ) )
                 {
                     listCertifiedAttribute.add( certifiedAttribute );
                 }
@@ -385,16 +383,19 @@ public class DashboardIdentityUtils
      * @return IdentitySearchResponse
      * @throws UserNotSignedException
      */
-    public QualifiedIdentity getIdentity( String strConnectionId )
+    public IdentityDto getIdentity( String strConnectionId )
     {
         IdentitySearchResponse identitySearchResponse = null;
-        QualifiedIdentity identity=null;
+        IdentityDto identity=null;
 
         try
         {
-            identitySearchResponse = _identityService.getIdentityByConnectionId( strConnectionId, DASHBOARD_APP_CODE );
+            RequestAuthor requestAuthor = new RequestAuthor( );
+            requestAuthor.setName( DASHBOARD_APP_CODE );
+            requestAuthor.setType( AuthorType.owner );
+            identitySearchResponse = _identityService.getIdentityByConnectionId( strConnectionId, DASHBOARD_APP_CODE ,requestAuthor);
         	if( identitySearchResponse!=null && 
-					!IdentitySearchStatusType.NOT_FOUND.equals(identitySearchResponse.getStatus()) 
+					!ResponseStatus.notFound().equals(identitySearchResponse.getStatus()) 
 					&&  identitySearchResponse.getIdentities() != null 
 					&& identitySearchResponse.getIdentities().size() > 0 )
         	{
@@ -402,7 +403,7 @@ public class DashboardIdentityUtils
         	}
         	else
         	{
-        	    identity=new QualifiedIdentity();
+        	    identity=new IdentityDto();
         	    identity.setConnectionId(strConnectionId);
         	}
             
@@ -410,7 +411,7 @@ public class DashboardIdentityUtils
         catch( IdentityStoreException | AppException infe )
         {
             AppLogService.error( "Identity App Exception for :" + strConnectionId, infe );
-            identity=new QualifiedIdentity();
+            identity=new IdentityDto();
     	    identity.setConnectionId(strConnectionId);
             
         }
@@ -425,7 +426,7 @@ public class DashboardIdentityUtils
      * @throws IdentityNotFoundException the identity not found exception
      * @throws AppException the app exception
      */
-    public void updateIdentity( Identity identity )throws AppException
+    public void updateIdentity(   IdentityDto identity )throws AppException
     {
         IdentityChangeRequest identityChangeRequest = buildIdentityChangeDto( identity );
         
@@ -434,21 +435,21 @@ public class DashboardIdentityUtils
             if( !StringUtils.isEmpty( identity.getCustomerId( ) ) )
             {
             	final IdentityChangeResponse response= _identityService.updateIdentity( identityChangeRequest.getIdentity( ).getCustomerId( ), identityChangeRequest, DASHBOARD_APP_CODE );
-            	if (response==null || ! IdentityChangeStatus.UPDATE_SUCCESS.equals(  response.getStatus())  )
+            	if (response==null || ! ResponseStatus.ok().equals(  response.getStatus())  )
           	  {
           		  AppLogService.error( "Error when  updating the identity for connectionId {} the idantity change status is {} ", identity.getConnectionId( ), response!=null? response.getStatus():"");
           		  
-          		  throw new IdentityStoreException(response!=null ? "":response.getStatus().getLabel());
+          		  throw new IdentityStoreException(response!=null ? "":response.getStatus().getName());
           	  }
             }
             else
             {
             	final IdentityChangeResponse response=_identityService.createIdentity( identityChangeRequest, DASHBOARD_APP_CODE );
-            	  if (response==null || ! IdentityChangeStatus.CREATE_SUCCESS.equals(  response.getStatus())  )
+            	  if (response==null || !ResponseStatus.success().equals(  response.getStatus())  )
             	  {
             		  AppLogService.error( "Error when creating  the identity for connectionId {} the idantity change status is {} ", identity.getConnectionId( ), response!=null? response.getStatus():"");
             		  
-            		  throw new IdentityStoreException(response!=null ? "":response.getStatus().getLabel());
+            		  throw new IdentityStoreException(response!=null ? "":response.getStatus().getName());
             	  }
             	
             }
@@ -465,7 +466,7 @@ public class DashboardIdentityUtils
      * @param identity            identity to update
      * @return IdentityChangeDto
      */
-    private IdentityChangeRequest buildIdentityChangeDto( Identity identity )
+    private IdentityChangeRequest buildIdentityChangeDto(  IdentityDto identity)
     {
         IdentityChangeRequest identityChangeRequest = new IdentityChangeRequest( );
                 

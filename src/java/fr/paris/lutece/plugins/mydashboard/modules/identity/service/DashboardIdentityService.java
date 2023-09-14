@@ -41,10 +41,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.Identity;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchResponse;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.QualifiedIdentity;
 import fr.paris.lutece.plugins.identitystore.v3.web.service.ServiceContractService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityStoreException;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
@@ -153,7 +151,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     @Override
 	public DashboardIdentity getDashBoardIdentity(String strApplicationCode,String strGuid)throws AppException
     {
-        QualifiedIdentity identity = null; 
+        IdentityDto identity = null; 
         DashboardIdentity dashboardIdentity = null;
 
          ServiceContractSearchResponse serviceContractSearchResponse = null;
@@ -308,7 +306,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
 	public void updateDashboardIdentity(DashboardIdentity dashboardIdentity,boolean bUpdateOnlyManadtory) throws AppException
     {
     	
-         Identity identity = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,bUpdateOnlyManadtory );
+    	IdentityDto identity = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,bUpdateOnlyManadtory );
          //do not update certifier fields
     	 DashboardIdentityUtils.getInstance( ).filterByCertifier ( identity );
          DashboardIdentityUtils.getInstance().updateIdentity( identity );
@@ -320,10 +318,10 @@ public class DashboardIdentityService implements IDashBoardIdentityService
      * {@inheritDoc}
      */
     @Override
-    public Identity getIdentityToUpdate(DashboardIdentity dashboardIdentity,boolean bUpdateOnlyManadtory)
+    public IdentityDto getIdentityToUpdate(DashboardIdentity dashboardIdentity,boolean bUpdateOnlyManadtory)
     {
     	
-         Identity identity = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,bUpdateOnlyManadtory );
+    	IdentityDto identity = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,bUpdateOnlyManadtory );
          //do not update certifier fields
     	 DashboardIdentityUtils.getInstance( ).filterByCertifier ( identity );
          

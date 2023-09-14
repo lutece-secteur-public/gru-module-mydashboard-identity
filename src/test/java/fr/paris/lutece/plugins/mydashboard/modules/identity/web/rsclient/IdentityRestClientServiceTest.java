@@ -38,10 +38,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.Identity;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.CertifiedAttribute;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchResponse;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.QualifiedIdentity;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.AttributeDto;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.DashboardIdentityUtils;
@@ -77,85 +75,85 @@ public class IdentityRestClientServiceTest extends LuteceTestCase
     {       
        
         
-        List<QualifiedIdentity> listQualifiedIdentity = new ArrayList<>();
-        QualifiedIdentity qualifiedIdentity = new QualifiedIdentity( );
+        List<IdentityDto> listQualifiedIdentity = new ArrayList<>();
+        IdentityDto qualifiedIdentity = new IdentityDto( );
         qualifiedIdentity.setConnectionId( "connectionId" );
         qualifiedIdentity.setCustomerId( "1" );
 
-        List<CertifiedAttribute> attributes = new ArrayList< >( );
+        List<AttributeDto> attributes = new ArrayList< >( );
 
-        CertifiedAttribute attribute = new CertifiedAttribute( );
+        AttributeDto attribute = new AttributeDto( );
         
         attribute.setKey( Constants.PROPERTY_KEY_NAME );
         attribute.setValue( VALUE_NAME );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_PREFERREDUSERNAME );
         attribute.setValue( VALUE_PREFERREDUSERNAME );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_FIRSTNAME );
         attribute.setValue( VALUE_FIRSTNAME );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_GENDER );
         attribute.setValue( VALUE_GENDER );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_BIRTHDATE );
         attribute.setValue( VALUE_BIRTHDATE );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_BIRTHPLACE );
         attribute.setValue( VALUE_BIRTHPLACE );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_BIRTHCOUNTRY );
         attribute.setValue( VALUE_BIRTHCOUNTRY );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_ADDRESS );
         attribute.setValue( VALUE_ADDRESS );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_ADDRESSDETAIL );
         attribute.setValue( VALUE_ADDRESSDETAIL );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE );
         attribute.setValue( VALUE_ADDRESS_POSTAL_CODE );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_ADDRESS_CITY );
         attribute.setValue( VALUE_ADDRESS_CITY );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_PHONE );
         attribute.setValue( VALUE_PHONE );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_EMAIL );
         attribute.setValue( VALUE_EMAIL );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_LOGIN );
         attribute.setValue( VALUE_LOGIN );
         attributes.add( attribute );
 
-        attribute = new CertifiedAttribute( );
+        attribute = new AttributeDto( );
         attribute.setKey( Constants.PROPERTY_KEY_MOBILE_PHONE );
         attribute.setValue( VALUE_MOBILE_PHONE );
         attributes.add( attribute );
@@ -165,9 +163,9 @@ public class IdentityRestClientServiceTest extends LuteceTestCase
       
         
         DashboardIdentity dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( qualifiedIdentity );
-        Identity identityDto2 = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,false );
+        IdentityDto identityDto2 = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,false );
 
-        for ( fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.CertifiedAttribute att : identityDto2.getAttributes( ) )
+        for ( AttributeDto att : identityDto2.getAttributes( ) )
         {
             if( att.getKey( ).equals( Constants.PROPERTY_KEY_NAME  ) )
             {

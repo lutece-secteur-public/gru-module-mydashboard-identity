@@ -37,7 +37,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.Identity;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.portal.service.util.AppException;
 
@@ -92,7 +92,7 @@ public interface IDashBoardIdentityService {
 	 * @param bUpdateOnlyManadtory only madantarory field must be updated
 	 * @return  an IdentityDTO object wich contains only identity fields to update
 	 */
-	Identity getIdentityToUpdate(DashboardIdentity dashboardIdentity,boolean bUpdateOnlyManadtory);
+	IdentityDto getIdentityToUpdate(DashboardIdentity dashboardIdentity,boolean bUpdateOnlyManadtory);
 	
 	/**
 	 * Populate dashboard identity.
