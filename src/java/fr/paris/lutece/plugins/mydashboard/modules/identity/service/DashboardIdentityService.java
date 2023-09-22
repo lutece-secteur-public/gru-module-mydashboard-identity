@@ -157,7 +157,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
          ServiceContractSearchResponse serviceContractSearchResponse = null;
         try
         {
-            serviceContractSearchResponse = _serviceContractService.getActiveServiceContract( strApplicationCode ) ;
+            serviceContractSearchResponse = _serviceContractService.getActiveServiceContract( strApplicationCode ,DashboardIdentityUtils.DASHBOARD_APP_CODE,DashboardIdentityUtils.getInstance().getOwnerRequestAuthor()) ;
         } catch ( IdentityStoreException e )
         {
             AppLogService.error( "Error ServiceContract for application {}", e.getMessage( ), strApplicationCode );

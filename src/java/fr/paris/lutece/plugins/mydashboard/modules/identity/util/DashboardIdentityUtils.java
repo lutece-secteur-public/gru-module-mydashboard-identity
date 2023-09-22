@@ -50,6 +50,7 @@ import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.AuthorType;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.RequestAuthor;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.ResponseStatus;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.ResponseStatusType;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeRequest;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeResponse;
@@ -80,7 +81,7 @@ public class DashboardIdentityUtils
     //For matching on DBAttributes and Identity store attributes
     private static Map<String,String> _mapAttributeKeyMatch;
     private IdentityService _identityService;
-    private static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
+    public static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
     static {
         _mapAttributeKeyMatch = new HashMap<String,String>( );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME, Constants.PROPERTY_KEY_NAME );
@@ -395,7 +396,7 @@ public class DashboardIdentityUtils
             requestAuthor.setType( AuthorType.owner );
             identitySearchResponse = _identityService.getIdentityByConnectionId( strConnectionId, DASHBOARD_APP_CODE ,requestAuthor);
         	if( identitySearchResponse!=null && 
-					!ResponseStatus.notFound().equals(identitySearchResponse.getStatus()) 
+					!ResponseStatusType.NOT_FOUND.equals(identitySearchResponse.getStatus().getStatus()) 
 					&&  identitySearchResponse.getIdentities() != null 
 					&& identitySearchResponse.getIdentities().size() > 0 )
         	{
@@ -434,22 +435,22 @@ public class DashboardIdentityUtils
         {
             if( !StringUtils.isEmpty( identity.getCustomerId( ) ) )
             {
-            	final IdentityChangeResponse response= _identityService.updateIdentity( identityChangeRequest.getIdentity( ).getCustomerId( ), identityChangeRequest, DASHBOARD_APP_CODE );
-            	if (response==null || ! ResponseStatus.ok().equals(  response.getStatus())  )
+            	final IdentityChangeResponse response= _identityService.updateIdentity( identityChangeRequest.getIdentity( ).getCustomerId( ), identityChangeRequest, DASHBOARD_APP_CODE,getOwnerRequestAuthor() );
+            	if (response==null ||  !ResponseStatusType.OK.equals(  response.getStatus().getStatus())  )
           	  {
           		  AppLogService.error( "Error when  updating the identity for connectionId {} the idantity change status is {} ", identity.getConnectionId( ), response!=null? response.getStatus():"");
           		  
-          		  throw new IdentityStoreException(response!=null ? "":response.getStatus().getName());
+          		  throw new IdentityStoreException(response==null ? "":response.getStatus().getStatus().name());
           	  }
             }
             else
             {
-            	final IdentityChangeResponse response=_identityService.createIdentity( identityChangeRequest, DASHBOARD_APP_CODE );
-            	  if (response==null || !ResponseStatus.success().equals(  response.getStatus())  )
+            	final IdentityChangeResponse response=_identityService.createIdentity( identityChangeRequest, DASHBOARD_APP_CODE ,getOwnerRequestAuthor());
+            	  if (response==null || !ResponseStatusType.SUCCESS.equals( response.getStatus().getStatus()  ))
             	  {
             		  AppLogService.error( "Error when creating  the identity for connectionId {} the idantity change status is {} ", identity.getConnectionId( ), response!=null? response.getStatus():"");
             		  
-            		  throw new IdentityStoreException(response!=null ? "":response.getStatus().getName());
+            		  throw new IdentityStoreException(response==null ? "":response.getStatus().getStatus().name());
             	  }
             	
             }
@@ -470,13 +471,25 @@ public class DashboardIdentityUtils
     {
         IdentityChangeRequest identityChangeRequest = new IdentityChangeRequest( );
                 
-        RequestAuthor requestAuthor = new RequestAuthor( );
-        requestAuthor.setName( DASHBOARD_APP_CODE );
-        requestAuthor.setType( AuthorType.owner );
-        
-        identityChangeRequest.setOrigin( requestAuthor );
         identityChangeRequest.setIdentity( identity );
 
         return identityChangeRequest;
     }
+    
+    
+    /**
+     * Gets the owner request author.
+     *
+     * @return the owner request author
+     */
+    public RequestAuthor getOwnerRequestAuthor()
+    {
+    
+	    RequestAuthor requestAuthor = new RequestAuthor( );
+	    requestAuthor.setName( DASHBOARD_APP_CODE );
+	    requestAuthor.setType( AuthorType.owner );
+	    
+	    return requestAuthor;
+    }
+	    
 }
