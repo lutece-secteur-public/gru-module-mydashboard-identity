@@ -396,7 +396,7 @@ public class DashboardIdentityUtils
             requestAuthor.setType( AuthorType.owner );
             identitySearchResponse = _identityService.getIdentityByConnectionId( strConnectionId, DASHBOARD_APP_CODE ,requestAuthor);
         	if( identitySearchResponse!=null && 
-					!ResponseStatusType.NOT_FOUND.equals(identitySearchResponse.getStatus().getStatus()) 
+					!ResponseStatusType.NOT_FOUND.equals(identitySearchResponse.getStatus().getType()) 
 					&&  identitySearchResponse.getIdentities() != null 
 					&& identitySearchResponse.getIdentities().size() > 0 )
         	{
@@ -436,21 +436,21 @@ public class DashboardIdentityUtils
             if( !StringUtils.isEmpty( identity.getCustomerId( ) ) )
             {
             	final IdentityChangeResponse response= _identityService.updateIdentity( identityChangeRequest.getIdentity( ).getCustomerId( ), identityChangeRequest, DASHBOARD_APP_CODE,getOwnerRequestAuthor() );
-            	if (response==null ||  !ResponseStatusType.OK.equals(  response.getStatus().getStatus())  )
+            	if (response==null ||  !ResponseStatusType.OK.equals(  response.getStatus().getType())  )
           	  {
           		  AppLogService.error( "Error when  updating the identity for connectionId {} the idantity change status is {} ", identity.getConnectionId( ), response!=null? response.getStatus():"");
           		  
-          		  throw new IdentityStoreException(response==null ? "":response.getStatus().getStatus().name());
+          		  throw new IdentityStoreException(response==null ? "":response.getStatus().getType().name());
           	  }
             }
             else
             {
             	final IdentityChangeResponse response=_identityService.createIdentity( identityChangeRequest, DASHBOARD_APP_CODE ,getOwnerRequestAuthor());
-            	  if (response==null || !ResponseStatusType.SUCCESS.equals( response.getStatus().getStatus()  ))
+            	  if (response==null || !ResponseStatusType.SUCCESS.equals( response.getStatus().getType()  ))
             	  {
             		  AppLogService.error( "Error when creating  the identity for connectionId {} the idantity change status is {} ", identity.getConnectionId( ), response!=null? response.getStatus():"");
             		  
-            		  throw new IdentityStoreException(response==null ? "":response.getStatus().getStatus().name());
+            		  throw new IdentityStoreException(response==null ? "":response.getStatus().getType().name());
             	  }
             	
             }
