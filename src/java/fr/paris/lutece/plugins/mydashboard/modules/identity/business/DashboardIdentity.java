@@ -33,9 +33,11 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.business;
 
-import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+
+import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
 
 /**
  *
@@ -45,6 +47,7 @@ import java.util.Map;
 public class DashboardIdentity
 {
     private Map<String, DashboardAttribute> _mapAttributes;
+    private Timestamp _lastUpdateDate;
     
     public DashboardIdentity ()
     {
@@ -454,5 +457,21 @@ public class DashboardIdentity
     {
         return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_FRANCE_CONNECT_CERTIFIED );
     }
+
+    /**
+     * Last Update Date
+     * @return last Update Date
+     */
+	public Timestamp getLastUpdateDate() {
+		return _lastUpdateDate;
+	}
+
+	/**
+	 * 
+	 * @param _lastUpdateDate last update date
+	 */
+	public void setLastUpdateDate(Timestamp _lastUpdateDate) {
+		this._lastUpdateDate = _lastUpdateDate;
+	}
 
 }

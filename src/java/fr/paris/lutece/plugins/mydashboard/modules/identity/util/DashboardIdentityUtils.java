@@ -178,6 +178,8 @@ public class DashboardIdentityUtils
         
         if(identity!=null)
         {
+        	dashboardIdentity.setLastUpdateDate(identity.getLastUpdateDate());
+        	
         	dashboardIdentity.setConnectionId( new DashboardAttribute( 
                 Constants.ATTRIBUTE_DB_IDENTITY_CONNECTION_ID, 
                 identity.getConnectionId( ) ) );
@@ -214,8 +216,9 @@ public class DashboardIdentityUtils
      */
     public IdentityDto convertToIdentityDto( DashboardIdentity dashboardIdentity,boolean bOnlyMandatory )
     {      
-        IdentityDto identity = new IdentityDto( );        
+        IdentityDto identity = new IdentityDto( ); 
         
+        identity.setLastUpdateDate(dashboardIdentity.getLastUpdateDate());
         identity.setConnectionId(dashboardIdentity.getConnectionId(  )!=null?  dashboardIdentity.getConnectionId(  ).getValue( ):null );
         identity.setCustomerId( dashboardIdentity.getCustomerId(  )!=null? dashboardIdentity.getCustomerId(  ).getValue( ):null );
         
