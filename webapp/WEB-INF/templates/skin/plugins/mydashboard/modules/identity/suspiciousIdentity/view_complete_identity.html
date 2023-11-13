@@ -1,0 +1,39 @@
+<section class="page-bordered">
+	<div class="container p-sm-3">
+		<div id="form-create-account">
+			<h1 class="h2 main-color">#i18n{module.mydashboard.identity.view_complete_identity.pageTitle}</h1>		
+			<div class="alert alert-warning">#i18n{module.mydashboard.identity.view_complete_identity.alert.description}</div>		
+			<h6>#i18n{module.mydashboard.identity.view_complete_identity.formTitle}</h6>
+			<div class="row">				
+				<div class="col-6">
+					<form action="jsp/site/Portal.jsp" method="POST">
+						<input type="hidden" name="page" value="mydashboardIdentity" />
+						<input type="hidden" name="action" value="doCompleteIdentity" />
+						<div class="col-12">
+							<div class="form-group">
+								<label for="preferred_username">#i18n{module.mydashboard.identity.view_complete_identity.pereferred_username.label}</label>
+								<input type="text" name="preferred_username" id="preferred_username" value="${(identity.preferredUsername.value)!}" class="form-control form-control-lg"  placeholder="Ex. Dupont" aria-label="Veuillez saisir votre nom d’usage">								
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="form-group">
+								<label for="birthplace_code">#i18n{module.mydashboard.identity.view_complete_identity.birthplace.label} *</label>
+								<input type="text" name="birthplace_code" id="birthplace_code" value="${(identity.birthplaceCode.value)!}" class="form-control form-control-lg" placeholder="Ex.:Paris" aria-label="Veuillez saisir votre ville de naissance">
+							</div>
+						</div>
+						<div class="col-12">
+							<div class="form-group">
+								<label for="birthcountry_code">#i18n{module.mydashboard.identity.view_complete_identity.birthcountry.label} *</label>
+								<input type="text" name="birthcountry_code" id="birthcountry_code" value="${(identity.birthcountryCode.value)!}" class="form-control form-control-lg" placeholder="Ex. : France" aria-label="Veuillez saisir votre pays de naissance">
+							</div>
+						</div>
+						<div class="col-12">
+							<button type="submit" class="btn btn-primary btn-lg">#i18n{module.mydashboard.identity.view_complete_identity.continue}</button>
+						</div>
+					</form>						
+				</div>					
+			</div>
+		</div>
+	</div>
+</section>
+<@toastr_messages errors=errors />

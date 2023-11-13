@@ -41,4 +41,18 @@
         <property name="keysPrefix"><value>module.mydashboard.identity.site_property.</value></property>
     </bean>
     
+    <!-- IdentityQuality -->
+	<bean id="mydashboard-identity.identityQualityService" class="fr.paris.lutece.plugins.identityquality.v3.web.service.IdentityQualityService">
+		<constructor-arg ref="mydashboard-identity.identityQualityTransportRest"/>
+	</bean>
+	<bean id="mydashboard-identity.identityQualityTransportRest" class="fr.paris.lutece.plugins.identityquality.v3.web.rs.service.IdentityQualityTransportRest">
+		<constructor-arg ref="mydashboard-identity.identityQualityService.httpTransport"/>
+	</bean>
+	
+	<bean id="mydashboard-identity.identityQualityService.httpTransport" class="fr.paris.lutece.plugins.identityquality.v3.web.rs.service.HttpApiManagerAccessTransport">
+        <property name="ApiEndPointUrl">
+            <value>https://g73-dv-i1-tom02.cmpweb.paris.mdp/mdr/rest/identitystore</value>
+        </property>
+    </bean> 
+    
 </beans>

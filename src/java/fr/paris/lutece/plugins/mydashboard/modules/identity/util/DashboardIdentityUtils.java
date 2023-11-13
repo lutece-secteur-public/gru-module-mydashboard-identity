@@ -65,8 +65,10 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.url.UrlItem;
 
 
 /**
@@ -99,11 +101,16 @@ public class DashboardIdentityUtils
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE, Constants.PROPERTY_KEY_MOBILE_PHONE );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LOGIN, Constants.PROPERTY_KEY_LOGIN );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_EMAIL, Constants.PROPERTY_KEY_EMAIL );
+        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE, Constants.PROPERTY_KEY_BIRTHPLACE_CODE );
+        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE, Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE );
     }
     private static ReferenceList _lstContactModeList;
     private static ReferenceList _lstGenderList;
     private static final String SPLIT_PATTERN = ";";
+    private static final String SESSION_DASHBOARD_IDENTITY = "dashboardIdentity";
+    private static final String SESSION_REDIRECT_URL = "redirectUrl";
 
+    
     /**
      * private constructor for singleton
      */
@@ -494,5 +501,66 @@ public class DashboardIdentityUtils
 	    
 	    return requestAuthor;
     }
-	    
+    
+    /**
+     * 
+     * @return
+     */
+    public Map<String,String> getMapAttributeKeyMatch ( )
+    {
+        return _mapAttributeKeyMatch;
+    }
+    
+    /**
+     * 
+     * @param request
+     * @return
+     */
+    public DashboardIdentity getCurrentDashboardIdentityInSession( HttpServletRequest request )
+    {
+        return ( DashboardIdentity ) request.getSession( ).getAttribute( SESSION_DASHBOARD_IDENTITY );
+    }
+	
+    /**
+     * 
+     * @param request
+     * @param dashboardIdentity
+     */
+    public void setCurrentDashboardIdentityInSession ( HttpServletRequest request, DashboardIdentity dashboardIdentity )
+    {
+        if( dashboardIdentity != null )
+        {
+            request.getSession( ).setAttribute( SESSION_DASHBOARD_IDENTITY, dashboardIdentity );
+        }
+        else
+        {
+            request.getSession( ).removeAttribute( SESSION_DASHBOARD_IDENTITY );
+        }
+    }
+    
+    /**
+     * 
+     * @param request
+     * @return
+     */
+    public String getRedirectUrlAfterCompletionInSession ( HttpServletRequest request )
+    {
+        return ( String ) request.getSession( ).getAttribute( SESSION_REDIRECT_URL );
+    }
+    
+    /**
+     * 
+     * @param strRedirectXPage
+     * @param request
+     */
+    public void setRedirectUrlAfterCompletionInSession ( String strPage, String strView , HttpServletRequest request)
+    {
+        if( StringUtils.isNotEmpty( strPage ) && StringUtils.isNotEmpty( strView ) )
+        {
+            UrlItem url = new UrlItem( "Portal.jsp?page=" + strPage + "&view=" + strView );
+            
+            request.getSession( ).setAttribute( SESSION_REDIRECT_URL, url.getUrl( ) );
+        }
+    }
+    
 }

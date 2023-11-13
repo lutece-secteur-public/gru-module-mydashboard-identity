@@ -33,11 +33,13 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.service;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.DuplicateSearchResponse;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.portal.service.util.AppException;
 
@@ -102,4 +104,19 @@ public interface IDashBoardIdentityService {
 	 */
 	void populateDashboardIdentity ( DashboardIdentity dashboardIdentity, HttpServletRequest request );
 
+    /**
+     * Search suspicious identities
+     * @param dashboardIdentity
+     * @param listRules
+     * @return suspicious identities
+     */
+     DuplicateSearchResponse getSuspiciousIdentities( DashboardIdentity dashboardIdentity, List<String> listRules );
+     
+     /**
+      * Return true if exist suspicious identities
+      * @param dashboardIdentity
+      * @param listRules
+      * @return true if exist suspicious identities
+      */
+     boolean existSuspiciousIdentities ( DashboardIdentity dashboardIdentity, List<String> listRules );
 }
