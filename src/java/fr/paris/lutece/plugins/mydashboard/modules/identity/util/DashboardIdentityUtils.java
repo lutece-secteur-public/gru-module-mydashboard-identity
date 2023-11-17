@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -560,6 +561,133 @@ public class DashboardIdentityUtils
             UrlItem url = new UrlItem( "Portal.jsp?page=" + strPage + "&view=" + strView );
             
             request.getSession( ).setAttribute( SESSION_REDIRECT_URL, url.getUrl( ) );
+        }
+    }
+    
+    /**
+     * Gets all rules
+     * @return
+     */
+    public List<String> getAllSuspiciousIdentityRules ( )
+    {
+        List<String> listAllRules = new ArrayList< >( );
+        listAllRules.addAll( getSuspiciousIdentityStrictRules( ) );
+        listAllRules.addAll( getSuspiciousIdentityNotStrictRules( ) );
+        
+        return listAllRules;
+    }
+    
+    /**
+     * Gets strict rules
+     * @return list of strict rules
+     */
+    public List<String> getSuspiciousIdentityStrictRules ( )
+    {
+        return Arrays.asList( Constants.PROPERTY_SUSPICIOUS_LIST_RULE_STRIC.split( ";" ));
+    }
+    
+    /**
+     * Gets not strict rules
+     * @return list of not strict rules
+     */
+    public List<String> getSuspiciousIdentityNotStrictRules ( )
+    {
+        return Arrays.asList( Constants.PROPERTY_SUSPICIOUS_LIST_RULE_NOT_STRIC.split( ";" ));        
+    }
+    
+
+    /**
+     * Set mandatory attribute for completion identity
+     */
+    public DashboardIdentity initMandatoryAttributeForCompletionIdentity( String strOriginActionCompletion )
+    {
+        DashboardIdentity completionIdentity = new DashboardIdentity( );
+
+        for ( Map.Entry<String, String> attribute : DashboardIdentityUtils.getInstance( ).getMapAttributeKeyMatch( ).entrySet( ) )
+        {
+            DashboardAttribute dashboardAttribute = new DashboardAttribute( );
+            dashboardAttribute.setKey( attribute.getValue( ) );
+            
+            switch ( Integer.parseInt( strOriginActionCompletion ) )
+            {
+                case Constants.ORIGIN_ACTION_CREATE_ACCOUNT:
+                    dashboardAttribute.setMandatory( isMandatoryCompletionCreateAccount( attribute ) );
+                    break;
+                case Constants.ORIGIN_ACTION_MODIFY_ACCOUNT:
+                    dashboardAttribute.setMandatory( isMandatoryCompletionModifyAccount( attribute ) );
+                    break;
+                default:
+                    break;
+            }
+            
+            completionIdentity.setAttribute( attribute.getKey( ), dashboardAttribute );
+        }
+        
+        return completionIdentity;
+    }
+    
+    /**
+     * Return true if the attribute is mandatory for create account completion
+     * @param attribute
+     * @return true if the attributie is mandatory
+     */
+    public boolean isMandatoryCompletionCreateAccount ( Entry<String, String> attribute   )
+    {
+        return attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE_CODE ) 
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE ) ;
+
+    }
+    
+    /**
+     * Return true if the attribute is mandatory for modify account completion
+     * @param attribute
+     * @return true if the attribute is mandatory
+     */
+    public boolean isMandatoryCompletionModifyAccount ( Entry<String, String> attribute   )
+    {
+        return attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE_CODE ) 
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE )
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_GENDER ) 
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_FIRSTNAME )
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHDATE )
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_NAME ) ;
+    }
+    
+    /**
+     * Update dashboardIdentity in the session
+     * @param currentDasboardIdentity
+     * @param currentDasboardIdentity in session
+     */
+    public void updateDashboardIdentityInSession( DashboardIdentity currentDasboardIdentity, DashboardIdentity dasboardIdentitySession )
+    {
+        
+        if( currentDasboardIdentity.getGender( ) != null )
+        {
+            dasboardIdentitySession.setGender( currentDasboardIdentity.getGender( ) );
+        }
+        if( currentDasboardIdentity.getFirstname( ) != null )
+        {
+            dasboardIdentitySession.setFirstname( currentDasboardIdentity.getFirstname( ) );
+        }
+        if( currentDasboardIdentity.getLastName( ) != null )
+        {
+            dasboardIdentitySession.setLastName( currentDasboardIdentity.getLastName( ) );
+        }        
+        if( currentDasboardIdentity.getBirthdate( ) != null )
+        {
+            dasboardIdentitySession.setBirthdate( currentDasboardIdentity.getBirthdate( ) );
+        }  
+        if( currentDasboardIdentity.getPreferredUsername( ) != null )
+        {
+            dasboardIdentitySession.setPreferredUsername( currentDasboardIdentity.getPreferredUsername( ) );
+        }        
+        if( currentDasboardIdentity.getBirthplaceCode( ) != null )
+        {
+            dasboardIdentitySession.setBirthplaceCode( currentDasboardIdentity.getBirthplaceCode( ) );
+        }        
+        if( currentDasboardIdentity.getBirthcountryCode( ) != null )
+        {
+            dasboardIdentitySession.setBirthcountryCode( currentDasboardIdentity.getBirthcountryCode( ) );
         }
     }
     

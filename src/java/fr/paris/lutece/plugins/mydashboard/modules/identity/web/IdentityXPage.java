@@ -43,7 +43,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 import fr.paris.lutece.plugins.avatar.service.AvatarService;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.service.IdentityService;
-import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.service.DashboardIdentityService;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
@@ -85,6 +84,7 @@ public class IdentityXPage extends MVCApplication
 
     private static final String PARAMETER_BACK                            = "back";
     private static final String PARAMETER_APP_CODE                        = "app_code";
+    private static final String PARAMETER_ORIGIN_ACTION                   = "origin";
 
     private static final String MARK_IDENTITY                             = "identity";
     private static final String MARK_VIEW_MODE                            = "viewMode";
@@ -102,6 +102,8 @@ public class IdentityXPage extends MVCApplication
 
     private static final String MARK_GENDER_LIST                          = "genderlist";
     private static final String MARK_CONTACT_MODE_LIST                    = "contact_modeList";
+    private static final String MARK_ORIGIN_ACTION                        = "origin";
+    
     private static final String BEAN_IDENTITYSTORE_SERVICE                = "mydashboard-identity.identitystore.service";
     private static final String SPLIT_PATTERN                             = ";";
     private static final String PROPERTY_AVATERSERVER_POST_URL            = "mydashboard.identity.avatarserver.post.url";
@@ -122,6 +124,11 @@ public class IdentityXPage extends MVCApplication
     private static final String VIEW_VALIDATE_PHONE                       = "validate_phone";
     private static final String VIEW_VALIDATE_MOBILEPHONE                 = "validate_mobilephone";
     private static final String VIEW_SUSPICION_IDENTITY_COMPLETION        = "completeIdentity";
+    
+    //PROPERTIES
+    private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE     = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.page" );
+    private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_VIEW     = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.view" );
+   
 
     private ReferenceList       _lstContactModeList;
     private ReferenceList       _lstGenderList;
@@ -135,6 +142,7 @@ public class IdentityXPage extends MVCApplication
 
     private IdentityService     _identityService;
     private boolean             _bReInitAppCode                           = false;
+    private String              _originActionCompletion;
 
     /**
      * Constructor
@@ -357,7 +365,16 @@ public class IdentityXPage extends MVCApplication
             hashErros.forEach( ( x, y ) -> addError( y ) );
             return redirectView( request, VIEW_GET_MODIFY_IDENTITY );
         }
-
+        
+        //Suspicious identity
+        if( DashboardIdentityService.getInstance( ).existSuspiciousIdentities( _dashboardIdentity,DashboardIdentityUtils.getInstance( ).getAllSuspiciousIdentityRules( ) ) )
+        {
+            DashboardIdentityUtils.getInstance( ).setCurrentDashboardIdentityInSession( request, _dashboardIdentity );
+            DashboardIdentityUtils.getInstance( ).setRedirectUrlAfterCompletionInSession( PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE, PROPERTY_REDIRECT_MODIFY_ACCOUNT_VIEW, request );
+            
+            return redirect( request, VIEW_SUSPICION_IDENTITY_COMPLETION, PARAMETER_ORIGIN_ACTION, Constants.ORIGIN_ACTION_MODIFY_ACCOUNT );
+        }
+        
         try
         {
             DashboardIdentityService.getInstance( ).updateDashboardIdentity( _dashboardIdentity, false );
@@ -380,6 +397,7 @@ public class IdentityXPage extends MVCApplication
         return redirectView( request, VIEW_GET_VIEW_IDENTITY );
     }
 
+    
     /**
      * Do the modification of the user identity
      *
@@ -739,6 +757,7 @@ public class IdentityXPage extends MVCApplication
     public XPage getViewSuspiciousIdentity( HttpServletRequest request )
     {
         Map<String, Object> model = getModel( );
+        _originActionCompletion = request.getParameter( PARAMETER_ORIGIN_ACTION );
 
         DashboardIdentity dasboardIdentitySession = DashboardIdentityUtils.getInstance( ).getCurrentDashboardIdentityInSession( request );
 
@@ -747,7 +766,10 @@ public class IdentityXPage extends MVCApplication
             return redirectView( request, AppPathService.getRootForwardUrl( ) );
         }
 
-        model.put( MARK_IDENTITY, _completionIdentity );
+        model.put( MARK_GENDER_LIST, _lstGenderList );
+        model.put( MARK_IDENTITY, _completionIdentity == null ? dasboardIdentitySession : _completionIdentity );
+        model.put( MARK_ORIGIN_ACTION, _originActionCompletion );
+        
         return getXPage( TEMPLATE_SUSPICIOUS_COMPLETE_IDENTITY, I18nService.getDefaultLocale( ), model );
     }
 
@@ -761,18 +783,7 @@ public class IdentityXPage extends MVCApplication
             return redirectView( request, AppPathService.getRootForwardUrl( ) );
         }
 
-        _completionIdentity = new DashboardIdentity( );
-
-        for ( Map.Entry<String, String> attribute : DashboardIdentityUtils.getInstance( ).getMapAttributeKeyMatch( ).entrySet( ) )
-        {
-            DashboardAttribute dashboardAttribute = new DashboardAttribute( );
-            dashboardAttribute.setKey( attribute.getValue( ) );
-            if ( attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE_CODE ) || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE ) )
-            {
-                dashboardAttribute.setMandatory( true );
-            }
-            _completionIdentity.setAttribute( attribute.getKey( ), dashboardAttribute );
-        }
+        _completionIdentity = DashboardIdentityUtils.getInstance( ).initMandatoryAttributeForCompletionIdentity( _originActionCompletion );
 
         DashboardIdentityService.getInstance( ).populateDashboardIdentity( _completionIdentity, request );
 
@@ -780,12 +791,10 @@ public class IdentityXPage extends MVCApplication
         if ( !hashErros.isEmpty( ) )
         {
             hashErros.forEach( ( x, y ) -> addError( y ) );
-            return redirectView( request, VIEW_SUSPICION_IDENTITY_COMPLETION );
+            return redirect( request, VIEW_SUSPICION_IDENTITY_COMPLETION, PARAMETER_ORIGIN_ACTION, Integer.parseInt( _originActionCompletion ));
         }
 
-        dasboardIdentitySession.setPreferredUsername( _completionIdentity.getPreferredUsername( ) );
-        dasboardIdentitySession.setBirthplaceCode( _completionIdentity.getBirthplaceCode( ) );
-        dasboardIdentitySession.setBirthcountryCode( _completionIdentity.getBirthcountryCode( ) );
+        DashboardIdentityUtils.getInstance( ).updateDashboardIdentityInSession( _completionIdentity, dasboardIdentitySession );
 
         DashboardIdentityUtils.getInstance( ).setCurrentDashboardIdentityInSession( request, dasboardIdentitySession );
 
