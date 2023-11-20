@@ -52,6 +52,7 @@ import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.RequestAuthor;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.ResponseStatus;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.ResponseStatusType;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.AttributeDefinitionDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeRequest;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeResponse;
@@ -212,6 +213,26 @@ public class DashboardIdentityUtils
 
         return dashboardIdentity;
         
+    }
+    
+    public boolean needCertificationFC( DashboardIdentity dashboardIdentity, ServiceContractSearchResponse contractSearchResponse )
+    {
+    	boolean needCertificationFC = false;
+    	
+    	for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
+        {
+    		DashboardAttribute attribute = dashboardIdentity.getAttribute( attributeMatch.getKey( ) );
+    		Optional<AttributeDefinitionDto> optionalContract = contractSearchResponse.getServiceContract( ).getAttributeDefinitions( )
+    				.stream( ).filter( e -> e.getKeyName( ).equals( attributeMatch.getValue( ) ) ).findFirst( );
+    		
+    		if ( optionalContract.isPresent( ) && optionalContract.get( ).getAttributeRequirement( ) != null )
+    		{
+    			needCertificationFC = ( attribute.getCertifierLevel( ) != Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) 
+    					&& optionalContract.get( ).getAttributeRequirement( ).getLevel( ).equals( "600" ) );
+    		}
+        }
+    	
+    	return needCertificationFC;
     }
 
     /**

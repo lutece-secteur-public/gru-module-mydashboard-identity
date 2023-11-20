@@ -95,6 +95,7 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_SERVICE_URL                          = "service_url";
     private static final String MARK_SERVICE_NAME                         = "service_name";
     private static final String MARK_MANDATORY_INFORMATIONS_SAVED         = "mandatory_informations_saved";
+    private static final String MARK_NEED_CERTIFICATION_FC                = "needCertificationFC";
 
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY         = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String TEMPLATE_GET_VIEW_CHECK_IDENTITY          = "skin/plugins/mydashboard/modules/identity/check_identity.html";
@@ -288,14 +289,17 @@ public class IdentityXPage extends MVCApplication
             _bReInitAppCode = true;
             _strAppCode = strAppCode;
         }
+        
+        Map<String, Object> model = getModel( );
 
         if ( ( _checkdIdentity == null ) || ( _checkdIdentity.getConnectionId( ) == null ) || !_checkdIdentity.getConnectionId( ).getValue( ).equals( luteceUser.getName( ) ) || _bReInitAppCode )
         {
             try
             {
                 _checkdIdentity = DashboardIdentityService.getInstance( ).getDashBoardIdentity( _strAppCode, luteceUser.getName( ) );
-
-            } catch ( AppException e )
+                model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertificationFC( _strAppCode, luteceUser.getName( ), _checkdIdentity ) );
+            } 
+            catch ( AppException e )
             {
                 AppLogService.error( "An error appear during retreaving Identity information for app_code {} and user guid {} ", strAppCode, luteceUser.getName( ), e );
                 return redirectView( request, VIEW_GET_VIEW_IDENTITY );
@@ -307,8 +311,6 @@ public class IdentityXPage extends MVCApplication
 
         SitePropertiesGroup dashboardPropertiesGroup = ( SitePropertiesGroup ) SpringContextService.getBean( BEAN_MYDASHBOARD_IDENTITY_SITE_PROPERTIES );
         String strMyDashboardPropertiesPrefix = dashboardPropertiesGroup.getDatastoreKeysPrefix( );
-
-        Map<String, Object> model = getModel( );
 
         model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( strMyDashboardPropertiesPrefix ).toMap( ) );
         model.put( MARK_IDENTITY, _checkdIdentity );

@@ -119,4 +119,10 @@ public interface IDashBoardIdentityService {
       * @return true if exist suspicious identities
       */
      boolean existSuspiciousIdentities ( DashboardIdentity dashboardIdentity, List<String> listRules );
+
+	/**
+	 * {@inheritDoc}
+	 */
+	boolean needCertificationFC(String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity)
+			throws AppException;
 }

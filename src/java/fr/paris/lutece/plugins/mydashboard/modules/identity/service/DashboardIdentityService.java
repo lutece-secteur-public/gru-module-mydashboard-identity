@@ -182,7 +182,23 @@ public class DashboardIdentityService implements IDashBoardIdentityService
          return dashboardIdentity;  
     }
     
-    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public boolean needCertificationFC( String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity ) throws AppException
+    {
+        ServiceContractSearchResponse serviceContractSearchResponse = null;
+        try
+        {
+            serviceContractSearchResponse = _serviceContractService.getActiveServiceContract( strApplicationCode, DashboardIdentityUtils.DASHBOARD_APP_CODE, DashboardIdentityUtils.getInstance( ).getOwnerRequestAuthor( ) );
+        } 
+        catch ( IdentityStoreException e )
+        {
+            AppLogService.error( "Error ServiceContract for application {}", e.getMessage( ), strApplicationCode );
+        }
+        return DashboardIdentityUtils.getInstance( ).needCertificationFC( dashboardIdentity, serviceContractSearchResponse );
+    }
     
     /**
      * {@inheritDoc}
