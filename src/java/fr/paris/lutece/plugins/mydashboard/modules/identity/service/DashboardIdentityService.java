@@ -485,7 +485,17 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     public boolean existSuspiciousIdentities( DashboardIdentity dashboardIdentity, List<String> listRules )
     {
         DuplicateSearchResponse suspiciousSearchResponse =  DashboardIdentityService.getInstance( ).getSuspiciousIdentities( dashboardIdentity, listRules ) ;
-        return suspiciousSearchResponse != null && suspiciousSearchResponse.getStatus( ).getType( ).equals( ResponseStatusType.OK ) &&
-                CollectionUtils.isNotEmpty( suspiciousSearchResponse.getIdentities( ) );
+
+        if( suspiciousSearchResponse != null && suspiciousSearchResponse.getStatus( ).getType( ).equals( ResponseStatusType.OK ) &&
+                CollectionUtils.isNotEmpty( suspiciousSearchResponse.getIdentities( ) ) )
+        {
+            if( dashboardIdentity.getConnectionId( ) != null && 
+                    StringUtils.isNotEmpty( dashboardIdentity.getConnectionId( ).getValue( ) ) )
+            {
+                return suspiciousSearchResponse.getIdentities( ).stream( ).noneMatch( i -> i.getConnectionId( ).equals( dashboardIdentity.getConnectionId( ).getValue( ) ) );
+            }
+            return true;
+        }
+        return false;
     }
 }

@@ -48,11 +48,17 @@
 	<bean id="mydashboard-identity.identityQualityTransportRest" class="fr.paris.lutece.plugins.identityquality.v3.web.rs.service.IdentityQualityTransportRest">
 		<constructor-arg ref="mydashboard-identity.identityQualityService.httpTransport"/>
 	</bean>
-	
-	<bean id="mydashboard-identity.identityQualityService.httpTransport" class="fr.paris.lutece.plugins.identityquality.v3.web.rs.service.HttpApiManagerAccessTransport">
-        <property name="ApiEndPointUrl">
-            <value>https://g73-dv-i1-tom02.cmpweb.paris.mdp/mdr/rest/identitystore</value>
-        </property>
-    </bean> 
+    
+    <bean id="mydashboard-identity.identityQualityService.httpTransport" class="fr.paris.lutece.plugins.identityquality.v3.web.rs.service.HttpApiManagerAccessTransport">
+	    <property name="apiEndPointUrl">
+	    	<value>${mydashboard.identity.identitystore.ApiEndPointUrl}</value>
+	    </property>
+	    <property name="accessManagerEndPointUrl">
+	    	<value>${mydashboard.identity.identitystore.AccessManagerEndPointUrl}</value>
+	    </property>
+	    <property name="accessManagerCredentials">
+	    	<value>${mydashboard.identity.identitystore.AccessManagerCredential}</value>
+	    </property>
+    </bean>
     
 </beans>

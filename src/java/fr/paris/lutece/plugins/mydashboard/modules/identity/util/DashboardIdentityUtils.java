@@ -111,7 +111,8 @@ public class DashboardIdentityUtils
     private static final String SPLIT_PATTERN = ";";
     private static final String SESSION_DASHBOARD_IDENTITY = "dashboardIdentity";
     private static final String SESSION_REDIRECT_URL = "redirectUrl";
-
+    public static final String SESSION_ERROR_MESSAGE = "errorMessage";
+    public static final String SESSION_INFO_MESSAGE = "infoMessage";   
     
     /**
      * private constructor for singleton
@@ -584,6 +585,46 @@ public class DashboardIdentityUtils
             request.getSession( ).setAttribute( SESSION_REDIRECT_URL, url.getUrl( ) );
         }
     }
+    
+    
+    /**
+     * Get message in the session
+     * @param bErrorMessage ( set true if is a error message and false if is a info message )
+     * @param bRemoveAttribute
+     * @param request
+     * @param request
+     * @return the message in session
+     */
+    public String getMessageInSession ( boolean bErrorMessage, boolean bRemoveAttribute, HttpServletRequest request )
+    {
+        String strAttributeName = bErrorMessage ? SESSION_ERROR_MESSAGE : SESSION_INFO_MESSAGE;
+             
+        String strMessage = ( String ) request.getSession( ).getAttribute( strAttributeName );
+        
+        if( bRemoveAttribute )
+        {
+            request.getSession( ).removeAttribute( strAttributeName );
+        }
+        
+        return strMessage;
+    }
+    
+    /**
+     * Set message in the session
+     * @param strMessage
+     * @param bErrorMessage ( set true if is a error message and false if is a info message )
+     * @param request
+     */
+    public void setMessageInSession ( String strMessage, boolean bErrorMessage, HttpServletRequest request )
+    {
+        if( StringUtils.isNotEmpty( strMessage ) )
+        {
+            String strAttributeName = bErrorMessage ? SESSION_ERROR_MESSAGE : SESSION_INFO_MESSAGE;
+            
+            request.getSession( ).setAttribute( strAttributeName, strMessage );
+        }
+    }
+    
     
     /**
      * Gets all rules

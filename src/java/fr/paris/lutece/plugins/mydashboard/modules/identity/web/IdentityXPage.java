@@ -217,7 +217,9 @@ public class IdentityXPage extends MVCApplication
                 model.put( MARK_SERVICE_NAME, strServiceName );
             }
         }
-
+        
+        addMessage( request, model );
+        
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale( ), model );
     }
 
@@ -265,8 +267,27 @@ public class IdentityXPage extends MVCApplication
                 model.put( MARK_SERVICE_NAME, strServiceName );
             }
         }
+        
+        addMessage( request, model );
 
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale( ), model );
+    }
+
+    private void addMessage( HttpServletRequest request, Map<String, Object> model )
+    {
+        String strErrorMessageInSession = DashboardIdentityUtils.getInstance( ).getMessageInSession( true, true, request );
+        String stInfoMessageInSession = DashboardIdentityUtils.getInstance( ).getMessageInSession( false, true, request );
+        
+        if( StringUtils.isNotEmpty( strErrorMessageInSession ) )
+        {
+            addError( strErrorMessageInSession, request.getLocale( ) );
+            fillCommons( model );
+        }
+        if( StringUtils.isNotEmpty( stInfoMessageInSession ) )
+        {
+            addInfo( stInfoMessageInSession, request.getLocale( ) );
+            fillCommons( model );
+        }
     }
 
     /**
@@ -765,7 +786,7 @@ public class IdentityXPage extends MVCApplication
 
         if ( dasboardIdentitySession == null )
         {
-            return redirectView( request, AppPathService.getRootForwardUrl( ) );
+            return redirect( request, AppPathService.getRootForwardUrl( ) );
         }
 
         model.put( MARK_GENDER_LIST, _lstGenderList );
@@ -782,7 +803,7 @@ public class IdentityXPage extends MVCApplication
 
         if ( dasboardIdentitySession == null )
         {
-            return redirectView( request, AppPathService.getRootForwardUrl( ) );
+            return redirect( request, AppPathService.getRootForwardUrl( ) );
         }
 
         _completionIdentity = DashboardIdentityUtils.getInstance( ).initMandatoryAttributeForCompletionIdentity( _originActionCompletion );
