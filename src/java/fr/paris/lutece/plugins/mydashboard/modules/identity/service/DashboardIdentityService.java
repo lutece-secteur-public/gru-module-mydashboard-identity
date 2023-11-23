@@ -179,7 +179,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
      * {@inheritDoc}
      */
     @Override
-	public boolean needCertificationFC( String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity ) throws AppException
+	public boolean needCertificationFC( String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity )
     {
         ServiceContractSearchResponse serviceContractSearchResponse = getActiveServiceContract( strApplicationCode );
         return DashboardIdentityUtils.getInstance( ).needCertificationFC( dashboardIdentity, serviceContractSearchResponse );

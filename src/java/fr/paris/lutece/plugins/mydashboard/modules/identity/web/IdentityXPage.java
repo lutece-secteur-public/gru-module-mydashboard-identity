@@ -314,14 +314,11 @@ public class IdentityXPage extends MVCApplication
             _strAppCode = strAppCode;
         }
         
-        Map<String, Object> model = getModel( );
-
         if ( ( _checkdIdentity == null ) || ( _checkdIdentity.getConnectionId( ) == null ) || !_checkdIdentity.getConnectionId( ).getValue( ).equals( luteceUser.getName( ) ) || _bReInitAppCode )
         {
             try
             {
                 _checkdIdentity = DashboardIdentityService.getInstance( ).getDashBoardIdentity( _strAppCode, luteceUser.getName( ) );
-                model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertificationFC( _strAppCode, luteceUser.getName( ), _checkdIdentity ) );
             } 
             catch ( AppException e )
             {
@@ -336,6 +333,8 @@ public class IdentityXPage extends MVCApplication
         SitePropertiesGroup dashboardPropertiesGroup = ( SitePropertiesGroup ) SpringContextService.getBean( BEAN_MYDASHBOARD_IDENTITY_SITE_PROPERTIES );
         String strMyDashboardPropertiesPrefix = dashboardPropertiesGroup.getDatastoreKeysPrefix( );
 
+        Map<String, Object> model = getModel( );
+        
         model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( strMyDashboardPropertiesPrefix ).toMap( ) );
         model.put( MARK_IDENTITY, _checkdIdentity );
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
@@ -343,6 +342,7 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
         model.put( MARK_MANDATORY_INFORMATIONS_SAVED, _bMandatoryInformationsSaved );
+        model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertificationFC( _strAppCode, luteceUser.getName( ), _checkdIdentity ) );
 
         // check back url in session
 
