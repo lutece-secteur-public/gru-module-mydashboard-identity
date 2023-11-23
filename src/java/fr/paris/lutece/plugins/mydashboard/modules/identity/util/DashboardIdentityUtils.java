@@ -112,7 +112,8 @@ public class DashboardIdentityUtils
     private static final String SESSION_DASHBOARD_IDENTITY = "dashboardIdentity";
     private static final String SESSION_REDIRECT_URL = "redirectUrl";
     public static final String SESSION_ERROR_MESSAGE = "errorMessage";
-    public static final String SESSION_INFO_MESSAGE = "infoMessage";   
+    public static final String SESSION_INFO_MESSAGE = "infoMessage";
+    public static final String SESSION_SN_NAME = "serviceNumericName";
     
     /**
      * private constructor for singleton
@@ -586,6 +587,29 @@ public class DashboardIdentityUtils
         }
     }
     
+    /**
+     * Get name of numeric service in the session
+     * @param request
+     * @return the name of numeric service in the session
+     */
+    public String getNumericServiceNameInSession ( HttpServletRequest request  )
+    {
+        return ( String ) request.getSession( ).getAttribute( SESSION_SN_NAME );
+    }
+    
+    /**
+     * Set Numeric service name in session
+     * @param strServiceNumericName
+     * @param request
+     */
+    public void setNumericServiceNameInSession ( String strServiceNumericName, HttpServletRequest request )
+    {
+        if( StringUtils.isNotEmpty( strServiceNumericName ) )
+        {
+            request.getSession( ).setAttribute( SESSION_SN_NAME, strServiceNumericName );
+        }
+    }
+    
     
     /**
      * Get message in the session
@@ -672,11 +696,14 @@ public class DashboardIdentityUtils
             
             switch ( Integer.parseInt( strOriginActionCompletion ) )
             {
-                case Constants.ORIGIN_ACTION_CREATE_ACCOUNT:
-                    dashboardAttribute.setMandatory( isMandatoryCompletionCreateAccount( attribute ) );
+                case Constants.ORIGIN_ACTION_CREATE_ACCOUNT  :
+                    dashboardAttribute.setMandatory( isMandatoryCompletionCreateAndCompletionAccount( attribute ) );
                     break;
                 case Constants.ORIGIN_ACTION_MODIFY_ACCOUNT:
                     dashboardAttribute.setMandatory( isMandatoryCompletionModifyAccount( attribute ) );
+                    break;
+                case Constants.ORIGIN_ACTION_COMPLETION_ACCOUNT  :
+                    dashboardAttribute.setMandatory( isMandatoryCompletionCreateAndCompletionAccount( attribute ) );
                     break;
                 default:
                     break;
@@ -693,7 +720,7 @@ public class DashboardIdentityUtils
      * @param attribute
      * @return true if the attributie is mandatory
      */
-    public boolean isMandatoryCompletionCreateAccount ( Entry<String, String> attribute   )
+    public boolean isMandatoryCompletionCreateAndCompletionAccount ( Entry<String, String> attribute   )
     {
         return attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE_CODE ) 
                 || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE ) ;
@@ -723,31 +750,31 @@ public class DashboardIdentityUtils
     public void updateDashboardIdentityInSession( DashboardIdentity currentDasboardIdentity, DashboardIdentity dasboardIdentitySession )
     {
         
-        if( currentDasboardIdentity.getGender( ) != null )
+        if( currentDasboardIdentity.getGender( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getGender( ).getValue( ) ) )
         {
             dasboardIdentitySession.setGender( currentDasboardIdentity.getGender( ) );
         }
-        if( currentDasboardIdentity.getFirstname( ) != null )
+        if( currentDasboardIdentity.getFirstname( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getFirstname( ).getValue( ) ) )
         {
             dasboardIdentitySession.setFirstname( currentDasboardIdentity.getFirstname( ) );
         }
-        if( currentDasboardIdentity.getLastName( ) != null )
+        if( currentDasboardIdentity.getLastName( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getLastName( ).getValue( ) ) )
         {
             dasboardIdentitySession.setLastName( currentDasboardIdentity.getLastName( ) );
         }        
-        if( currentDasboardIdentity.getBirthdate( ) != null )
+        if( currentDasboardIdentity.getBirthdate( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthdate( ).getValue( ) ) )
         {
             dasboardIdentitySession.setBirthdate( currentDasboardIdentity.getBirthdate( ) );
         }  
-        if( currentDasboardIdentity.getPreferredUsername( ) != null )
+        if( currentDasboardIdentity.getPreferredUsername( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getPreferredUsername( ).getValue( ) ) )
         {
             dasboardIdentitySession.setPreferredUsername( currentDasboardIdentity.getPreferredUsername( ) );
         }        
-        if( currentDasboardIdentity.getBirthplaceCode( ) != null )
+        if( currentDasboardIdentity.getBirthplaceCode( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthplaceCode( ).getValue( ) ) )
         {
             dasboardIdentitySession.setBirthplaceCode( currentDasboardIdentity.getBirthplaceCode( ) );
         }        
-        if( currentDasboardIdentity.getBirthcountryCode( ) != null )
+        if( currentDasboardIdentity.getBirthcountryCode( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthcountryCode( ).getValue( ) ) )
         {
             dasboardIdentitySession.setBirthcountryCode( currentDasboardIdentity.getBirthcountryCode( ) );
         }

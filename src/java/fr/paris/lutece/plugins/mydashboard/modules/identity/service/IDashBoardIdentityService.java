@@ -39,6 +39,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.DuplicateSearchResponse;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.portal.service.util.AppException;
@@ -125,4 +126,11 @@ public interface IDashBoardIdentityService {
 	 */
 	boolean needCertificationFC(String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity)
 			throws AppException;
+	
+	/**
+	 * Get active service contract
+	 * @param strApplicationCode
+	 * @return active service contract
+	 */
+	ServiceContractSearchResponse getActiveServiceContract( String strApplicationCode );
 }

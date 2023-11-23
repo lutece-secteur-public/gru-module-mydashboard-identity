@@ -177,6 +177,7 @@ public final class Constants
     //ORIGIN ACTION COMPLETION
     public static final int ORIGIN_ACTION_CREATE_ACCOUNT = 1;
     public static final int ORIGIN_ACTION_MODIFY_ACCOUNT = 2;
+    public static final int ORIGIN_ACTION_COMPLETION_ACCOUNT = 3;
     
     public static final String PROPERTY_SUSPICIOUS_LIST_RULE_STRIC       = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.identity.list_code_rule.strict", "RG_GEN_StrictDoublon_01" );
     public static final String PROPERTY_SUSPICIOUS_LIST_RULE_NOT_STRIC   = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.identity.list_code_rule.not_strict",

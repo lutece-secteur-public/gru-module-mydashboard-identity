@@ -164,14 +164,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         IdentityDto identity = null; 
         DashboardIdentity dashboardIdentity = null;
 
-         ServiceContractSearchResponse serviceContractSearchResponse = null;
-        try
-        {
-            serviceContractSearchResponse = _serviceContractService.getActiveServiceContract( strApplicationCode ,DashboardIdentityUtils.DASHBOARD_APP_CODE,DashboardIdentityUtils.getInstance().getOwnerRequestAuthor()) ;
-        } catch ( IdentityStoreException e )
-        {
-            AppLogService.error( "Error ServiceContract for application {}", e.getMessage( ), strApplicationCode );
-        }
+         ServiceContractSearchResponse serviceContractSearchResponse = getActiveServiceContract( strApplicationCode );
          
          if( !StringUtils.isEmpty( strGuid ))
          {
@@ -188,6 +181,13 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     @Override
 	public boolean needCertificationFC( String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity ) throws AppException
     {
+        ServiceContractSearchResponse serviceContractSearchResponse = getActiveServiceContract( strApplicationCode );
+        return DashboardIdentityUtils.getInstance( ).needCertificationFC( dashboardIdentity, serviceContractSearchResponse );
+    }
+    
+    @Override
+    public ServiceContractSearchResponse getActiveServiceContract( String strApplicationCode )
+    {
         ServiceContractSearchResponse serviceContractSearchResponse = null;
         try
         {
@@ -197,7 +197,8 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         {
             AppLogService.error( "Error ServiceContract for application {}", e.getMessage( ), strApplicationCode );
         }
-        return DashboardIdentityUtils.getInstance( ).needCertificationFC( dashboardIdentity, serviceContractSearchResponse );
+        
+        return serviceContractSearchResponse;
     }
     
     /**

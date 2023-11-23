@@ -42,6 +42,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import fr.paris.lutece.plugins.avatar.service.AvatarService;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.service.IdentityService;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.service.DashboardIdentityService;
@@ -104,6 +105,7 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_GENDER_LIST                          = "genderlist";
     private static final String MARK_CONTACT_MODE_LIST                    = "contact_modeList";
     private static final String MARK_ORIGIN_ACTION                        = "origin";
+    private static final String MARK_NS_NAME                              = "numericServiceName";
     
     private static final String BEAN_IDENTITYSTORE_SERVICE                = "mydashboard-identity.identitystore.service";
     private static final String SPLIT_PATTERN                             = ";";
@@ -129,6 +131,7 @@ public class IdentityXPage extends MVCApplication
     //PROPERTIES
     private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE     = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.page" );
     private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_VIEW     = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.view" );
+    private static final String PROPERTY_REDIRECT_COMPLETION_ACCOUNT_VIEW = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.completion_account.redirect.view" );
    
 
     private ReferenceList       _lstContactModeList;
@@ -449,7 +452,23 @@ public class IdentityXPage extends MVCApplication
             hashErros.forEach( ( x, y ) -> addError( y ) );
             return redirectView( request, VIEW_GET_CHECK_IDENTITY );
         }
-
+        
+        //Suspicious identity
+        if( DashboardIdentityService.getInstance( ).existSuspiciousIdentities( _checkdIdentity,DashboardIdentityUtils.getInstance( ).getAllSuspiciousIdentityRules( ) ) )
+        {
+            DashboardIdentityUtils.getInstance( ).setCurrentDashboardIdentityInSession( request, _checkdIdentity );
+            DashboardIdentityUtils.getInstance( ).setRedirectUrlAfterCompletionInSession( PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE, PROPERTY_REDIRECT_COMPLETION_ACCOUNT_VIEW, request );
+            
+            //Numeric service name
+            ServiceContractSearchResponse serviceContract = DashboardIdentityService.getInstance( ).getActiveServiceContract( _strAppCode );
+            if( serviceContract != null && serviceContract.getServiceContract( ) != null )
+            {
+                DashboardIdentityUtils.getInstance( ).setNumericServiceNameInSession( serviceContract.getServiceContract( ).getName( ), request );
+            }
+            
+            return redirect( request, VIEW_SUSPICION_IDENTITY_COMPLETION, PARAMETER_ORIGIN_ACTION, Constants.ORIGIN_ACTION_COMPLETION_ACCOUNT );
+        }
+        
         try
         {
             DashboardIdentityService.getInstance( ).updateDashboardIdentity( _checkdIdentity, false );
@@ -792,6 +811,7 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_IDENTITY, _completionIdentity == null ? dasboardIdentitySession : _completionIdentity );
         model.put( MARK_ORIGIN_ACTION, _originActionCompletion );
+        model.put( MARK_NS_NAME, DashboardIdentityUtils.getInstance( ).getNumericServiceNameInSession( request ) );
         
         return getXPage( TEMPLATE_SUSPICIOUS_COMPLETE_IDENTITY, I18nService.getDefaultLocale( ), model );
     }
