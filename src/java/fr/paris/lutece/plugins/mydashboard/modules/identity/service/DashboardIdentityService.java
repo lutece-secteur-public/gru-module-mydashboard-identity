@@ -442,21 +442,23 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     
     @Override
     public DuplicateSearchResponse getSuspiciousIdentities( DashboardIdentity dashboardIdentity, List<String> listRules )
-    {       
-        DuplicateSearchRequest duplicateSearchRequest = new DuplicateSearchRequest( );
-        duplicateSearchRequest.setRuleCodes( listRules );
-                
-        initAttributeSuspiciousSearchRequest( duplicateSearchRequest, dashboardIdentity );
-               
-        try
+    {     
+        if( Constants.PROPERTY_SUSPICIOUS_IDENTITY_ACTIVATION_INDICATEUR )
         {
-            return _identityQualityService.searchDuplicates( duplicateSearchRequest, DashboardIdentityUtils.DASHBOARD_APP_CODE, DashboardIdentityUtils.getInstance( ).getOwnerRequestAuthor( ) );           
+            DuplicateSearchRequest duplicateSearchRequest = new DuplicateSearchRequest( );
+            duplicateSearchRequest.setRuleCodes( listRules );
+                    
+            initAttributeSuspiciousSearchRequest( duplicateSearchRequest, dashboardIdentity );
+                   
+            try
+            {
+                return _identityQualityService.searchDuplicates( duplicateSearchRequest, DashboardIdentityUtils.DASHBOARD_APP_CODE, DashboardIdentityUtils.getInstance( ).getOwnerRequestAuthor( ) );           
+            }
+            catch ( IdentityStoreException | AppException ex )
+            {
+                AppLogService.info( "Error getting Search duplicate identities ", ex );
+            }
         }
-        catch ( IdentityStoreException | AppException ex )
-        {
-            AppLogService.info( "Error getting Search duplicate identities ", ex );
-        }
-
         return null;
     }
     
@@ -488,14 +490,17 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         DuplicateSearchResponse suspiciousSearchResponse =  DashboardIdentityService.getInstance( ).getSuspiciousIdentities( dashboardIdentity, listRules ) ;
 
         if( suspiciousSearchResponse != null && suspiciousSearchResponse.getStatus( ).getType( ).equals( ResponseStatusType.OK ) &&
-                CollectionUtils.isNotEmpty( suspiciousSearchResponse.getIdentities( ) ) )
+                CollectionUtils.isNotEmpty( suspiciousSearchResponse.getIdentities( ) ) && 
+                dashboardIdentity.getConnectionId( ) != null && StringUtils.isNotEmpty( dashboardIdentity.getConnectionId( ).getValue( ) ) )
         {
-            if( dashboardIdentity.getConnectionId( ) != null && 
-                    StringUtils.isNotEmpty( dashboardIdentity.getConnectionId( ).getValue( ) ) )
+            for( IdentityDto identity : suspiciousSearchResponse.getIdentities( ) )
             {
-                return suspiciousSearchResponse.getIdentities( ).stream( ).noneMatch( i -> i.getConnectionId( ).equals( dashboardIdentity.getConnectionId( ).getValue( ) ) );
-            }
-            return true;
+                if( StringUtils.isEmpty( identity.getConnectionId( ) ) || !identity.getConnectionId( ).equals( dashboardIdentity.getConnectionId( ).getValue( ) ) )
+                {
+                    return true;
+                }
+            }                
+            return false;
         }
         return false;
     }

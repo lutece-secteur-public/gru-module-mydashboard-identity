@@ -183,6 +183,8 @@ public final class Constants
     public static final String PROPERTY_SUSPICIOUS_LIST_RULE_NOT_STRIC   = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.identity.list_code_rule.not_strict",
             "RG_GEN_SuspectDoublon_09" );
     
+    public static final boolean PROPERTY_SUSPICIOUS_IDENTITY_ACTIVATION_INDICATEUR = AppPropertiesService.getPropertyBoolean( "mydashboard.identity.suspicious.activation_indicator", false );
+    
     /**
      * Default constructor
      */
