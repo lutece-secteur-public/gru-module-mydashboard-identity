@@ -84,7 +84,11 @@ public final class Constants
             "mydashboard.identity.application.listref.gender" );
     public static final String PROPERTY_KEY_CONTACT_MODE_LIST = AppPropertiesService.getProperty( 
             "mydashboard.identity.application.listref.contact-mode" );
-
+    public static final String PROPERTY_KEY_BIRTHPLACE_CODE = AppPropertiesService.getProperty( 
+            "mydashboard.identity.attribute.user.bplaceCode" );
+    public static final String PROPERTY_KEY_BIRTHCOUNTRY_CODE = AppPropertiesService.getProperty( 
+            "mydashboard.identity.attribute.user.bcountryCode" );
+    
     //Fields validation messages
     public static final String MESSAGE_ERROR_UPDATE_IDENTITY = "module.mydashboard.identity.message.error.identity.update";
     public static final String MESSAGE_INFO_IDENTITY_UPDATED = "module.mydashboard.identity.message.info.identity.updated";
@@ -105,7 +109,9 @@ public final class Constants
     public static final String MESSAGE_ERROR_EMAIL_EMPTY = "module.mydashboard.identity.message.error.identity.check.empty.email";
     public static final String MESSAGE_ERROR_TELEPHONE_EMPTY = "module.mydashboard.identity.message.error.identity.check.empty.phone";
     public static final String MESSAGE_ERROR_EMPTY_ERROR_PREFIX = "module.mydashboard.identity.message.error.identity.check.empty.";
-
+    public static final String MESSAGE_ERROR_VALIDATION_BIRTHPLACE_CODE = "module.mydashboard.identity.message.error.identity.check.format.birthplaceCode";
+    public static final String MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY_CODE = "module.mydashboard.identity.message.error.identity.check.format.birthcountryCode";
+    
     // FIELDS VALIDATION REGEXP
     public static final String PROPERTY_KEY_VALIDATION_REGEXP_LAST_NAME = AppPropertiesService.getProperty( 
             "mydashboard.identity.application.validation.regex.lastname" );
@@ -130,9 +136,11 @@ public final class Constants
     public static final String PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_POSTALCODE = AppPropertiesService.getProperty( 
             "mydashboard.identity.application.validation.regex.address-postalcode" );
     public static final String PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_CITY = AppPropertiesService.getProperty( 
-            "mydashboard.identity.application.validation.regex.address-city" );
-    
-    
+            "mydashboard.identity.application.validation.regex.address-city" );   
+    public static final String PROPERTY_KEY_VALIDATION_REGEXP_BIRTHPLACE_CODE = AppPropertiesService.getProperty( 
+            "mydashboard.identity.application.validation.regex.birthplaceCode" );
+    public static final String PROPERTY_KEY_VALIDATION_REGEXP_BIRTHCOUNTRY_CODE = AppPropertiesService.getProperty( 
+            "mydashboard.identity.application.validation.regex.birthcountryCode" );    
     
     
     //Fields for dashboard Identity
@@ -158,10 +166,24 @@ public final class Constants
     public static final String ATTRIBUTE_DB_IDENTITY_LOGIN = "login";
     public static final String ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE = "mobile_phone";
     public static final String ATTRIBUTE_DB_IDENTITY_FRANCE_CONNECT_CERTIFIED = "franceconnect_certified";
+    public static final String ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE = "birthplace_code";
+    public static final String ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE = "birthcountry_code";
     
     //PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE
     public static final String PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE = AppPropertiesService.getProperty(
             "mydashboard.identity.application.certification.process.not_certifiable", "DEC");
+    
+    
+    //ORIGIN ACTION COMPLETION
+    public static final int ORIGIN_ACTION_CREATE_ACCOUNT = 1;
+    public static final int ORIGIN_ACTION_MODIFY_ACCOUNT = 2;
+    public static final int ORIGIN_ACTION_COMPLETION_ACCOUNT = 3;
+    
+    public static final String PROPERTY_SUSPICIOUS_LIST_RULE_STRIC       = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.identity.list_code_rule.strict", "RG_GEN_StrictDoublon_01" );
+    public static final String PROPERTY_SUSPICIOUS_LIST_RULE_NOT_STRIC   = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.identity.list_code_rule.not_strict",
+            "RG_GEN_SuspectDoublon_09" );
+    
+    public static final boolean PROPERTY_SUSPICIOUS_IDENTITY_ACTIVATION_INDICATEUR = AppPropertiesService.getPropertyBoolean( "mydashboard.identity.suspicious.activation_indicator", false );
     
     /**
      * Default constructor

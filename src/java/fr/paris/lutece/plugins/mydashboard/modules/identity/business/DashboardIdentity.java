@@ -473,5 +473,40 @@ public class DashboardIdentity
 	public void setLastUpdateDate(Timestamp _lastUpdateDate) {
 		this._lastUpdateDate = _lastUpdateDate;
 	}
+	
+    /**
+     * @return the _BirthplaceCode
+     */
+    public DashboardAttribute getBirthplaceCode( )
+    {
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE );
+    }
+
+    /**
+     * @param birthplaceCode
+     *            the _birthplaceCode to set
+     */
+    public void setBirthplaceCode( DashboardAttribute birthplaceCode )
+    {
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE, birthplaceCode );
+    }
+
+    /**
+     * @return the BirthcountryCode
+     */
+    public DashboardAttribute getBirthcountryCode( )
+    {
+        return _mapAttributes.get( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE );
+    }
+
+    /**
+     * @param birthcountryCode
+     *            the birthcountryCode to set
+     */
+    public void setBirthcountryCode( DashboardAttribute birthcountryCode )
+    {
+        _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE, birthcountryCode );
+    }
+
 
 }

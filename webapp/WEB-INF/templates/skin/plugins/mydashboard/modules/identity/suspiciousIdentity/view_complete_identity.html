@@ -1,0 +1,125 @@
+<section class="page-bordered">
+	<div class="container p-sm-3">
+		<div id="form-create-account">
+			<h1 class="h2 main-color">#i18n{module.mydashboard.identity.view_complete_identity.pageTitle}</h1>
+			<#if origin?? && origin == '3'>
+			<div class="row">
+				<div class="col-8">
+					<div class="m-0 mt-3 mb-3 alt-info-lighter-color rounded">
+						<p class="p-3">
+							<i class="fa fa-info-circle" style="color: #3147CE; font-size: 20px;"></i> Vous continuerez vers:
+						</p>
+						<div class="px-1 pb-3">
+							<span style="border-right: 3px solid #07121c; padding: 6px 10px;">
+								<img src="images/header-logo-paris.svg" width="80px"
+								class="img-fluid" alt="Logo Ville de Paris"
+								title="Logo Ville de Paris" aria-hidden="true">
+							</span> <span style="width: 50px; padding-left: 8px; font-size: 115%;">${(numericServiceName)!}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			</#if>
+			<div class="row">
+				<div class="col-8">
+					<div class="m-0 mt-3 mb-3 p-4 alert alert-warning rounded">
+						Notre syst&egrave;me a d&eacute;tect&eacute; une identit&eacute; d&eacute;j&agrave; existante, similaire &agrave; la v&ocirc;tre <br>
+						Afin de garantir la s&eacute;curit&eacute; de vos informations, nous avons besoin de v&eacute;rifier
+						que cette identit&eacute; correspond bien &agrave; la v&ocirc;tre.
+						
+					</div>
+				</div>
+			</div>		
+			<h6>#i18n{module.mydashboard.identity.view_complete_identity.formTitle}</h6>
+			<div class="row">				
+				<div class="col-6">
+					<form action="jsp/site/Portal.jsp" method="POST">
+						<input type="hidden" name="page" value="mydashboardIdentity" />
+						<input type="hidden" name="action" value="doCompleteIdentity" />
+						<#if origin?? && origin == '2'>
+						<div class="col-12">
+							<div class="form-group">
+								<label for="gender">#i18n{module.mydashboard.identity.view_complete_identity.gender.label} *</label>				
+								<select id="gender" name="gender"  class="form-control form-control-lg" placeholder="S&eacute;lectionnez…" aria-label="Veuillez s&eacute;lectionner votre civilit&eacute;">
+						  			<#if genderlist??>
+						  				<#list genderlist as gender>
+						  					<option value="${gender.code}" <#if identity?? && identity.gender?? && identity.gender.value?? && gender.code == identity.gender.value >selected</#if>>${gender.name}</option> 
+						  				</#list>
+						  			</#if>
+						  		</select>
+						  	</div>
+						</div>
+						</#if>
+						
+						<#if origin?? && origin == '2'>
+						<div class="col-12">
+							<div class="form-group">
+								<label for="firstname">#i18n{module.mydashboard.identity.view_complete_identity.firstname.label} *</label>
+								<input type="text" name="firstname" id="firstname" value="${(identity.firstname.value)!}" class="form-control form-control-lg"  placeholder="Ex. Jean" aria-label="Veuillez saisir votre pr&eacute;nom">								
+							</div>
+						</div>
+						</#if>
+						
+						<#if origin?? && origin == '2'>
+						<div class="col-12">
+							<div class="form-group">
+								<label for="lastName">#i18n{module.mydashboard.identity.view_complete_identity.lastName.label} *</label>
+								<input type="text" name="lastName" id="lastName" value="${(identity.lastName.value)!}" class="form-control form-control-lg"  placeholder="Ex. Dupont" aria-label="Veuillez saisir votre nom de naissance">								
+							</div>
+						</div>
+						</#if>
+						
+						<#if origin?? && (origin == '1' || origin == '2' || origin == '3' )>			
+						<div class="col-12">
+							<div class="form-group">
+								<label for="preferred_username">#i18n{module.mydashboard.identity.view_complete_identity.pereferred_username.label}</label>
+								<input type="text" name="preferred_username" id="preferred_username" value="${(identity.preferredUsername.value)!}" class="form-control form-control-lg"  placeholder="Ex. Dupont" aria-label="Veuillez saisir votre nom d’usage">								
+							</div>
+						</div>
+						</#if>
+						
+						<#if origin?? && origin == '2'>
+						<div class="col-12">
+							<div class="form-group">
+								<label for="birthdate">#i18n{module.mydashboard.identity.view_complete_identity.birthdate.label} *</label>
+								<input type="text" name="birthdate" id="birthdate" value="${(identity.birthdate.value)!}" class="form-control form-control-lg"  placeholder="Ex. 13/04/1974" aria-label="Veuillez saisir votre date de naissance" >								
+							</div>
+						</div>
+						</#if>
+						
+						<#if origin?? && (origin == '1' || origin == '2' || origin == '3')>
+						<div class="col-12">
+							<div class="form-group">
+								<label for="birthplace_code">#i18n{module.mydashboard.identity.view_complete_identity.birthplace.label} *</label>
+								<input type="text" name="birthplace_code" id="birthplace_code" value="${(identity.birthplaceCode.value)!}" class="form-control form-control-lg" placeholder="Ex.:Paris" aria-label="Veuillez saisir votre ville de naissance">
+							</div>
+						</div>
+						</#if>
+						
+						<#if origin?? && (origin == '1' || origin == '2' || origin == '3')>
+						<div class="col-12">
+							<div class="form-group">
+								<label for="birthcountry_code">#i18n{module.mydashboard.identity.view_complete_identity.birthcountry.label} *</label>
+								<input type="text" name="birthcountry_code" id="birthcountry_code" value="${(identity.birthcountryCode.value)!}" class="form-control form-control-lg" placeholder="Ex. : France" aria-label="Veuillez saisir votre pays de naissance">
+							</div>
+						</div>
+						</#if>
+						
+						<div class="col-12">
+							<button type="submit" class="btn btn-primary btn-lg">#i18n{module.mydashboard.identity.view_complete_identity.continue}</button>
+						</div>
+					</form>						
+				</div>					
+			</div>
+		</div>
+	</div>
+</section>
+<@toastr_messages errors=errors />
+<script type="text/javascript" src="js/jquery/plugins/inputmask/jquery.inputmask.bundle.min.js"></script>
+<script>
+$(window).load( function() {
+	/* Ajout masque saisie */
+	$("#birthdate").inputmask('dd/mm/yyyy',{ "placeholder": "jj/mm/aaaa" });
+});
+
+</script>

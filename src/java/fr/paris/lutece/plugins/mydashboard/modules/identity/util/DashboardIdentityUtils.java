@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,6 +52,7 @@ import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.RequestAuthor;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.ResponseStatus;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.ResponseStatusType;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.AttributeDefinitionDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeRequest;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeResponse;
@@ -65,8 +67,10 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.url.UrlItem;
 
 
 /**
@@ -99,11 +103,18 @@ public class DashboardIdentityUtils
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE, Constants.PROPERTY_KEY_MOBILE_PHONE );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LOGIN, Constants.PROPERTY_KEY_LOGIN );
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_EMAIL, Constants.PROPERTY_KEY_EMAIL );
+        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE, Constants.PROPERTY_KEY_BIRTHPLACE_CODE );
+        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE, Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE );
     }
     private static ReferenceList _lstContactModeList;
     private static ReferenceList _lstGenderList;
     private static final String SPLIT_PATTERN = ";";
-
+    private static final String SESSION_DASHBOARD_IDENTITY = "dashboardIdentity";
+    private static final String SESSION_REDIRECT_URL = "redirectUrl";
+    public static final String SESSION_ERROR_MESSAGE = "errorMessage";
+    public static final String SESSION_INFO_MESSAGE = "infoMessage";
+    public static final String SESSION_SN_NAME = "serviceNumericName";
+    
     /**
      * private constructor for singleton
      */
@@ -204,6 +215,26 @@ public class DashboardIdentityUtils
 
         return dashboardIdentity;
         
+    }
+    
+    public boolean needCertificationFC( DashboardIdentity dashboardIdentity, ServiceContractSearchResponse contractSearchResponse )
+    {
+    	boolean needCertificationFC = false;
+    	
+    	for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
+        {
+    		DashboardAttribute attribute = dashboardIdentity.getAttribute( attributeMatch.getKey( ) );
+    		Optional<AttributeDefinitionDto> optionalContract = contractSearchResponse.getServiceContract( ).getAttributeDefinitions( )
+    				.stream( ).filter( e -> e.getKeyName( ).equals( attributeMatch.getValue( ) ) ).findFirst( );
+    		
+    		if ( optionalContract.isPresent( ) && optionalContract.get( ).getAttributeRequirement( ) != null )
+    		{
+    			needCertificationFC = ( attribute.getCertifierLevel( ) != Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) 
+    					&& optionalContract.get( ).getAttributeRequirement( ).getLevel( ).equals( "600" ) );
+    		}
+        }
+    	
+    	return needCertificationFC;
     }
 
     /**
@@ -494,5 +525,259 @@ public class DashboardIdentityUtils
 	    
 	    return requestAuthor;
     }
-	    
+    
+    /**
+     * 
+     * @return
+     */
+    public Map<String,String> getMapAttributeKeyMatch ( )
+    {
+        return _mapAttributeKeyMatch;
+    }
+    
+    /**
+     * 
+     * @param request
+     * @return
+     */
+    public DashboardIdentity getCurrentDashboardIdentityInSession( HttpServletRequest request )
+    {
+        return ( DashboardIdentity ) request.getSession( ).getAttribute( SESSION_DASHBOARD_IDENTITY );
+    }
+	
+    /**
+     * 
+     * @param request
+     * @param dashboardIdentity
+     */
+    public void setCurrentDashboardIdentityInSession ( HttpServletRequest request, DashboardIdentity dashboardIdentity )
+    {
+        if( dashboardIdentity != null )
+        {
+            request.getSession( ).setAttribute( SESSION_DASHBOARD_IDENTITY, dashboardIdentity );
+        }
+        else
+        {
+            request.getSession( ).removeAttribute( SESSION_DASHBOARD_IDENTITY );
+        }
+    }
+    
+    /**
+     * 
+     * @param request
+     * @return
+     */
+    public String getRedirectUrlAfterCompletionInSession ( HttpServletRequest request )
+    {
+        return ( String ) request.getSession( ).getAttribute( SESSION_REDIRECT_URL );
+    }
+    
+    /**
+     * 
+     * @param strRedirectXPage
+     * @param request
+     */
+    public void setRedirectUrlAfterCompletionInSession ( String strPage, String strView , HttpServletRequest request)
+    {
+        if( StringUtils.isNotEmpty( strPage ) && StringUtils.isNotEmpty( strView ) )
+        {
+            UrlItem url = new UrlItem( "Portal.jsp?page=" + strPage + "&view=" + strView );
+            
+            request.getSession( ).setAttribute( SESSION_REDIRECT_URL, url.getUrl( ) );
+        }
+    }
+    
+    /**
+     * Get name of numeric service in the session
+     * @param request
+     * @return the name of numeric service in the session
+     */
+    public String getNumericServiceNameInSession ( HttpServletRequest request  )
+    {
+        return ( String ) request.getSession( ).getAttribute( SESSION_SN_NAME );
+    }
+    
+    /**
+     * Set Numeric service name in session
+     * @param strServiceNumericName
+     * @param request
+     */
+    public void setNumericServiceNameInSession ( String strServiceNumericName, HttpServletRequest request )
+    {
+        if( StringUtils.isNotEmpty( strServiceNumericName ) )
+        {
+            request.getSession( ).setAttribute( SESSION_SN_NAME, strServiceNumericName );
+        }
+    }
+    
+    
+    /**
+     * Get message in the session
+     * @param bErrorMessage ( set true if is a error message and false if is a info message )
+     * @param bRemoveAttribute
+     * @param request
+     * @param request
+     * @return the message in session
+     */
+    public String getMessageInSession ( boolean bErrorMessage, boolean bRemoveAttribute, HttpServletRequest request )
+    {
+        String strAttributeName = bErrorMessage ? SESSION_ERROR_MESSAGE : SESSION_INFO_MESSAGE;
+             
+        String strMessage = ( String ) request.getSession( ).getAttribute( strAttributeName );
+        
+        if( bRemoveAttribute )
+        {
+            request.getSession( ).removeAttribute( strAttributeName );
+        }
+        
+        return strMessage;
+    }
+    
+    /**
+     * Set message in the session
+     * @param strMessage
+     * @param bErrorMessage ( set true if is a error message and false if is a info message )
+     * @param request
+     */
+    public void setMessageInSession ( String strMessage, boolean bErrorMessage, HttpServletRequest request )
+    {
+        if( StringUtils.isNotEmpty( strMessage ) )
+        {
+            String strAttributeName = bErrorMessage ? SESSION_ERROR_MESSAGE : SESSION_INFO_MESSAGE;
+            
+            request.getSession( ).setAttribute( strAttributeName, strMessage );
+        }
+    }
+    
+    
+    /**
+     * Gets all rules
+     * @return
+     */
+    public List<String> getAllSuspiciousIdentityRules ( )
+    {
+        List<String> listAllRules = new ArrayList< >( );
+        listAllRules.addAll( getSuspiciousIdentityStrictRules( ) );
+        listAllRules.addAll( getSuspiciousIdentityNotStrictRules( ) );
+        
+        return listAllRules;
+    }
+    
+    /**
+     * Gets strict rules
+     * @return list of strict rules
+     */
+    public List<String> getSuspiciousIdentityStrictRules ( )
+    {
+        return Arrays.asList( Constants.PROPERTY_SUSPICIOUS_LIST_RULE_STRIC.split( ";" ));
+    }
+    
+    /**
+     * Gets not strict rules
+     * @return list of not strict rules
+     */
+    public List<String> getSuspiciousIdentityNotStrictRules ( )
+    {
+        return Arrays.asList( Constants.PROPERTY_SUSPICIOUS_LIST_RULE_NOT_STRIC.split( ";" ));        
+    }
+    
+
+    /**
+     * Set mandatory attribute for completion identity
+     */
+    public DashboardIdentity initMandatoryAttributeForCompletionIdentity( String strOriginActionCompletion )
+    {
+        DashboardIdentity completionIdentity = new DashboardIdentity( );
+
+        for ( Map.Entry<String, String> attribute : DashboardIdentityUtils.getInstance( ).getMapAttributeKeyMatch( ).entrySet( ) )
+        {
+            DashboardAttribute dashboardAttribute = new DashboardAttribute( );
+            dashboardAttribute.setKey( attribute.getValue( ) );
+            
+            switch ( Integer.parseInt( strOriginActionCompletion ) )
+            {
+                case Constants.ORIGIN_ACTION_CREATE_ACCOUNT  :
+                    dashboardAttribute.setMandatory( isMandatoryCompletionCreateAndCompletionAccount( attribute ) );
+                    break;
+                case Constants.ORIGIN_ACTION_MODIFY_ACCOUNT:
+                    dashboardAttribute.setMandatory( isMandatoryCompletionModifyAccount( attribute ) );
+                    break;
+                case Constants.ORIGIN_ACTION_COMPLETION_ACCOUNT  :
+                    dashboardAttribute.setMandatory( isMandatoryCompletionCreateAndCompletionAccount( attribute ) );
+                    break;
+                default:
+                    break;
+            }
+            
+            completionIdentity.setAttribute( attribute.getKey( ), dashboardAttribute );
+        }
+        
+        return completionIdentity;
+    }
+    
+    /**
+     * Return true if the attribute is mandatory for create account completion
+     * @param attribute
+     * @return true if the attributie is mandatory
+     */
+    public boolean isMandatoryCompletionCreateAndCompletionAccount ( Entry<String, String> attribute   )
+    {
+        return attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE_CODE ) 
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE ) ;
+
+    }
+    
+    /**
+     * Return true if the attribute is mandatory for modify account completion
+     * @param attribute
+     * @return true if the attribute is mandatory
+     */
+    public boolean isMandatoryCompletionModifyAccount ( Entry<String, String> attribute   )
+    {
+        return attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE_CODE ) 
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE )
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_GENDER ) 
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_FIRSTNAME )
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHDATE )
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_NAME ) ;
+    }
+    
+    /**
+     * Update dashboardIdentity in the session
+     * @param currentDasboardIdentity
+     * @param currentDasboardIdentity in session
+     */
+    public void updateDashboardIdentityInSession( DashboardIdentity currentDasboardIdentity, DashboardIdentity dasboardIdentitySession )
+    {
+        
+        if( currentDasboardIdentity.getGender( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getGender( ).getValue( ) ) )
+        {
+            dasboardIdentitySession.setGender( currentDasboardIdentity.getGender( ) );
+        }
+        if( currentDasboardIdentity.getFirstname( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getFirstname( ).getValue( ) ) )
+        {
+            dasboardIdentitySession.setFirstname( currentDasboardIdentity.getFirstname( ) );
+        }
+        if( currentDasboardIdentity.getLastName( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getLastName( ).getValue( ) ) )
+        {
+            dasboardIdentitySession.setLastName( currentDasboardIdentity.getLastName( ) );
+        }        
+        if( currentDasboardIdentity.getBirthdate( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthdate( ).getValue( ) ) )
+        {
+            dasboardIdentitySession.setBirthdate( currentDasboardIdentity.getBirthdate( ) );
+        }  
+        if( currentDasboardIdentity.getPreferredUsername( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getPreferredUsername( ).getValue( ) ) )
+        {
+            dasboardIdentitySession.setPreferredUsername( currentDasboardIdentity.getPreferredUsername( ) );
+        }        
+        if( currentDasboardIdentity.getBirthplaceCode( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthplaceCode( ).getValue( ) ) )
+        {
+            dasboardIdentitySession.setBirthplaceCode( currentDasboardIdentity.getBirthplaceCode( ) );
+        }        
+        if( currentDasboardIdentity.getBirthcountryCode( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthcountryCode( ).getValue( ) ) )
+        {
+            dasboardIdentitySession.setBirthcountryCode( currentDasboardIdentity.getBirthcountryCode( ) );
+        }
+    }
+    
 }

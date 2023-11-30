@@ -34,15 +34,21 @@
 package fr.paris.lutece.plugins.mydashboard.modules.identity.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
+import fr.paris.lutece.plugins.identityquality.v3.web.service.IdentityQualityService;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.ResponseStatusType;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.DuplicateSearchRequest;
+import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.DuplicateSearchResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.service.ServiceContractService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityStoreException;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
@@ -69,10 +75,13 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     
     /** The Constant BEAN_SERVICE_CONTRACT_SERVICE. */
     private static final String BEAN_SERVICE_CONTRACT_SERVICE = "mydashboard-identity.serviceContract.service";
+    private static final String BEAN_SERVICE_IDENTITY_QUALITYSERVICE = "mydashboard-identity.identityQualityService";
     private static final String DEFAULT_ERROR="error";
     
     /** The ServiceContractService */
     private ServiceContractService _serviceContractService;
+    private IdentityQualityService _identityQualityService ;
+
   
     /** The lst contact mode list. */
     private static ReferenceList _lstContactModeList;
@@ -102,6 +111,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         {
             _instance = new DashboardIdentityService( );
             _instance._serviceContractService = SpringContextService.getBean( BEAN_SERVICE_CONTRACT_SERVICE );
+            _instance._identityQualityService = SpringContextService.getBean( BEAN_SERVICE_IDENTITY_QUALITYSERVICE );
             _lstGenderList = new ReferenceList( );
 
             int i = 0;
@@ -154,14 +164,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         IdentityDto identity = null; 
         DashboardIdentity dashboardIdentity = null;
 
-         ServiceContractSearchResponse serviceContractSearchResponse = null;
-        try
-        {
-            serviceContractSearchResponse = _serviceContractService.getActiveServiceContract( strApplicationCode ,DashboardIdentityUtils.DASHBOARD_APP_CODE,DashboardIdentityUtils.getInstance().getOwnerRequestAuthor()) ;
-        } catch ( IdentityStoreException e )
-        {
-            AppLogService.error( "Error ServiceContract for application {}", e.getMessage( ), strApplicationCode );
-        }
+         ServiceContractSearchResponse serviceContractSearchResponse = getActiveServiceContract( strApplicationCode );
          
          if( !StringUtils.isEmpty( strGuid ))
          {
@@ -172,7 +175,31 @@ public class DashboardIdentityService implements IDashBoardIdentityService
          return dashboardIdentity;  
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public boolean needCertificationFC( String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity )
+    {
+        ServiceContractSearchResponse serviceContractSearchResponse = getActiveServiceContract( strApplicationCode );
+        return DashboardIdentityUtils.getInstance( ).needCertificationFC( dashboardIdentity, serviceContractSearchResponse );
+    }
     
+    @Override
+    public ServiceContractSearchResponse getActiveServiceContract( String strApplicationCode )
+    {
+        ServiceContractSearchResponse serviceContractSearchResponse = null;
+        try
+        {
+            serviceContractSearchResponse = _serviceContractService.getActiveServiceContract( strApplicationCode, DashboardIdentityUtils.DASHBOARD_APP_CODE, DashboardIdentityUtils.getInstance( ).getOwnerRequestAuthor( ) );
+        } 
+        catch ( IdentityStoreException e )
+        {
+            AppLogService.error( "Error ServiceContract for application {}", e.getMessage( ), strApplicationCode );
+        }
+        
+        return serviceContractSearchResponse;
+    }
     
     /**
      * {@inheritDoc}
@@ -279,17 +306,34 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         {
         	hashErrors.put( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY,strValidateCity );
         }
+        
+        String strValidateBirthplaceCode = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE, Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHPLACE_CODE, Constants.MESSAGE_ERROR_VALIDATION_BIRTHPLACE_CODE,dashboardIdentity.getBirthplaceCode().isMandatory() );
+
+        if ( !strValidateBirthplaceCode.isEmpty( )  &&  (! bOnlyCheckMandatory || dashboardIdentity.getBirthplaceCode().isMandatory())   )
+        {
+            hashErrors.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE,strValidateBirthplaceCode );
+        }
+        
+        String strValidateBirthCountryCode = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHCOUNTRY_CODE, Constants.MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY_CODE, dashboardIdentity.getBirthcountryCode().isMandatory());
+
+        if ( !strValidateBirthCountryCode.isEmpty( ) &&  (! bOnlyCheckMandatory || dashboardIdentity.getBirthcountryCode().isMandatory()))
+        {
+            hashErrors.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE, strValidateBirthCountryCode );
+        }
 
         // Populate gender with list codes {0,1,2} instead of values
         String strGender = dashboardIdentity.getGender( ).getValue( );
 
-        for ( ReferenceItem rItem : _lstGenderList )
+        if( StringUtils.isNotEmpty( strGender ) )
         {
-            if ( strGender.compareTo( rItem.getName( ) ) == 0 )
+            for ( ReferenceItem rItem : _lstGenderList )
             {
-                dashboardIdentity.setGender( new DashboardAttribute( 
-                        Constants.ATTRIBUTE_DB_IDENTITY_GENDER,
-                        rItem.getCode( ) ) );
+                if ( strGender.compareTo( rItem.getName( ) ) == 0 )
+                {
+                    dashboardIdentity.setGender( new DashboardAttribute( 
+                            Constants.ATTRIBUTE_DB_IDENTITY_GENDER,
+                            rItem.getCode( ) ) );
+                }
             }
         }
 
@@ -396,11 +440,68 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     	
     }
     
+    @Override
+    public DuplicateSearchResponse getSuspiciousIdentities( DashboardIdentity dashboardIdentity, List<String> listRules )
+    {     
+        if( Constants.PROPERTY_SUSPICIOUS_IDENTITY_ACTIVATION_INDICATEUR )
+        {
+            DuplicateSearchRequest duplicateSearchRequest = new DuplicateSearchRequest( );
+            duplicateSearchRequest.setRuleCodes( listRules );
+                    
+            initAttributeSuspiciousSearchRequest( duplicateSearchRequest, dashboardIdentity );
+                   
+            try
+            {
+                return _identityQualityService.searchDuplicates( duplicateSearchRequest, DashboardIdentityUtils.DASHBOARD_APP_CODE, DashboardIdentityUtils.getInstance( ).getOwnerRequestAuthor( ) );           
+            }
+            catch ( IdentityStoreException | AppException ex )
+            {
+                AppLogService.info( "Error getting Search duplicate identities ", ex );
+            }
+        }
+        return null;
+    }
     
-   
-    
-   
-    
-    
-    
+    /**
+     * Init attribute for suspicious search request
+     * @param duplicateSearchRequest
+     * @param dashboardIdentity
+     * @param bOnlyCheckNotEmpty
+     */
+    private void initAttributeSuspiciousSearchRequest ( DuplicateSearchRequest duplicateSearchRequest, DashboardIdentity dashboardIdentity )
+    {
+        Map<String, String> mapAttributes = new HashMap<>( );
+        
+        for ( Map.Entry<String,String> attribute : DashboardIdentityUtils.getInstance( ).getMapAttributeKeyMatch( ).entrySet( ) )
+        {
+            DashboardAttribute dashboardAttribute = dashboardIdentity.getAttribute( attribute.getKey( ) );
+            if( dashboardAttribute != null )
+            {
+                mapAttributes.put( attribute.getValue( ), dashboardAttribute.getValue( ) );
+            }
+        }
+       
+        duplicateSearchRequest.setAttributes( mapAttributes );
+    }
+
+    @Override
+    public boolean existSuspiciousIdentities( DashboardIdentity dashboardIdentity, List<String> listRules )
+    {
+        DuplicateSearchResponse suspiciousSearchResponse =  DashboardIdentityService.getInstance( ).getSuspiciousIdentities( dashboardIdentity, listRules ) ;
+
+        if( suspiciousSearchResponse != null && suspiciousSearchResponse.getStatus( ).getType( ).equals( ResponseStatusType.OK ) &&
+                CollectionUtils.isNotEmpty( suspiciousSearchResponse.getIdentities( ) ) && 
+                dashboardIdentity.getConnectionId( ) != null && StringUtils.isNotEmpty( dashboardIdentity.getConnectionId( ).getValue( ) ) )
+        {
+            for( IdentityDto identity : suspiciousSearchResponse.getIdentities( ) )
+            {
+                if( StringUtils.isEmpty( identity.getConnectionId( ) ) || !identity.getConnectionId( ).equals( dashboardIdentity.getConnectionId( ).getValue( ) ) )
+                {
+                    return true;
+                }
+            }                
+            return false;
+        }
+        return false;
+    }
 }
