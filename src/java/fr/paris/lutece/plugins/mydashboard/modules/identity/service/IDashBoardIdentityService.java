@@ -133,4 +133,10 @@ public interface IDashBoardIdentityService {
 	 * @return active service contract
 	 */
 	ServiceContractSearchResponse getActiveServiceContract( String strApplicationCode );
+
+	/**
+	 * {@inheritDoc}
+	 */
+	Map<String, String> checkDashboardIdentityFieldsFromServiceContract(DashboardIdentity dashboardIdentity,
+			HttpServletRequest request, boolean bOnlyCheckMandatory, String strAppCode);
 }

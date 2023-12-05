@@ -26,7 +26,7 @@
         <dependency>
             <artifactId>lutece-core</artifactId>
             <groupId>fr.paris.lutece</groupId>
-            <version>[6.0.0-RC-01,)</version>
+            <version>[7.0.11-SNAPSHOT,)</version>
             <type>lutece-core</type>
         </dependency>
         <dependency>
