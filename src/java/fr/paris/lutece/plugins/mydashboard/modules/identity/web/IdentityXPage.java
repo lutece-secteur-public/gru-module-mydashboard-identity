@@ -342,7 +342,10 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
         model.put( MARK_MANDATORY_INFORMATIONS_SAVED, _bMandatoryInformationsSaved );
-        model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertificationFC( _strAppCode, luteceUser.getName( ), _checkdIdentity ) );
+        if ( _strAppCode != null && _checkdIdentity != null )
+        {
+        	model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertificationFC( _strAppCode, luteceUser.getName( ), _checkdIdentity ) );
+        }
 
         // check back url in session
 
@@ -447,9 +450,10 @@ public class IdentityXPage extends MVCApplication
         // fill dashboardIdentity from submitted form
         DashboardIdentityService.getInstance( ).populateDashboardIdentity( _checkdIdentity, request );
         Map<String, String> hashErros = DashboardIdentityService.getInstance( ).checkDashboardIdentityFields( _checkdIdentity, request, true );
+        hashErros.putAll( DashboardIdentityService.getInstance( ).checkDashboardIdentityFieldsFromServiceContract( _checkdIdentity, request, true, _strAppCode ) );
         if ( !hashErros.isEmpty( ) )
         {
-            hashErros.forEach( ( x, y ) -> addError( y ) );
+            hashErros.forEach( ( x, y ) -> addError( y, x ) );
             return redirectView( request, VIEW_GET_CHECK_IDENTITY );
         }
         
