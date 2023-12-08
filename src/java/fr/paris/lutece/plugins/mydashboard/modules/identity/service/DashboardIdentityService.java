@@ -528,16 +528,16 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         DuplicateSearchResponse suspiciousSearchResponse =  DashboardIdentityService.getInstance( ).getSuspiciousIdentities( dashboardIdentity, listRules ) ;
 
         if( suspiciousSearchResponse != null && suspiciousSearchResponse.getStatus( ).getType( ).equals( ResponseStatusType.OK ) &&
-                CollectionUtils.isNotEmpty( suspiciousSearchResponse.getIdentities( ) ) && 
-                dashboardIdentity.getConnectionId( ) != null && StringUtils.isNotEmpty( dashboardIdentity.getConnectionId( ).getValue( ) ) )
+                CollectionUtils.isNotEmpty( suspiciousSearchResponse.getIdentities( ) ) )
         {
             for( IdentityDto identity : suspiciousSearchResponse.getIdentities( ) )
             {
-                if( StringUtils.isEmpty( identity.getConnectionId( ) ) || !identity.getConnectionId( ).equals( dashboardIdentity.getConnectionId( ).getValue( ) ) )
+                if( StringUtils.isEmpty( identity.getConnectionId( ) ) || dashboardIdentity.getConnectionId( ) == null 
+                        || !identity.getConnectionId( ).equals( dashboardIdentity.getConnectionId( ).getValue( ) ) )
                 {
                     return true;
                 }
-            }                
+            }              
             return false;
         }
         return false;
