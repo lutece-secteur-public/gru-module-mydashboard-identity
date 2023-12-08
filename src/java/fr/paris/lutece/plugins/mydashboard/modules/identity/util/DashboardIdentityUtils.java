@@ -50,7 +50,6 @@ import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.AuthorType;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.RequestAuthor;
-import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.ResponseStatus;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.ResponseStatusType;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.AttributeDefinitionDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
@@ -67,7 +66,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
@@ -217,24 +215,28 @@ public class DashboardIdentityUtils
         
     }
     
-    public boolean needCertificationFC( DashboardIdentity dashboardIdentity, ServiceContractSearchResponse contractSearchResponse )
+    public boolean needCertificationFC( DashboardIdentity dashboardIdentity, ServiceContractSearchResponse contractSearchResponse, List<String> strAttributesNeedFC)
     {
-    	boolean needCertificationFC = false;
-    	
-    	for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
+        
+        for( String attributeKey : strAttributesNeedFC )
         {
-    		DashboardAttribute attribute = dashboardIdentity.getAttribute( attributeMatch.getKey( ) );
-    		Optional<AttributeDefinitionDto> optionalContract = contractSearchResponse.getServiceContract( ).getAttributeDefinitions( )
-    				.stream( ).filter( e -> e.getKeyName( ).equals( attributeMatch.getValue( ) ) ).findFirst( );
-    		
-    		if ( optionalContract.isPresent( ) && optionalContract.get( ).getAttributeRequirement( ) != null )
-    		{
-    			needCertificationFC = ( attribute.getCertifierLevel( ) != Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) 
-    					&& optionalContract.get( ).getAttributeRequirement( ).getLevel( ).equals( "600" ) );
-    		}
+           String strValueAttribute =  _mapAttributeKeyMatch.get( attributeKey );
+           
+           if( StringUtils.isNotEmpty( strValueAttribute ) )
+           {
+               DashboardAttribute attribute = dashboardIdentity.getAttribute( attributeKey );
+               Optional<AttributeDefinitionDto> optionalContract = contractSearchResponse.getServiceContract( ).getAttributeDefinitions( )
+                       .stream( ).filter( e -> e.getKeyName( ).equals( strValueAttribute ) ).findFirst( );
+               
+               if ( optionalContract.isPresent( ) && optionalContract.get( ).getAttributeRequirement( ) != null 
+                       && attribute.getCertifierLevel( ) <= Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) 
+                           && Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) >= 400 )
+               {
+                   return true;
+               }
+           }
         }
-    	
-    	return needCertificationFC;
+    	return false;
     }
 
     /**

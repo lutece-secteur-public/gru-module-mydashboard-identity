@@ -124,7 +124,7 @@ public interface IDashBoardIdentityService {
 	/**
 	 * {@inheritDoc}
 	 */
-	boolean needCertificationFC(String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity)
+	boolean needCertificationFC(String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity, List<String> listAttributesNeedFC)
 			throws AppException;
 	
 	/**

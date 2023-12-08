@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.mydashboard.modules.identity.web;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -132,7 +133,7 @@ public class IdentityXPage extends MVCApplication
     private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE     = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.page" );
     private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_VIEW     = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.view" );
     private static final String PROPERTY_REDIRECT_COMPLETION_ACCOUNT_VIEW = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.completion_account.redirect.view" );
-   
+    private static final String PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC = AppPropertiesService.getProperty( "mydashboard.identity.completion_attributes_need_certification" );
 
     private ReferenceList       _lstContactModeList;
     private ReferenceList       _lstGenderList;
@@ -342,9 +343,10 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
         model.put( MARK_MANDATORY_INFORMATIONS_SAVED, _bMandatoryInformationsSaved );
+        
         if ( _strAppCode != null && _checkdIdentity != null )
         {
-        	model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertificationFC( _strAppCode, luteceUser.getName( ), _checkdIdentity ) );
+        	model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertificationFC( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC.split( "," ) ) ) );
         }
 
         // check back url in session
