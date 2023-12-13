@@ -40,7 +40,7 @@
 						<div class="col-12">
 							<div class="form-group">
 								<label for="gender">#i18n{module.mydashboard.identity.view_complete_identity.gender.label} *</label>				
-								<select id="gender" name="gender"  class="form-control form-control-lg" placeholder="S&eacute;lectionnez…" aria-label="Veuillez s&eacute;lectionner votre civilit&eacute;">
+								<select id="gender" name="gender"  class="form-control form-control-lg" placeholder="S&eacute;lectionnezï¿½" aria-label="Veuillez s&eacute;lectionner votre civilit&eacute;">
 						  			<#if genderlist??>
 						  				<#list genderlist as gender>
 						  					<option value="${gender.code}" <#if identity?? && identity.gender?? && identity.gender.value?? && gender.code == identity.gender.value >selected</#if>>${gender.name}</option> 
@@ -73,7 +73,7 @@
 						<div class="col-12">
 							<div class="form-group">
 								<label for="preferred_username">#i18n{module.mydashboard.identity.view_complete_identity.pereferred_username.label}</label>
-								<input type="text" name="preferred_username" id="preferred_username" value="${(identity.preferredUsername.value)!}" class="form-control form-control-lg"  placeholder="Ex. Dupont" aria-label="Veuillez saisir votre nom d’usage">								
+								<input type="text" name="preferred_username" id="preferred_username" value="${(identity.preferredUsername.value)!}" class="form-control form-control-lg"  placeholder="Ex. Dupont" aria-label="Veuillez saisir votre nom dï¿½usage">								
 							</div>
 						</div>
 						</#if>
@@ -91,7 +91,8 @@
 						<div class="col-12">
 							<div class="form-group">
 								<label for="birthplace_code">#i18n{module.mydashboard.identity.view_complete_identity.birthplace.label} *</label>
-								<input type="text" name="birthplace_code" id="birthplace_code" value="${(identity.birthplaceCode.value)!}" class="form-control form-control-lg" placeholder="Ex.:Paris" aria-label="Veuillez saisir votre ville de naissance">
+								<input type='hidden' name="birthplace_code" id="birthplace_code" value="${identity.birthplaceCode.value!}">
+					  			<@autocomplete id="birthplace" currentValue='${identity.birthplace.value!\'\'}' name="birthplace" itemValueFieldName="value" suggestionsUrl="rest/geocodesclient/api/v1/cities?search=" suggestionsPath="result" itemTitleFieldNames='["value","codeZone"]' minimumInputLength=3 additionnalRequestParamInputId="birthdate" copyFields='[{"inputName":"birthplace_code","resultFieldName":"code"},{"inputName":"birthplace","resultFieldName":"value"}]' />
 							</div>
 						</div>
 						</#if>
@@ -100,7 +101,8 @@
 						<div class="col-12">
 							<div class="form-group">
 								<label for="birthcountry_code">#i18n{module.mydashboard.identity.view_complete_identity.birthcountry.label} *</label>
-								<input type="text" name="birthcountry_code" id="birthcountry_code" value="${(identity.birthcountryCode.value)!}" class="form-control form-control-lg" placeholder="Ex. : France" aria-label="Veuillez saisir votre pays de naissance">
+								<input type='hidden' name="birthcountry_code" id="birthcountry_code" value="${identity.birthcountryCode.value!}">
+					  			<@autocomplete id="birthcountry" currentValue='${identity.birthcountry.value!\'\'}' name="birthcountry" itemValueFieldName="value" suggestionsUrl="rest/geocodesclient/api/v1/countries?search=" suggestionsPath="result" itemTitleFieldNames='["value"]' minimumInputLength=3 additionnalRequestParamInputId="birthdate" copyFields='[{"inputName":"birthcountry_code","resultFieldName":"code"},{"inputName":"birthcountry","resultFieldName":"value"}]' />
 							</div>
 						</div>
 						</#if>
