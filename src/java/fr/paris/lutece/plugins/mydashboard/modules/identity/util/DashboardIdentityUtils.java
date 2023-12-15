@@ -215,7 +215,7 @@ public class DashboardIdentityUtils
         
     }
     
-    public boolean needCertificationFC( DashboardIdentity dashboardIdentity, ServiceContractSearchResponse contractSearchResponse, List<String> strAttributesNeedFC)
+    public boolean needCertification( DashboardIdentity dashboardIdentity, ServiceContractSearchResponse contractSearchResponse, List<String> strAttributesNeedFC, int nLevelMin)
     {
         
         for( String attributeKey : strAttributesNeedFC )
@@ -230,7 +230,7 @@ public class DashboardIdentityUtils
                
                if ( optionalContract.isPresent( ) && optionalContract.get( ).getAttributeRequirement( ) != null 
                        && attribute.getCertifierLevel( ) <= Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) 
-                           && Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) >= 400 )
+                           && Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) >= nLevelMin )
                {
                    return true;
                }
