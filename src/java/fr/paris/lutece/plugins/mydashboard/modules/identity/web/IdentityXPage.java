@@ -98,6 +98,8 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_SERVICE_NAME                         = "service_name";
     private static final String MARK_MANDATORY_INFORMATIONS_SAVED         = "mandatory_informations_saved";
     private static final String MARK_NEED_CERTIFICATION_FC                = "needCertificationFC";
+    private static final String MARK_NEED_LOGIN_CERTIFICATION             = "needLoginCertification";
+    private static final String MARK_NEED_EMAIL_CERTIFICATION             = "needEmailCertification";
 
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY         = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String TEMPLATE_GET_VIEW_CHECK_IDENTITY          = "skin/plugins/mydashboard/modules/identity/check_identity.html";
@@ -134,7 +136,9 @@ public class IdentityXPage extends MVCApplication
     private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_VIEW     = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.view" );
     private static final String PROPERTY_REDIRECT_COMPLETION_ACCOUNT_VIEW = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.completion_account.redirect.view" );
     private static final String PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC = AppPropertiesService.getProperty( "mydashboard.identity.completion_attributes_need_certification" );
-
+    private static final String PROPERTY_IDENTITYSTORE_EMAIL_CERTIFIER_CODE =  AppPropertiesService.getProperty( "myluteceusergu.identitystore.emailcertifier.code", "emailcertifier");
+    private static final String PROPERTY_REDIRECT_URL_CERTIFY_EMAIL = AppPropertiesService.getProperty( "mydashboard.identity.completion.certify_email");
+    
     private ReferenceList       _lstContactModeList;
     private ReferenceList       _lstGenderList;
 
@@ -315,18 +319,15 @@ public class IdentityXPage extends MVCApplication
             _strAppCode = strAppCode;
         }
         
-        if ( ( _checkdIdentity == null ) || ( _checkdIdentity.getConnectionId( ) == null ) || !_checkdIdentity.getConnectionId( ).getValue( ).equals( luteceUser.getName( ) ) || _bReInitAppCode )
-        {
-            try
-            {
-                _checkdIdentity = DashboardIdentityService.getInstance( ).getDashBoardIdentity( _strAppCode, luteceUser.getName( ) );
-            } 
-            catch ( AppException e )
-            {
-                AppLogService.error( "An error appear during retreaving Identity information for app_code {} and user guid {} ", strAppCode, luteceUser.getName( ), e );
-                return redirectView( request, VIEW_GET_VIEW_IDENTITY );
-            }
 
+        try
+        {
+            _checkdIdentity = DashboardIdentityService.getInstance( ).getDashBoardIdentity( _strAppCode, luteceUser.getName( ) );
+        } 
+        catch ( AppException e )
+        {
+            AppLogService.error( "An error appear during retreaving Identity information for app_code {} and user guid {} ", strAppCode, luteceUser.getName( ), e );
+            return redirectView( request, VIEW_GET_VIEW_IDENTITY );
         }
 
         _bReInitAppCode = false;
@@ -344,11 +345,6 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
         model.put( MARK_MANDATORY_INFORMATIONS_SAVED, _bMandatoryInformationsSaved );
         
-        if ( _strAppCode != null && _checkdIdentity != null )
-        {
-        	model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertificationFC( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC.split( "," ) ) ) );
-        }
-
         // check back url in session
 
         String strBackUrl = AuthorizedUrlService.getInstance( ).getServiceBackUrl( request );
@@ -361,6 +357,31 @@ public class IdentityXPage extends MVCApplication
                 model.put( MARK_SERVICE_NAME, strServiceName );
             }
         }
+        
+        if ( _strAppCode != null && _checkdIdentity != null )
+        {
+            model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC.split( "," ) ), 400 ) );
+  
+            boolean bLoginNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_LOGIN ), 250 )
+                    && ( StringUtils.isEmpty( _checkdIdentity.getLogin( ).getCertifierCode( ) ) || !_checkdIdentity.getLogin( ).getCertifierCode( ).equals( PROPERTY_IDENTITYSTORE_EMAIL_CERTIFIER_CODE ) );
+
+            if( bLoginNeedCertification && StringUtils.isNotEmpty( PROPERTY_REDIRECT_URL_CERTIFY_EMAIL ) )
+            {
+               return redirect( request, PROPERTY_REDIRECT_URL_CERTIFY_EMAIL + "&type=login" ) ;
+            }
+ 
+            boolean bContactEmailNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ), 250 )
+                    && ( StringUtils.isEmpty( _checkdIdentity.getEmail( ).getCertifierCode( ) ) || !_checkdIdentity.getEmail( ).getCertifierCode( ).equals( PROPERTY_IDENTITYSTORE_EMAIL_CERTIFIER_CODE ) );
+            
+            if( bContactEmailNeedCertification && StringUtils.isNotEmpty( PROPERTY_REDIRECT_URL_CERTIFY_EMAIL ) )
+            {
+               return redirect( request, PROPERTY_REDIRECT_URL_CERTIFY_EMAIL + "&type=email" ) ;
+            }
+            
+            model.put( MARK_NEED_EMAIL_CERTIFICATION, bContactEmailNeedCertification );
+            model.put( MARK_NEED_LOGIN_CERTIFICATION, bLoginNeedCertification );
+        }
+
         // reinit Information
         _bMandatoryInformationsSaved = false;
 
