@@ -683,35 +683,27 @@ public class DashboardIdentityUtils
         return Arrays.asList( Constants.PROPERTY_SUSPICIOUS_LIST_RULE_NOT_STRIC.split( ";" ));        
     }
     
-
     /**
      * Set mandatory attribute for completion identity
      */
-    public DashboardIdentity initMandatoryAttributeForCompletionIdentity( String strOriginActionCompletion )
+    public DashboardIdentity initMandatoryAttributeForCompletionIdentity( DashboardIdentity completionIdentity, String strOriginActionCompletion )
     {
-        DashboardIdentity completionIdentity = new DashboardIdentity( );
-
         for ( Map.Entry<String, String> attribute : DashboardIdentityUtils.getInstance( ).getMapAttributeKeyMatch( ).entrySet( ) )
-        {
-            DashboardAttribute dashboardAttribute = new DashboardAttribute( );
-            dashboardAttribute.setKey( attribute.getValue( ) );
-            
+        {            
             switch ( Integer.parseInt( strOriginActionCompletion ) )
             {
                 case Constants.ORIGIN_ACTION_CREATE_ACCOUNT  :
-                    dashboardAttribute.setMandatory( isMandatoryCompletionCreateAndCompletionAccount( attribute ) );
+                    completionIdentity.getAttribute( attribute.getKey( ) ).setMandatory( isMandatoryCompletionCreateAndCompletionAccount( attribute ) );
                     break;
                 case Constants.ORIGIN_ACTION_MODIFY_ACCOUNT:
-                    dashboardAttribute.setMandatory( isMandatoryCompletionModifyAccount( attribute ) );
+                    completionIdentity.getAttribute( attribute.getKey( ) ).setMandatory( isMandatoryCompletionModifyAccount( attribute ) );
                     break;
                 case Constants.ORIGIN_ACTION_COMPLETION_ACCOUNT  :
-                    dashboardAttribute.setMandatory( isMandatoryCompletionCreateAndCompletionAccount( attribute ) );
+                    completionIdentity.getAttribute( attribute.getKey( ) ).setMandatory( isMandatoryCompletionCreateAndCompletionAccount( attribute ) );
                     break;
                 default:
                     break;
-            }
-            
-            completionIdentity.setAttribute( attribute.getKey( ), dashboardAttribute );
+            }           
         }
         
         return completionIdentity;
