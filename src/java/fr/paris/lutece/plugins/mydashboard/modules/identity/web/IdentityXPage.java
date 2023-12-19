@@ -853,7 +853,7 @@ public class IdentityXPage extends MVCApplication
             return redirect( request, AppPathService.getRootForwardUrl( ) );
         }
 
-        _completionIdentity = DashboardIdentityUtils.getInstance( ).initMandatoryAttributeForCompletionIdentity( _originActionCompletion );
+        _completionIdentity = DashboardIdentityUtils.getInstance( ).initMandatoryAttributeForCompletionIdentity( dasboardIdentitySession, _originActionCompletion );
 
         DashboardIdentityService.getInstance( ).populateDashboardIdentity( _completionIdentity, request );
 
