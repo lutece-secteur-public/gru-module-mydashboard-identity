@@ -747,30 +747,37 @@ public class DashboardIdentityUtils
         if( currentDasboardIdentity.getGender( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getGender( ).getValue( ) ) )
         {
             dasboardIdentitySession.setGender( currentDasboardIdentity.getGender( ) );
+            dasboardIdentitySession.getGender( ).setMandatory( true );
         }
         if( currentDasboardIdentity.getFirstname( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getFirstname( ).getValue( ) ) )
         {
             dasboardIdentitySession.setFirstname( currentDasboardIdentity.getFirstname( ) );
+            dasboardIdentitySession.getFirstname( ).setMandatory( true );
         }
         if( currentDasboardIdentity.getLastName( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getLastName( ).getValue( ) ) )
         {
             dasboardIdentitySession.setLastName( currentDasboardIdentity.getLastName( ) );
+            dasboardIdentitySession.getLastName( ).setMandatory( true );
         }        
         if( currentDasboardIdentity.getBirthdate( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthdate( ).getValue( ) ) )
         {
             dasboardIdentitySession.setBirthdate( currentDasboardIdentity.getBirthdate( ) );
+            dasboardIdentitySession.getBirthdate( ).setMandatory( true );
         }  
         if( currentDasboardIdentity.getPreferredUsername( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getPreferredUsername( ).getValue( ) ) )
         {
             dasboardIdentitySession.setPreferredUsername( currentDasboardIdentity.getPreferredUsername( ) );
+            dasboardIdentitySession.getPreferredUsername( ).setMandatory( true );
         }        
         if( currentDasboardIdentity.getBirthplaceCode( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthplaceCode( ).getValue( ) ) )
         {
             dasboardIdentitySession.setBirthplaceCode( currentDasboardIdentity.getBirthplaceCode( ) );
+            dasboardIdentitySession.getBirthplaceCode( ).setMandatory( true );
         }        
         if( currentDasboardIdentity.getBirthcountryCode( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthcountryCode( ).getValue( ) ) )
         {
             dasboardIdentitySession.setBirthcountryCode( currentDasboardIdentity.getBirthcountryCode( ) );
+            dasboardIdentitySession.getBirthcountryCode( ).setMandatory( true );
         }
     }
     
