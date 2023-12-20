@@ -455,7 +455,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     		 bError=true;
     		
     	}
-    	else if(bCheckMandatory && StringUtils.isBlank(request.getParameter( strAttributeKey )) && StringUtils.isBlank( errorMessage ))
+    	else if(bCheckMandatory && StringUtils.isBlank(request.getParameter( strAttributeKey )) && StringUtils.isBlank( strError ))
     	{
     		
     		strError=  I18nService.getLocalizedString( Constants.MESSAGE_ERROR_EMPTY_ERROR_PREFIX+strAttributeKey, request.getLocale( ) );
