@@ -716,8 +716,8 @@ public class DashboardIdentityUtils
      */
     public boolean isMandatoryCompletionCreateAndCompletionAccount ( Entry<String, String> attribute   )
     {
-        return attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE_CODE ) 
-                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE ) ;
+        return attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE ) 
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY ) ;
 
     }
     
@@ -728,8 +728,8 @@ public class DashboardIdentityUtils
      */
     public boolean isMandatoryCompletionModifyAccount ( Entry<String, String> attribute   )
     {
-        return attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE_CODE ) 
-                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE )
+        return attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHPLACE ) 
+                || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHCOUNTRY )
                 || attribute.getValue( ).equals( Constants.PROPERTY_KEY_GENDER ) 
                 || attribute.getValue( ).equals( Constants.PROPERTY_KEY_FIRSTNAME )
                 || attribute.getValue( ).equals( Constants.PROPERTY_KEY_BIRTHDATE )
@@ -769,15 +769,15 @@ public class DashboardIdentityUtils
             dasboardIdentitySession.setPreferredUsername( currentDasboardIdentity.getPreferredUsername( ) );
             dasboardIdentitySession.getPreferredUsername( ).setMandatory( true );
         }        
-        if( currentDasboardIdentity.getBirthplaceCode( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthplaceCode( ).getValue( ) ) )
+        if( currentDasboardIdentity.getBirthplace( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthplace( ).getValue( ) ) )
         {
-            dasboardIdentitySession.setBirthplaceCode( currentDasboardIdentity.getBirthplaceCode( ) );
-            dasboardIdentitySession.getBirthplaceCode( ).setMandatory( true );
+            dasboardIdentitySession.setBirthplace( currentDasboardIdentity.getBirthplace( ) );
+            dasboardIdentitySession.getBirthplace( ).setMandatory( true );
         }        
-        if( currentDasboardIdentity.getBirthcountryCode( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthcountryCode( ).getValue( ) ) )
+        if( currentDasboardIdentity.getBirthcountry( ) != null && StringUtils.isNotEmpty( currentDasboardIdentity.getBirthcountry( ).getValue( ) ) )
         {
-            dasboardIdentitySession.setBirthcountryCode( currentDasboardIdentity.getBirthcountryCode( ) );
-            dasboardIdentitySession.getBirthcountryCode( ).setMandatory( true );
+            dasboardIdentitySession.setBirthcountry( currentDasboardIdentity.getBirthcountry( ) );
+            dasboardIdentitySession.getBirthcountry( ).setMandatory( true );
         }
     }
     
