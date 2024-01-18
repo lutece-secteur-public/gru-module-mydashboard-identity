@@ -199,6 +199,14 @@ public class IdentityXPage extends MVCApplication
     {
         LuteceUser luteceUser = getConnectedUser( request );
 
+        String strAppCode = request.getParameter( PARAMETER_APP_CODE );
+
+        if ( _strAppCode == null || strAppCode != null && !strAppCode.equals( _strAppCode ) )
+        {
+            _bReInitAppCode = true;
+            _strAppCode = strAppCode;
+        }
+
         SitePropertiesGroup dashboardPropertiesGroup = ( SitePropertiesGroup ) SpringContextService.getBean( BEAN_MYDASHBOARD_IDENTITY_SITE_PROPERTIES );
         String strMyDashboardPropertiesPrefix = dashboardPropertiesGroup.getDatastoreKeysPrefix( );
 
@@ -219,7 +227,7 @@ public class IdentityXPage extends MVCApplication
         if ( !StringUtils.isEmpty( strBackUrl ) )
         {
             model.put( MARK_SERVICE_URL, strBackUrl );
-            String strServiceName = AuthorizedUrlService.getInstance( ).getName( strBackUrl );
+            String strServiceName = AuthorizedUrlService.getInstance( ).getNameByApplicationCode( _strAppCode, strBackUrl );
             if ( !StringUtils.isEmpty( strServiceName ) )
             {
                 model.put( MARK_SERVICE_NAME, strServiceName );
@@ -244,6 +252,14 @@ public class IdentityXPage extends MVCApplication
     public XPage getModifyIdentity( HttpServletRequest request ) throws UserNotSignedException
     {
         LuteceUser luteceUser = getConnectedUser( request );
+        
+        String strAppCode = request.getParameter( PARAMETER_APP_CODE );
+
+        if ( _strAppCode == null || strAppCode != null && !strAppCode.equals( _strAppCode ) )
+        {
+            _bReInitAppCode = true;
+            _strAppCode = strAppCode;
+        }
 
         if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId( ) == null ) || !_dashboardIdentity.getConnectionId( ).getValue( ).equals( luteceUser.getName( ) ) )
         {
@@ -269,7 +285,7 @@ public class IdentityXPage extends MVCApplication
         if ( !StringUtils.isEmpty( strBackUrl ) )
         {
             model.put( MARK_SERVICE_URL, strBackUrl );
-            String strServiceName = AuthorizedUrlService.getInstance( ).getName( strBackUrl );
+            String strServiceName = AuthorizedUrlService.getInstance( ).getNameByApplicationCode( _strAppCode, strBackUrl );
             if ( !StringUtils.isEmpty( strServiceName ) )
             {
                 model.put( MARK_SERVICE_NAME, strServiceName );
@@ -351,7 +367,7 @@ public class IdentityXPage extends MVCApplication
         if ( !StringUtils.isEmpty( strBackUrl ) )
         {
             model.put( MARK_SERVICE_URL, strBackUrl );
-            String strServiceName = AuthorizedUrlService.getInstance( ).getName( strBackUrl );
+            String strServiceName = AuthorizedUrlService.getInstance( ).getNameByApplicationCode( _strAppCode, strBackUrl );
             if ( !StringUtils.isEmpty( strServiceName ) )
             {
                 model.put( MARK_SERVICE_NAME, strServiceName );
