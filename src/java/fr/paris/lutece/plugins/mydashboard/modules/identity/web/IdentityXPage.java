@@ -411,6 +411,12 @@ public class IdentityXPage extends MVCApplication
 
         // fill dashboardIdentity from submitted form
         DashboardIdentityService.getInstance( ).populateDashboardIdentity( _dashboardIdentity, request );
+        
+        _dashboardIdentity.getLastName().setMandatory( true );
+        _dashboardIdentity.getFirstname().setMandatory( true );
+        _dashboardIdentity.getBirthdate().setMandatory( true );
+        _dashboardIdentity.getGender( ).setMandatory( true );
+        
         Map<String, String> hashErros = DashboardIdentityService.getInstance( ).checkDashboardIdentityFields( _dashboardIdentity, request, false );
         if ( !hashErros.isEmpty( ) )
         {
