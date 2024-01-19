@@ -227,7 +227,7 @@ public class IdentityXPage extends MVCApplication
         if ( !StringUtils.isEmpty( strBackUrl ) )
         {
             model.put( MARK_SERVICE_URL, strBackUrl );
-            String strServiceName = AuthorizedUrlService.getInstance( ).getNameByApplicationCode( _strAppCode, strBackUrl );
+            String strServiceName = !StringUtils.isEmpty( _strAppCode ) ? AuthorizedUrlService.getInstance( ).getNameByApplicationCode( _strAppCode, strBackUrl ) : AuthorizedUrlService.getInstance( ).getName( strBackUrl );
             if ( !StringUtils.isEmpty( strServiceName ) )
             {
                 model.put( MARK_SERVICE_NAME, strServiceName );
@@ -285,7 +285,7 @@ public class IdentityXPage extends MVCApplication
         if ( !StringUtils.isEmpty( strBackUrl ) )
         {
             model.put( MARK_SERVICE_URL, strBackUrl );
-            String strServiceName = AuthorizedUrlService.getInstance( ).getNameByApplicationCode( _strAppCode, strBackUrl );
+            String strServiceName = !StringUtils.isEmpty( _strAppCode ) ? AuthorizedUrlService.getInstance( ).getNameByApplicationCode( _strAppCode, strBackUrl ) : AuthorizedUrlService.getInstance( ).getName( strBackUrl );
             if ( !StringUtils.isEmpty( strServiceName ) )
             {
                 model.put( MARK_SERVICE_NAME, strServiceName );
@@ -367,7 +367,7 @@ public class IdentityXPage extends MVCApplication
         if ( !StringUtils.isEmpty( strBackUrl ) )
         {
             model.put( MARK_SERVICE_URL, strBackUrl );
-            String strServiceName = AuthorizedUrlService.getInstance( ).getNameByApplicationCode( _strAppCode, strBackUrl );
+            String strServiceName = !StringUtils.isEmpty( _strAppCode ) ? AuthorizedUrlService.getInstance( ).getNameByApplicationCode( _strAppCode, strBackUrl ) : AuthorizedUrlService.getInstance( ).getName( strBackUrl );
             if ( !StringUtils.isEmpty( strServiceName ) )
             {
                 model.put( MARK_SERVICE_NAME, strServiceName );
