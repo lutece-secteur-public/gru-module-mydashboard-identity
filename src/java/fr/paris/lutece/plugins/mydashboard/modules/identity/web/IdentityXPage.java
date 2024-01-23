@@ -137,6 +137,7 @@ public class IdentityXPage extends MVCApplication
     private static final String PROPERTY_REDIRECT_COMPLETION_ACCOUNT_VIEW = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.completion_account.redirect.view" );
     private static final String PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC = AppPropertiesService.getProperty( "mydashboard.identity.completion_attributes_need_certification" );
     private static final String PROPERTY_IDENTITYSTORE_EMAIL_CERTIFIER_CODE =  AppPropertiesService.getProperty( "myluteceusergu.identitystore.emailcertifier.code", "emailcertifier");
+    private static final String PROPERTY_FC_CERTIFIER_CODE =  AppPropertiesService.getProperty( "myluteceusergu.identitystore.fccertifier.code", "fccertifier" );
     private static final String PROPERTY_REDIRECT_URL_CERTIFY_EMAIL = AppPropertiesService.getProperty( "mydashboard.identity.completion.certify_email");
     
     private ReferenceList       _lstContactModeList;
@@ -428,10 +429,25 @@ public class IdentityXPage extends MVCApplication
         // fill dashboardIdentity from submitted form
         DashboardIdentityService.getInstance( ).populateDashboardIdentity( _dashboardIdentity, request );
         
-        _dashboardIdentity.getLastName().setMandatory( true );
-        _dashboardIdentity.getFirstname().setMandatory( true );
-        _dashboardIdentity.getBirthdate().setMandatory( true );
-        _dashboardIdentity.getGender( ).setMandatory( true );
+        if ( !_dashboardIdentity.getLastName( ).getCertifierCode( ).equals( PROPERTY_FC_CERTIFIER_CODE ) )
+        {
+            _dashboardIdentity.getLastName().setMandatory( true );
+        }
+        
+        if ( !_dashboardIdentity.getFirstname( ).getCertifierCode( ).equals( PROPERTY_FC_CERTIFIER_CODE ) )
+        {
+            _dashboardIdentity.getFirstname().setMandatory( true );
+        }
+        
+        if ( !_dashboardIdentity.getBirthdate( ).getCertifierCode( ).equals( PROPERTY_FC_CERTIFIER_CODE ) )
+        {
+            _dashboardIdentity.getBirthdate().setMandatory( true );
+        }
+        
+        if ( !_dashboardIdentity.getGender( ).getCertifierCode( ).equals( PROPERTY_FC_CERTIFIER_CODE ) )
+        {
+            _dashboardIdentity.getGender( ).setMandatory( true );
+        }
         
         Map<String, String> hashErros = DashboardIdentityService.getInstance( ).checkDashboardIdentityFields( _dashboardIdentity, request, false );
         if ( !hashErros.isEmpty( ) )
