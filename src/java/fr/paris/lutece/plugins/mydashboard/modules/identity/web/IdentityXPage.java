@@ -139,6 +139,7 @@ public class IdentityXPage extends MVCApplication
     private static final String PROPERTY_IDENTITYSTORE_EMAIL_CERTIFIER_CODE =  AppPropertiesService.getProperty( "myluteceusergu.identitystore.emailcertifier.code", "emailcertifier");
     private static final String PROPERTY_FC_CERTIFIER_CODE =  AppPropertiesService.getProperty( "myluteceusergu.identitystore.fccertifier.code", "fccertifier" );
     private static final String PROPERTY_REDIRECT_URL_CERTIFY_EMAIL = AppPropertiesService.getProperty( "mydashboard.identity.completion.certify_email");
+    private static final int PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN =  AppPropertiesService.getPropertyInt( "mydashboard.identity.emailcertifier.level_min", 200);
     
     private ReferenceList       _lstContactModeList;
     private ReferenceList       _lstGenderList;
@@ -379,7 +380,7 @@ public class IdentityXPage extends MVCApplication
         {
             model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC.split( "," ) ), 400 ) );
   
-            boolean bLoginNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_LOGIN ), 250 )
+            boolean bLoginNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_LOGIN ), PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN )
                     && ( StringUtils.isEmpty( _checkdIdentity.getLogin( ).getCertifierCode( ) ) || !_checkdIdentity.getLogin( ).getCertifierCode( ).equals( PROPERTY_IDENTITYSTORE_EMAIL_CERTIFIER_CODE ) );
 
             if( bLoginNeedCertification && StringUtils.isNotEmpty( PROPERTY_REDIRECT_URL_CERTIFY_EMAIL ) )
@@ -387,7 +388,7 @@ public class IdentityXPage extends MVCApplication
                return redirect( request, PROPERTY_REDIRECT_URL_CERTIFY_EMAIL + "&type=login" ) ;
             }
  
-            boolean bContactEmailNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ), 250 )
+            boolean bContactEmailNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ), PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN )
                     && ( StringUtils.isEmpty( _checkdIdentity.getEmail( ).getCertifierCode( ) ) || !_checkdIdentity.getEmail( ).getCertifierCode( ).equals( PROPERTY_IDENTITYSTORE_EMAIL_CERTIFIER_CODE ) );
             
             if( bContactEmailNeedCertification && StringUtils.isNotEmpty( PROPERTY_REDIRECT_URL_CERTIFY_EMAIL ) )
