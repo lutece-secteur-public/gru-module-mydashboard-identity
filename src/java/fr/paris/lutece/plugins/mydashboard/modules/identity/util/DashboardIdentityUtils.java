@@ -321,6 +321,7 @@ public class DashboardIdentityUtils
             	dashboardAttribute= new DashboardAttribute(
                     dashboardAttributeKey,
                     certifiedAttribute.get( ).getValue( ) );
+            	
             }
             
         }
@@ -384,25 +385,14 @@ public class DashboardIdentityUtils
     
     public void filterByCertifier ( IdentityDto identity )
     {
-        List<String> certificationProcessNotCertifiable = Arrays.asList( Constants.PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE.split( ";" ) );
-        filterByCertifier( identity, certificationProcessNotCertifiable );
-    }
-    
-    /**
-     * Drop attributes from IdentityDto if there is a certificate. This is used to not update identity when a certificate is found.
-     * @param identity
-     * @param listCertificationProcessNotCertifiable
-     */
-    public void filterByCertifier ( IdentityDto identity, List<String> listCertificationProcessNotCertifiable )
-    {
+    	
         List<AttributeDto> listCertifiedAttribute = new ArrayList< >();
-        
-        if( identity != null && identity.getAttributes( ) != null )
+    	if( identity != null && identity.getAttributes( ) != null )
         {        
             for ( AttributeDto certifiedAttribute : identity.getAttributes( ) )
             {
                 if ( certifiedAttribute.getCertifier() == null 
-                    || listCertificationProcessNotCertifiable.contains( certifiedAttribute.getCertifier( ) ) )
+                    ||  certifiedAttribute.getCertificationLevel() <= Constants.PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE_LEVEL  )
                 {
                     listCertifiedAttribute.add( certifiedAttribute );
                 }
@@ -410,6 +400,10 @@ public class DashboardIdentityUtils
             identity.setAttributes( listCertifiedAttribute );
         }
     }
+    
+   
+    
+  
     
     
     /**
@@ -780,5 +774,20 @@ public class DashboardIdentityUtils
             dasboardIdentitySession.getBirthcountry( ).setMandatory( true );
         }
     }
+    
+    
+    
+    /**
+     * return true if the attribute  have a level of certification > declaratif
+     * @param dashboardAttribute
+     * @return
+     */
+    public static boolean isDashboardAttributeCertified(DashboardAttribute dashboardAttribute)
+    {
+    	
+    	return dashboardAttribute.getCertifierLevel()>Constants.PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE_LEVEL;
+    	
+    }
+    
     
 }

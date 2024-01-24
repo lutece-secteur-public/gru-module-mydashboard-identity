@@ -173,6 +173,9 @@ public final class Constants
     public static final String PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE = AppPropertiesService.getProperty(
             "mydashboard.identity.application.certification.process.not_certifiable", "DEC");
     
+    public static final int PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE_LEVEL = AppPropertiesService.getPropertyInt(
+            "mydashboard.identity.application.certification.process.not_certifiable.level", 100);
+    
     
     //ORIGIN ACTION COMPLETION
     public static final int ORIGIN_ACTION_CREATE_ACCOUNT = 1;
