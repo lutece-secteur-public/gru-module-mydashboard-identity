@@ -229,7 +229,7 @@ public class DashboardIdentityUtils
                        .stream( ).filter( e -> e.getKeyName( ).equals( strValueAttribute ) ).findFirst( );
                
                if ( optionalContract.isPresent( ) && optionalContract.get( ).getAttributeRequirement( ) != null 
-                       && attribute.getCertifierLevel( ) <= Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) 
+                       && attribute.getCertifierLevel( ) < Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) 
                            && Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) >= nLevelMin )
                {
                    return true;
