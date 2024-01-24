@@ -429,26 +429,11 @@ public class IdentityXPage extends MVCApplication
 
         // fill dashboardIdentity from submitted form
         DashboardIdentityService.getInstance( ).populateDashboardIdentity( _dashboardIdentity, request );
-        
-        if ( !_dashboardIdentity.getLastName( ).getCertifierCode( ).equals( PROPERTY_FC_CERTIFIER_CODE ) )
-        {
-            _dashboardIdentity.getLastName().setMandatory( true );
-        }
-        
-        if ( !_dashboardIdentity.getFirstname( ).getCertifierCode( ).equals( PROPERTY_FC_CERTIFIER_CODE ) )
-        {
-            _dashboardIdentity.getFirstname().setMandatory( true );
-        }
-        
-        if ( !_dashboardIdentity.getBirthdate( ).getCertifierCode( ).equals( PROPERTY_FC_CERTIFIER_CODE ) )
-        {
-            _dashboardIdentity.getBirthdate().setMandatory( true );
-        }
-        
-        if ( !_dashboardIdentity.getGender( ).getCertifierCode( ).equals( PROPERTY_FC_CERTIFIER_CODE ) )
-        {
-            _dashboardIdentity.getGender( ).setMandatory( true );
-        }
+        _dashboardIdentity.getLastName().setMandatory( true );
+        _dashboardIdentity.getFirstname().setMandatory( true );
+         _dashboardIdentity.getBirthdate().setMandatory( true );
+         _dashboardIdentity.getGender( ).setMandatory( true );
+       
         
         Map<String, String> hashErros = DashboardIdentityService.getInstance( ).checkDashboardIdentityFields( _dashboardIdentity, request, false );
         if ( !hashErros.isEmpty( ) )
