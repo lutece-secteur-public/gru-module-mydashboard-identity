@@ -392,7 +392,7 @@ public class DashboardIdentityUtils
             for ( AttributeDto certifiedAttribute : identity.getAttributes( ) )
             {
                 if ( certifiedAttribute.getCertifier() == null 
-                    ||  certifiedAttribute.getCertificationLevel() <= Constants.PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE_LEVEL  )
+                    ||  certifiedAttribute.getCertificationLevel() == null || certifiedAttribute.getCertificationLevel()  <= Constants.PROPERTY_CERTIFICATION_PROCESS_NOT_CERTIFIABLE_LEVEL  )
                 {
                     listCertifiedAttribute.add( certifiedAttribute );
                 }
