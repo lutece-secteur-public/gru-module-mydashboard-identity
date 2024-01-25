@@ -391,7 +391,7 @@ public class IdentityXPage extends MVCApplication
             boolean bContactEmailNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ), PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN )
                     && ( StringUtils.isEmpty( _checkdIdentity.getEmail( ).getCertifierCode( ) ) || !_checkdIdentity.getEmail( ).getCertifierCode( ).equals( PROPERTY_IDENTITYSTORE_EMAIL_CERTIFIER_CODE ) );
             
-            if( bContactEmailNeedCertification && StringUtils.isNotEmpty( PROPERTY_REDIRECT_URL_CERTIFY_EMAIL ) )
+            if( ( bContactEmailNeedCertification || StringUtils.isEmpty( _checkdIdentity.getEmail( ).getValue( ) ) ) && StringUtils.isNotEmpty( PROPERTY_REDIRECT_URL_CERTIFY_EMAIL ) )
             {
                return redirect( request, PROPERTY_REDIRECT_URL_CERTIFY_EMAIL + "&type=email" ) ;
             }
