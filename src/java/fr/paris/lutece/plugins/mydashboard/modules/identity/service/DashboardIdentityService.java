@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.mydashboard.modules.identity.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -374,7 +375,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         				}
         				
         				
-        				String strValidate = getErrorValidation( request, attributeMatch.getKey( ), attributeDefinitionDto.getValidationRegex( ), attributeDefinitionDto.getValidationErrorMessage( ), dashboardIdentity.getAttribute( attributeMatch.getValue( ) ).isMandatory( ) );
+        				String strValidate = getErrorValidation( dashboardIdentity.getAttribute( attributeMatch.getValue( ) ), attributeDefinitionDto.getValidationRegex( ), attributeDefinitionDto.getValidationErrorMessage( ) );
         				
         				if ( !strValidate.isEmpty( ) && ( !bOnlyCheckMandatory || isMandatory ) )
                         {
@@ -485,6 +486,50 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     	}
     	return strError;
     	
+    }
+    
+    
+    /**
+     * Gets the error validation.
+     * @param attribute
+     * @param strRegExp
+     * @param errorMessage
+     * @return
+     */
+    private String getErrorValidation( DashboardAttribute attribute ,String strRegExp, String errorMessage )
+    {
+        String strError = StringUtils.EMPTY;
+        
+        String strValueAttribute = attribute.getValue( );
+        String strKeyAttribute = attribute.getKey( );
+        
+        boolean bError = false;
+        if ( strKeyAttribute.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) 
+                && !StringUtils.isBlank( strValueAttribute ) && !EmailValidator.getInstance( ).isValid( strValueAttribute ) )
+        {
+            strError = errorMessage;
+            bError = true;
+        }
+        else if ( attribute.isMandatory( ) && StringUtils.isBlank( strValueAttribute ) 
+                && StringUtils.isBlank( strError ) )
+        {
+            strError = I18nService.getLocalizedString( Constants.MESSAGE_ERROR_EMPTY_ERROR_PREFIX + strKeyAttribute, Locale.getDefault( ) );
+            bError = true;
+
+        }
+        else if ( strRegExp != null && !strKeyAttribute.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) 
+                && ( strValueAttribute != null && !strValueAttribute.matches( strRegExp ) ) )
+        {
+            strError = errorMessage;
+            bError = true;
+        }
+
+        if ( bError && StringUtils.isEmpty( strError ) )
+        {
+            strError = DEFAULT_ERROR;
+        }
+        return strError;
+        
     }
     
     @Override
