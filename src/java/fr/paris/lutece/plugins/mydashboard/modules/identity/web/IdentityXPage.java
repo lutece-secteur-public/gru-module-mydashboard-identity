@@ -104,6 +104,7 @@ public class IdentityXPage extends MVCApplication
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY         = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String TEMPLATE_GET_VIEW_CHECK_IDENTITY          = "skin/plugins/mydashboard/modules/identity/check_identity.html";
     private static final String TEMPLATE_SUSPICIOUS_COMPLETE_IDENTITY     = "skin/plugins/mydashboard/modules/identity/suspiciousIdentity/view_complete_identity.html";
+    private static final String TEMPLATE_GET_VIEW_ERROR                   = "skin/plugins/mydashboard/modules/identity/view_error.html";
 
     private static final String MARK_GENDER_LIST                          = "genderlist";
     private static final String MARK_CONTACT_MODE_LIST                    = "contact_modeList";
@@ -345,7 +346,7 @@ public class IdentityXPage extends MVCApplication
         catch ( AppException e )
         {
             AppLogService.error( "An error appear during retreaving Identity information for app_code {} and user guid {} ", strAppCode, luteceUser.getName( ), e );
-            return redirectView( request, VIEW_GET_VIEW_IDENTITY );
+            return getXPage( TEMPLATE_GET_VIEW_ERROR, request.getLocale( ) );
         }
 
         _bReInitAppCode = false;
