@@ -587,7 +587,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
             for( IdentityDto identity : suspiciousSearchResponse.getIdentities( ) )
             {
                 if( StringUtils.isEmpty( identity.getConnectionId( ) ) || dashboardIdentity.getConnectionId( ) == null 
-                        || !identity.getConnectionId( ).equals( dashboardIdentity.getConnectionId( ).getValue( ) ) )
+                        || !identity.getConnectionId( ).equalsIgnoreCase( dashboardIdentity.getConnectionId( ).getValue( ) ) )
                 {
                     return true;
                 }
