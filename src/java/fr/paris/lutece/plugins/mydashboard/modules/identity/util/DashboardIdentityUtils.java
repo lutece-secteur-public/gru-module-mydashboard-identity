@@ -267,6 +267,7 @@ public class DashboardIdentityUtils
                 certifiedAttribute.setValue( dashboardAttribute.getValue( ) );
                 certifiedAttribute.setCertifier( dashboardAttribute.getCertifierCode( ) );
                 certifiedAttribute.setCertificationDate( new Date() );
+                certifiedAttribute.setCertificationLevel(dashboardAttribute.getCertifierLevel());
                                 
 	            listCertifiedAttribute.add( certifiedAttribute );
             }
