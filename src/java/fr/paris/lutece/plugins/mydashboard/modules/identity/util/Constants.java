@@ -111,6 +111,7 @@ public final class Constants
     public static final String MESSAGE_ERROR_EMPTY_ERROR_PREFIX = "module.mydashboard.identity.message.error.identity.check.empty.";
     public static final String MESSAGE_ERROR_VALIDATION_BIRTHPLACE_CODE = "module.mydashboard.identity.message.error.identity.check.format.birthplaceCode";
     public static final String MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY_CODE = "module.mydashboard.identity.message.error.identity.check.format.birthcountryCode";
+    public static final String MESSAGE_ERROR_TOKEN = "Invalid Security Token";
     
     // FIELDS VALIDATION REGEXP
     public static final String PROPERTY_KEY_VALIDATION_REGEXP_LAST_NAME = AppPropertiesService.getProperty( 

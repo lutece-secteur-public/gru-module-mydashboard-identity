@@ -50,10 +50,13 @@ import fr.paris.lutece.plugins.mydashboard.modules.identity.service.DashboardIde
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.DashboardIdentityUtils;
 import fr.paris.lutece.plugins.verifybackurl.service.AuthorizedUrlService;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.security.ISecurityTokenService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
+import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.site.properties.SitePropertiesGroup;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -110,6 +113,7 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_CONTACT_MODE_LIST                    = "contact_modeList";
     private static final String MARK_ORIGIN_ACTION                        = "origin";
     private static final String MARK_NS_NAME                              = "numericServiceName";
+    private static final String MARK_TOKEN                                = "token";
     
     private static final String BEAN_IDENTITYSTORE_SERVICE                = "mydashboard-identity.identitystore.service";
     private static final String SPLIT_PATTERN                             = ";";
@@ -155,6 +159,7 @@ public class IdentityXPage extends MVCApplication
     private IdentityService     _identityService;
     private boolean             _bReInitAppCode                           = false;
     private String              _originActionCompletion;
+    private ISecurityTokenService _securityTokenService = SecurityTokenService.getInstance( );
 
     /**
      * Constructor
@@ -223,6 +228,7 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_CONTACT_MODE_LIST, _lstContactModeList );
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
+        model.put( MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_MODIFY_IDENTITY ) );
 
         // check back url
         String strBackUrl = AuthorizedUrlService.getInstance( ).getServiceBackUrl( request );
@@ -282,6 +288,7 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
+        model.put( MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_MODIFY_IDENTITY ) );
 
         // get BackUrl
         String strBackUrl = AuthorizedUrlService.getInstance( ).getServiceBackUrl( request );
@@ -363,6 +370,7 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
         model.put( MARK_MANDATORY_INFORMATIONS_SAVED, _bMandatoryInformationsSaved );
+        model.put( MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_CHECK_IDENTITY ) );
         
         // check back url in session
 
@@ -415,10 +423,16 @@ public class IdentityXPage extends MVCApplication
      * @return The next view to redirect to
      * @throws UserNotSignedException
      *             If the user has not signed in
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_MODIFY_IDENTITY )
-    public XPage doModifyIdentity( HttpServletRequest request ) throws UserNotSignedException
+    public XPage doModifyIdentity( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
+        // CSRF Token control
+        if ( !_securityTokenService.validate( request, ACTION_DO_MODIFY_IDENTITY ) )
+        {
+            throw new AccessDeniedException( Constants.MESSAGE_ERROR_TOKEN  );
+        }
 
         AuthorizedUrlService.getInstance( ).getServiceBackUrl( request );
         checkUserAuthentication( request );
@@ -483,10 +497,17 @@ public class IdentityXPage extends MVCApplication
      * @return The next view to redirect to
      * @throws UserNotSignedException
      *             If the user has not signed in
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_CHECK_IDENTITY )
-    public XPage doCheckIdentity( HttpServletRequest request ) throws UserNotSignedException
+    public XPage doCheckIdentity( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
+        // CSRF Token control
+        if ( !_securityTokenService.validate( request, ACTION_DO_CHECK_IDENTITY ) )
+        {
+            throw new AccessDeniedException( Constants.MESSAGE_ERROR_TOKEN  );
+        }
+        
         checkUserAuthentication( request );
         AuthorizedUrlService.getInstance( ).getServiceBackUrl( request );
 
@@ -864,13 +885,20 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_IDENTITY, _completionIdentity == null ? dasboardIdentitySession : _completionIdentity );
         model.put( MARK_ORIGIN_ACTION, _originActionCompletion );
         model.put( MARK_NS_NAME, DashboardIdentityUtils.getInstance( ).getNumericServiceNameInSession( request ) );
+        model.put( MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_COMPLETE_SUSPICIOUS_IDENTITY ) );
         
         return getXPage( TEMPLATE_SUSPICIOUS_COMPLETE_IDENTITY, I18nService.getDefaultLocale( ), model );
     }
 
     @Action( ACTION_DO_COMPLETE_SUSPICIOUS_IDENTITY )
-    public XPage doCompleteSuspiciousIdentity( HttpServletRequest request )
+    public XPage doCompleteSuspiciousIdentity( HttpServletRequest request ) throws AccessDeniedException
     {
+        // CSRF Token control
+        if ( !_securityTokenService.validate( request, ACTION_DO_COMPLETE_SUSPICIOUS_IDENTITY ) )
+        {
+            throw new AccessDeniedException( Constants.MESSAGE_ERROR_TOKEN  );
+        }
+        
         DashboardIdentity dasboardIdentitySession = DashboardIdentityUtils.getInstance( ).getCurrentDashboardIdentityInSession( request );
 
         if ( dasboardIdentitySession == null )
