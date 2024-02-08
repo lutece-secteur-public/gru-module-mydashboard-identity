@@ -233,6 +233,11 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_MODIFY_IDENTITY ) );
 
+        if ( _dashboardIdentity.getCoverage( ).intValue( ) == 0 )
+        {
+            return getXPage( TEMPLATE_GET_VIEW_ERROR, request.getLocale( ) );
+        }
+
         // check back url
         String strBackUrl = AuthorizedUrlService.getInstance( ).getServiceBackUrl( request );
 
@@ -292,6 +297,11 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_AVATAR_URL, getAvatarUrl( request ) );
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
         model.put( MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_MODIFY_IDENTITY ) );
+        
+        if ( _dashboardIdentity.getCoverage( ).intValue( ) == 0 )
+        {
+            return getXPage( TEMPLATE_GET_VIEW_ERROR, request.getLocale( ) );
+        }
 
         // get BackUrl
         String strBackUrl = AuthorizedUrlService.getInstance( ).getServiceBackUrl( request );
@@ -502,6 +512,11 @@ public class IdentityXPage extends MVCApplication
             return redirectView( request, VIEW_GET_MODIFY_IDENTITY );
         }
 
+        if ( _dashboardIdentity.getCoverage( ).intValue( ) == 0 )
+        {
+            return getXPage( TEMPLATE_GET_VIEW_ERROR, request.getLocale( ) );
+        }
+
         // reint dashboard and check identity informations
         _dashboardIdentity = null;
         _checkdIdentity = null;
@@ -574,6 +589,12 @@ public class IdentityXPage extends MVCApplication
 
             return redirectView( request, VIEW_GET_CHECK_IDENTITY );
         }
+        
+        if ( _dashboardIdentity.getCoverage( ).intValue( ) == 0 )
+        {
+            return getXPage( TEMPLATE_GET_VIEW_ERROR, request.getLocale( ) );
+        }
+        
         // reint dashboard and check identity informations
         _dashboardIdentity = null;
         _checkdIdentity = null;
@@ -943,6 +964,11 @@ public class IdentityXPage extends MVCApplication
         DashboardIdentityUtils.getInstance( ).updateDashboardIdentityInSession( _completionIdentity, dasboardIdentitySession );
 
         DashboardIdentityUtils.getInstance( ).setCurrentDashboardIdentityInSession( request, dasboardIdentitySession );
+        
+        if ( _completionIdentity.getCoverage( ).intValue( ) == 0 )
+        {
+            return getXPage( TEMPLATE_GET_VIEW_ERROR, request.getLocale( ) );
+        }
 
         // redirection vers la page ayant demander la completion
         String strRedirectUrl = DashboardIdentityUtils.getInstance( ).getRedirectUrlAfterCompletionInSession( request );
