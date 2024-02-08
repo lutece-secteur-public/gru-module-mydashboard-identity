@@ -220,6 +220,10 @@ public class IdentityXPage extends MVCApplication
 
         Map<String, Object> model = getModel( );
         IdentityDto identity = DashboardIdentityUtils.getInstance( ).getIdentity( luteceUser.getName( ) );
+        if ( identity.getQuality( ).getCoverage( ).intValue( ) == 0 )
+        {
+            return getXPage( TEMPLATE_GET_VIEW_ERROR, request.getLocale( ) );
+        }
         _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity );
 
         model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( strMyDashboardPropertiesPrefix ).toMap( ) );
@@ -273,6 +277,10 @@ public class IdentityXPage extends MVCApplication
         if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId( ) == null ) || !_dashboardIdentity.getConnectionId( ).getValue( ).equals( luteceUser.getName( ) ) )
         {
             IdentityDto identity = DashboardIdentityUtils.getInstance( ).getIdentity( luteceUser.getName( ) );
+            if ( identity.getQuality( ).getCoverage( ).intValue( ) == 0 )
+            {
+                return getXPage( TEMPLATE_GET_VIEW_ERROR, request.getLocale( ) );
+            }
             _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity );
         }
 
