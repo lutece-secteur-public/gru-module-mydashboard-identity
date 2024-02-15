@@ -7,6 +7,8 @@
                  http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
     <bean id="mydashboard-identity.mydashboardIdentityComponent" class="fr.paris.lutece.plugins.mydashboard.modules.identity.web.MyDashboardIdentityComponent" />
+    <bean id="mydashboard-identity.identityInformations" class="fr.paris.lutece.plugins.mydashboard.modules.identity.web.MyDashboardIdentityInformations" />
+    <bean id="mydashboard-identity.identityCoordinates" class="fr.paris.lutece.plugins.mydashboard.modules.identity.web.MyDashboardIdentityCoordinates" />
     
     <!-- library identitystore -->
 	<!-- IHttpTransportProvider declarations -->

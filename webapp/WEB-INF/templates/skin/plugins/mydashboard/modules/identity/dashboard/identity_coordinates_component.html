@@ -1,0 +1,14 @@
+<div class="container p-sm-3">
+	<div id="form-check-account" class="row">
+		<div class="col-sm-12 col-md-8">
+			<h2 class="h1">Coordonnées</h1>
+			<p>Téléphones: <b>${identity.mobilePhone.value!'test'}06 12 34 57 89</b></p>
+			<p><b>${identity.phone.value!'test'}01 23 45 67 89</b></p>
+			<p>Adresse: <b>${identity.address.value!'test'}23 rue Jean de la Fontaine</b></p>
+			<p><b>${identity.addressDetail.value!'test'}Batiment A</b></p>
+			<p><b>${identity.addressPostalcode.value!'test'} ${identity.addressCity.value!'test'} 75018 PARIS</b></p>
+			<p>Courriel de contact: ${identity.email.value!''}</p>
+			<a href="#" class="p-0 text-underline text-left">Modifier vos coordonnées</a>
+		</div>
+	</div>
+</div>
