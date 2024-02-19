@@ -1,0 +1,272 @@
+<section class="container p-2 p-md-5">
+	<div class="row">
+		<div class="col">
+			<form method="post" action="${actionName!}">
+				<h2 class="mb-2 mb-md-4">${pageTitle!}</h2>
+				<#if editInformations?? && editInformations>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6">
+						<div class="form-group">
+							<label for="preferredUsername" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelName}</label>
+							<input class="form-control form-control-lg" type="text" id="preferredUsername" name="preferredUsername" maxlength="255" placeholder="Ex. : Dupont" value="${identity.preferredUsername.value!''}" >
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6">
+						<div class="form-group">
+							<label for="lastName" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthName} *</label>
+							<input class="form-control form-control-lg" type="text" id="lastName" name="lastName" maxlength="255" value="${identity.lastName.value!''}" >
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6">
+						<div class="form-group">
+							<label for="firstname" >#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelFirstName} *</label>
+							<input class="form-control form-control-lg" type="text" id="firstname" name="firstname" maxlength="255" placeholder="Ex. : Jean" value="${identity.firstname.value!''}" >
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6">
+						<div class="form-group">
+							<labelfor="birthdate">#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthdate} *</label>
+							<input class="form-control form-control-lg" type="text" id="birthdate" name="birthdate" placeholder="Ex. : 13/04/1976" value="${identity.birthdate.value!''}" >
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6" id="birthCountryContainer">
+						<div class="form-group" id="autocompleteBirthCountryDiv">
+							<@input type='hidden' id='birthcountry_code' name='birthcountry_code' value='${identity.birthcountryCode.value!\'\'}'/>
+							<@autocompleteFO id="birthcountry" currentValue='${identity.birthcountry.value!\'\'}' name="birthcountry" searchLabel="#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthCountry}"itemValueFieldName="value" suggestionsUrl="rest/geocodesclient/api/v1/countries?search=" suggestionsPath="result" itemTitleFieldNames='["value"]' minimumInputLength=3 additionnalRequestParamInputId="birthdate" copyFields='[{"inputName":"birthcountry_code","resultFieldName":"code"},{"inputName":"birthcountry","resultFieldName":"value"}]' />
+							<#if !identity.birthdate.value?has_content>
+							<small id="helpBirthPlace" class="form-text text-muted">Veuillez saisir votre date de naissance pour pouvoir modifier votre pays naissance.</small>
+							</#if>
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6" id="birthPlaceContainer">
+						<div class="form-group" id="autocompleteBirthPlaceDiv">
+							<@input type='hidden' id='birthplace_code' name='birthplace_code' value='${identity.birthplaceCode.value!\'\'}'/>
+							<@autocompleteFO id="birthplace" currentValue='${identity.birthplace.value!\'\'}' name="birthplace" searchLabel="#i18n{module.mydashboard.identity.xpage.edit_identity.generalinfo.labelBirthPlace}"itemValueFieldName="value" suggestionsUrl="rest/geocodesclient/api/v1/cities?search=" suggestionsPath="result" itemTitleFieldNames='["displayValue"]' minimumInputLength=3 additionnalRequestParamInputId="birthdate" copyFields='[{"inputName":"birthplace_code","resultFieldName":"code"},{"inputName":"birthplace","resultFieldName":"value"}]' />
+							<#if !identity.birthcountry.value?has_content>
+							<small class="form-text text-muted">Veuillez saisir <#if !identity.birthdate.value?has_content>votre date de naissance et </#if>votre pays de naissance pour pouvoir modifier votre ville de naissance.</small>
+							</#if>
+						</div>
+					</div>
+				</div>
+				</#if>
+				<#if editCoordinates?? && editCoordinates>
+				<input type="hidden" name="token" value="${token!}" />
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6">    
+						<div class="form-group">
+							<label for="mobile_phone">#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelMobilePhone}</label>
+							<small class="text-muted">Recommandé pour faciliter vos rendez-vous avec la ville</small>
+							<input class="form-control form-control-lg" type="text"  id="mobile_phone" maxlength="10" name="mobile_phone" placeholder="Ex. : 06 12 34 57 89" value="<#if identity.mobilePhone.value??>${identity.mobilePhone.value!''}</#if>" >
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6">    
+						<div class="form-group">
+							<label for="phone">#i18n{module.mydashboard.identity.xpage.edit_identity.contact.labelPhone}</label>
+							<input class="form-control form-control-lg" type="text" id="phone" name="phone" maxlength="10" placeholder="Ex. : 01 23 45 67 89" value="${identity.phone.value!''}" >
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6">
+						<div class="form-group">
+							<label for="email">#i18n{module.mydashboard.identity.xpage.edit_identity.authentication.labelLogin}</label>
+							<input class="form-control form-control-lg" type="text" id="email" name="email" value="${identity.email.value!''}" >
+							<small class="text-muted">Votre adresse de contact peut être différente de votre adresse de connexion si vous souhaitez recevoir les courriels de Mon Paris à une autre adresse.</small>
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-8 col-md-8"> 
+						<div class="form-group">
+							<label for="address" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelAdress}</label>
+							<input class="form-control form-control-lg" type="text" id="address" name="address" placeholder="Ex. : 198 rue de la Fontaine" value="${identity.address.value!''}" >
+							<small class="text-muted">Commencez à saisir votre adresse pour séléctionner parmi les propositions</small>
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-4 col-md-4">   
+						<div class="form-group">
+							<label for="address_detail" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelAdressDetail}</label>
+							<input class="form-control form-control-lg" type="text" id="address_detail" name="address_detail" maxlength="255" placeholder="Ex. : Bat. A" value="${identity.addressDetail.value!''}" >
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6"> 
+						<div class="form-group">
+							<label for="address_postalcode" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelPostalCode}</label>
+							<input class="form-control form-control-lg" type="text" id="address_postalcode" name="address_postalcode" maxlength="255" placeholder="Ex. : 75004" value="${identity.addressPostalcode.value!''}" >
+						</div>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-xs-12 col-sm-12 col-md-6">   
+						<div class="form-group">
+							<label for="address_city" >#i18n{module.mydashboard.identity.xpage.edit_identity.address.labelCity}</label>
+							<input class="form-control form-control-lg" type="text" id="address_city" name="address_city" maxlength="255" placeholder="Ex. : Paris" value="${identity.addressCity.value!''}" >
+						</div>
+					</div>
+				</div>
+				</#if>
+				<section id="save">
+					<button type="submit" class="btn btn-external-link">${btnValidate!}</button>
+					<a href="jsp/site/Portal.jsp?page=mydashboard&panel=DashboardIdentity" class="p-0 text-underline text-left">Annuler</a> 
+				</section>
+			</form>
+		</div>
+	</div>
+</section>
+
+<#if editInformations?? && editInformations>
+<script src="js/jquery/plugins/inputmask/jquery.inputmask.bundle.min.js"></script>
+</#if>
+<#if editCoordinates?? && editCoordinates>
+<script src="jsp/site/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp"></script>
+<script src="js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js"></script>
+<script src="js/jquery/plugins/ui/jquery.ui.custom-autocomplete.min.js"></script>
+</#if>
+<script>
+$(window).load( function() {
+	<#if editInformations?? && editInformations>
+	$("#birthdate").inputmask('dd/mm/yyyy',{ "placeholder": "jj/mm/aaaa" });
+	</#if>
+	<#if editCoordinates?? && editCoordinates>
+	var jAdresse = $('#address');
+	var jAdressePostalcode =  $('#address_postalcode');
+	var jAdresseCity = $('#address_city');
+		jAdresse.suggestPOI();
+		jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
+	    	//Use properties from BAN apiinput type. Would not work with suggestPOI.
+	    	jAdresse.val(event.poi.sourcePOI.properties.name);
+	    	jAdressePostalcode.val(event.poi.sourcePOI.properties.postcode);
+	    	jAdresseCity.val(event.poi.sourcePOI.properties.city);
+	  	});
+	</#if>
+});
+$( function(){
+	<#if editInformations?? && editInformations>
+	var birthplaceAutocompleteDiv = $("#autocompleteBirthPlaceDiv");
+	var birthplaceDiv = $('<div class="form-group" id="birthPlaceDiv">' +
+		'<label for="birthplace">Ville de naissance</label>' +
+		'<input class="form-control form-control-lg" value="${identity.birthplace.value!}" type="text" id="birthplace" name="birthplace" maxlength="255">' +
+		'</div>');
+	if ( "${identity.birthcountry.certifierCode}" == 'fccertifier' ) {
+		var birthcountryDiv = $('<div class="form-group" id="birthCountryDiv">' +
+			'<label for="birthcountry">Pays de naissance</label>' +
+			'<input class="form-control form-control-lg fc-certified" value="${identity.birthcountry.value!}" type="text" id="birthcountry" name="birthcountry" maxlength="255" disabled>' +
+			'</div>');
+		$("#autocompleteBirthCountryDiv").remove();
+		birthcountryDiv.appendTo("#birthCountryContainer");
+	}
+	
+	if ( "${identity.birthplace.certifierCode}" == 'fccertifier' ) {
+		$("#autocompleteBirthPlaceDiv").remove();
+		birthplaceDiv.appendTo("#birthPlaceContainer");
+		$("input[name='birthplace']").addClass('fc-certified');
+		$("input[name='birthplace']").prop('disabled', true);
+	}
+	
+	var birthCountryCodeInput = $("input[name='birthcountry_code']").val();
+	var birthPlaceInput = $("input[name='birthplace']").val();
+	if (!isValidDate($("#birthdate").val())){
+		$("#birthcountry").find("input").prop("disabled", true);
+		$("#birthplace").find("input").prop("disabled", true);
+	}
+	else if($("input[name='birthcountry']").val() == ''){
+		$("#birthplace").find("input").prop("disabled", true);
+	}
+	else if($("input[name='birthcountry']").val().toUpperCase() != 'FRANCE'){
+		$("#autocompleteBirthPlaceDiv").remove();
+		birthplaceDiv.appendTo("#birthPlaceContainer");
+	}
+	
+	$("#birthdate").keyup(function(){
+		if (isValidDate($(this).val())) {
+			$("#birthcountry").find("input").prop("disabled", false);
+		}
+		else {
+			cleanBirthPlace(birthplaceAutocompleteDiv);
+			$("#birthcountry").find("input").prop("disabled", true);
+			$("#birthplace").find("input").prop("disabled", true);
+			$("input[name='birthcountry']").val('');
+			$("input[name='birthcountry_code']").val('');
+			$("#helpBirthPlace").remove();
+			$('<small id="helpBirthPlace" class="form-text text-muted">Veuillez saisir votre date de naissance pour pouvoir modifier votre pays naissance.</small>').appendTo('#autocompleteBirthCountryDiv');
+		}
+	});
+
+	$("body").on('click success', function () {
+		if ( $("input[name='birthcountry_code']").val() != birthCountryCodeInput ) {
+			if ($("input[name='birthcountry']").val().toUpperCase() == 'FRANCE') {
+				cleanBirthPlace(birthplaceAutocompleteDiv);
+				$("#birthplace").find("input").prop("disabled", false);
+			}
+			else if ($("input[name='birthcountry']").val() != '' && $("input[name='birthcountry']").val().toUpperCase() != 'FRANCE' && $("input[name='birthcountry_code']").val() != '') {
+				cleanBirthPlace(birthplaceDiv);
+			}
+			else if ($("input[name='birthcountry']").val() == '') {
+				cleanBirthPlace(birthplaceAutocompleteDiv);
+				$("#birthplace").find("input").prop("disabled", true);
+			}
+			birthCountryCodeInput = $("input[name='birthcountry_code']").val();
+			save.show();
+		}
+		if ( $("input[name='birthplace']").val() != birthPlaceInput ) {
+			save.show();
+		}
+		if ($("#birthplace").find("input").is(':disabled')){
+			$(".birthplaceInputHidden").remove();
+			$("<input type='hidden' class='birthplaceInputHidden' name='birthplace' id='birthplace-input' value=''/>").appendTo('#birthPlaceContainer');
+			$("input[name='birthplace_code']").val('');
+		}
+		else{
+			$(".birthplaceInputHidden").remove();
+		}
+	});
+	</#if>
+	<#if editCoordinates?? && editCoordinates>
+	$("#address").blur( function(){
+		var str=$(this).val().trim(), match = str.match(/(\d{5})\s*(.*)/);
+		if (match){
+			var postalCode = match[1];
+			var city = match[2];
+			// Mise à jour des champs correspondants
+			$("#address_postalcode").val(postalCode);
+			$("#address_city").val(city);
+			// Suppression du code postal et de la ville de l'adresse
+			str = str.replace(match[0], '').trim();
+		}
+		// Mise à jour du champ adresse
+		$("#address").val(str.replace(/,$/, ''));
+	});
+	</#if>
+});
+
+<#if editInformations?? && editInformations>
+function cleanBirthPlace(divAppend) {
+	$("#birthPlaceDiv").remove();
+	$("#autocompleteBirthPlaceDiv").remove();
+	divAppend.appendTo("#birthPlaceContainer");
+	$("input[name='birthplace']").val('');
+	$("input[name='birthplace_code']").val('');
+}
+
+function isValidDate(dateString) {
+	if (dateString === '') { return false; }
+	return /^(?=\d)(?:(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:\x20|$))|(?:2[0-8]|1\d|0?[1-9]))([-.\/])(?:1[012]|0?[1-9])\1(?:1[6-9]|[2-9]\d)?\d\d(?:(?=\x20\d)\x20|$))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\x20[AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/.test(dateString);
+}
+</#if>
+</script>
