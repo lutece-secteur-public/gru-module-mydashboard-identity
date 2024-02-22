@@ -59,6 +59,7 @@ import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearch
 import fr.paris.lutece.plugins.identitystore.v3.web.service.IdentityService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityStoreException;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.business.AttributeCategory;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
@@ -82,27 +83,41 @@ public class DashboardIdentityUtils
     private static final String BEAN_IDENTITYSTORE_SERVICE = "mydashboard-identity.identitystore.service";
     //For matching on DBAttributes and Identity store attributes
     private static Map<String,String> _mapAttributeKeyMatch;
+    private static  Map<String,String> _mapAttributeKeyMatchIdentityInformations;
+    private static  Map<String,String> _mapAttributeKeyMatchCoordinates;
+    
+    
+    
     private IdentityService _identityService;
     public static final String DASHBOARD_APP_CODE = AppPropertiesService.getProperty( Constants.PROPERTY_APPLICATION_CODE );
     static {
         _mapAttributeKeyMatch = new HashMap<String,String>( );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME, Constants.PROPERTY_KEY_NAME );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_USER_NAME, Constants.PROPERTY_KEY_PREFERREDUSERNAME );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_FIRSTNAME, Constants.PROPERTY_KEY_FIRSTNAME );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_GENDER, Constants.PROPERTY_KEY_GENDER );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHDATE, Constants.PROPERTY_KEY_BIRTHDATE );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE, Constants.PROPERTY_KEY_BIRTHPLACE );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY, Constants.PROPERTY_KEY_BIRTHCOUNTRY );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS, Constants.PROPERTY_KEY_ADDRESS );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_DETAIL, Constants.PROPERTY_KEY_ADDRESSDETAIL );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE, Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY, Constants.PROPERTY_KEY_ADDRESS_CITY );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_PHONE, Constants.PROPERTY_KEY_PHONE );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE, Constants.PROPERTY_KEY_MOBILE_PHONE );
+        _mapAttributeKeyMatchIdentityInformations= new HashMap<String, String>();
+        _mapAttributeKeyMatchCoordinates= new HashMap<String, String>();
+         //Identity Informations          
+        _mapAttributeKeyMatchIdentityInformations.put(Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME, Constants.PROPERTY_KEY_NAME );
+        _mapAttributeKeyMatchIdentityInformations.put(Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_USER_NAME, Constants.PROPERTY_KEY_PREFERREDUSERNAME );
+        _mapAttributeKeyMatchIdentityInformations.put(Constants.ATTRIBUTE_DB_IDENTITY_FIRSTNAME, Constants.PROPERTY_KEY_FIRSTNAME );
+        _mapAttributeKeyMatchIdentityInformations.put(Constants.ATTRIBUTE_DB_IDENTITY_GENDER, Constants.PROPERTY_KEY_GENDER );
+        _mapAttributeKeyMatchIdentityInformations.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHDATE, Constants.PROPERTY_KEY_BIRTHDATE );
+        _mapAttributeKeyMatchIdentityInformations.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE, Constants.PROPERTY_KEY_BIRTHPLACE );
+        _mapAttributeKeyMatchIdentityInformations.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY, Constants.PROPERTY_KEY_BIRTHCOUNTRY );
+         _mapAttributeKeyMatchIdentityInformations.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE, Constants.PROPERTY_KEY_BIRTHPLACE_CODE );
+        _mapAttributeKeyMatchIdentityInformations.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE, Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE );
+        //Coordinates Informations
+        _mapAttributeKeyMatchCoordinates.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS, Constants.PROPERTY_KEY_ADDRESS );
+        _mapAttributeKeyMatchCoordinates.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_DETAIL, Constants.PROPERTY_KEY_ADDRESSDETAIL );
+        _mapAttributeKeyMatchCoordinates.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE, Constants.PROPERTY_KEY_ADDRESS_POSTAL_CODE );
+        _mapAttributeKeyMatchCoordinates.put(Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY, Constants.PROPERTY_KEY_ADDRESS_CITY );
+        _mapAttributeKeyMatchCoordinates.put(Constants.ATTRIBUTE_DB_IDENTITY_PHONE, Constants.PROPERTY_KEY_PHONE );
+        _mapAttributeKeyMatchCoordinates.put(Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE, Constants.PROPERTY_KEY_MOBILE_PHONE );
+        _mapAttributeKeyMatchCoordinates.put(Constants.ATTRIBUTE_DB_IDENTITY_EMAIL, Constants.PROPERTY_KEY_EMAIL );
+        
+        _mapAttributeKeyMatch.putAll(_mapAttributeKeyMatchIdentityInformations);
+        _mapAttributeKeyMatch.putAll(_mapAttributeKeyMatchCoordinates);
+        
         _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_LOGIN, Constants.PROPERTY_KEY_LOGIN );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_EMAIL, Constants.PROPERTY_KEY_EMAIL );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE, Constants.PROPERTY_KEY_BIRTHPLACE_CODE );
-        _mapAttributeKeyMatch.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE, Constants.PROPERTY_KEY_BIRTHCOUNTRY_CODE );
+        
     }
     private static ReferenceList _lstContactModeList;
     private static ReferenceList _lstGenderList;
@@ -238,6 +253,11 @@ public class DashboardIdentityUtils
         }
     	return false;
     }
+    
+    
+    
+
+    
 
     /**
      * return an identityDto from a DashboardIdentity
@@ -249,6 +269,21 @@ public class DashboardIdentityUtils
      */
     public IdentityDto convertToIdentityDto( DashboardIdentity dashboardIdentity,boolean bOnlyMandatory )
     {      
+       return convertToIdentityDto(dashboardIdentity, bOnlyMandatory,null);
+    }
+    
+    
+    /**
+     * return an identityDto from a DashboardIdentity
+     *
+     * @param dashboardIdentity
+     *          dashboardIdentity to convert
+     *  @param bOnlyMandatory true the IdentitityDTO must contains only Mandatory informations
+     *  @param attributeCategory update only attribute in this category
+     * @return identityDto initialized from provided dashboardIdentity
+     */
+    public IdentityDto convertToIdentityDto( DashboardIdentity dashboardIdentity,boolean bOnlyMandatory,AttributeCategory attributeCategory )
+    {      
         IdentityDto identity = new IdentityDto( ); 
         
         identity.setLastUpdateDate(dashboardIdentity.getLastUpdateDate());
@@ -257,7 +292,7 @@ public class DashboardIdentityUtils
         
         List<AttributeDto> listCertifiedAttribute = new ArrayList< >( );
         
-        for ( Map.Entry<String,String> attributeMatch : _mapAttributeKeyMatch.entrySet( ) )
+        for ( Map.Entry<String,String> attributeMatch : getMapAttributeKey(attributeCategory).entrySet( ) )
         {
             DashboardAttribute dashboardAttribute = dashboardIdentity.getAttribute( attributeMatch.getKey( ) );
             if(!bOnlyMandatory || dashboardAttribute.isMandatory())
@@ -278,6 +313,7 @@ public class DashboardIdentityUtils
 
         return identity;
     }
+    
     
     /**
      * Get DashboardAttribute From AttributeDto
@@ -364,12 +400,13 @@ public class DashboardIdentityUtils
     /**
      * populaite DashboardIdentity from the request
      * @param identity the DashboardIdentity
+     * @param attributeCategory only populate attribute associate to the category
      * @param request the HttpServletRequest
      */
-    public void populateDashboardIdentity ( DashboardIdentity identity, HttpServletRequest request )
+    public void populateDashboardIdentity ( DashboardIdentity identity, HttpServletRequest request,AttributeCategory attributeCategory  )
     {
         
-        for ( String strAttributeKey : _mapAttributeKeyMatch.keySet( ) )
+        for ( String strAttributeKey :  getMapAttributeKey(attributeCategory) .keySet( ) )
         {
             String attributeValue = request.getParameter( strAttributeKey );
             if ( attributeValue != null )
@@ -790,5 +827,32 @@ public class DashboardIdentityUtils
     	
     }
     
+    
+    
+    
+    /**
+     * get Map Attributes Keys
+     * @param attributeCategory the attribute Category
+     * @return Map Attributes 
+     */
+	public Map<String, String> getMapAttributeKey(AttributeCategory attributeCategory) {
+		if(attributeCategory!=null)
+		{
+			switch (attributeCategory) {
+			case COORDINATES_INFORMATIONS:
+				return _mapAttributeKeyMatchCoordinates;
+	
+			case IDENTITY_INDORMATIONS:
+				return _mapAttributeKeyMatchIdentityInformations;
+	
+			default:
+	
+				break;
+	
+			}
+		}
+
+		return _mapAttributeKeyMatch;
+	}
     
 }

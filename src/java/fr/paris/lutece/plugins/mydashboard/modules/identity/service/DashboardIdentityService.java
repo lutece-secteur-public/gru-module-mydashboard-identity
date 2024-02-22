@@ -53,6 +53,7 @@ import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.DuplicateSearc
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.DuplicateSearchResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.service.ServiceContractService;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityStoreException;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.business.AttributeCategory;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
@@ -210,24 +211,37 @@ public class DashboardIdentityService implements IDashBoardIdentityService
 	public Map<String,String> checkDashboardIdentityFields( DashboardIdentity dashboardIdentity, HttpServletRequest request,boolean bOnlyCheckMandatory )
     {
     	
+    	return checkDashboardIdentityFields(dashboardIdentity, request, bOnlyCheckMandatory, null);
+    	
+    }
+    
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public Map<String,String> checkDashboardIdentityFields( DashboardIdentity dashboardIdentity, HttpServletRequest request,boolean bOnlyCheckMandatory,AttributeCategory attributeCategory )
+    {
+    	
     	Map<String,String> hashErrors=new HashMap<String,String>();
      
 
-        String strValidateLastName = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME, Constants.PROPERTY_KEY_VALIDATION_REGEXP_LAST_NAME, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_LASTNAME, request.getLocale( ) ), dashboardIdentity.getLastName().isMandatory());
+        String strValidateLastName = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME, Constants.PROPERTY_KEY_VALIDATION_REGEXP_LAST_NAME, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_LASTNAME, request.getLocale( ) ), dashboardIdentity.getLastName().isMandatory(),attributeCategory);
         
         if ( !strValidateLastName.isEmpty( ) &&  !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getLastName()) && ( ! bOnlyCheckMandatory ||  dashboardIdentity.getLastName().isMandatory()))
         {
         	hashErrors.put( Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME,strValidateLastName );
         }
 
-        String strValidatePreferredUsername = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_USER_NAME, Constants.PROPERTY_KEY_VALIDATION_REGEXP_PREFERREDUSERNAME, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_PREFFEREDUSERNAME, request.getLocale( ) ), dashboardIdentity.getPreferredUsername().isMandatory());
+        String strValidatePreferredUsername = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_USER_NAME, Constants.PROPERTY_KEY_VALIDATION_REGEXP_PREFERREDUSERNAME, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_PREFFEREDUSERNAME, request.getLocale( ) ), dashboardIdentity.getPreferredUsername().isMandatory(),attributeCategory);
 
         if ( !strValidatePreferredUsername.isEmpty( ) && !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getPreferredUsername()) && (! bOnlyCheckMandatory ||  dashboardIdentity.getPreferredUsername().isMandatory())  )
         {
         	hashErrors.put( Constants.ATTRIBUTE_DB_IDENTITY_PREFERRED_USER_NAME,strValidatePreferredUsername );
         }
 
-        String strValidateFirstname = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_FIRSTNAME, Constants.PROPERTY_KEY_VALIDATION_REGEXP_FIRSTNAME, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_FIRSTNAME, request.getLocale( ) ), dashboardIdentity.getFirstname().isMandatory() );
+        String strValidateFirstname = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_FIRSTNAME, Constants.PROPERTY_KEY_VALIDATION_REGEXP_FIRSTNAME, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_FIRSTNAME, request.getLocale( ) ), dashboardIdentity.getFirstname().isMandatory() ,attributeCategory);
 
         if ( !strValidateFirstname.isEmpty( ) &&  !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getFirstname())  &&  (! bOnlyCheckMandatory || dashboardIdentity.getFirstname().isMandatory())  )
         {
@@ -236,7 +250,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
 
         if ( StringUtils.isBlank( request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE ) ) )
         {
-            String strValidateBirthplace = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE, Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHPLACE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHPLACE, request.getLocale( ) ), dashboardIdentity.getBirthplace().isMandatory() );
+            String strValidateBirthplace = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE, Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHPLACE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHPLACE, request.getLocale( ) ), dashboardIdentity.getBirthplace().isMandatory() ,attributeCategory);
     
             if ( !strValidateBirthplace.isEmpty( ) && !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getBirthplace()) &&  (! bOnlyCheckMandatory ||   dashboardIdentity.getBirthplace().isMandatory())  )
             {
@@ -244,7 +258,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
             }
         }
 
-        String strValidateBirthDate = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHDATE, Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHDATE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHDATE, request.getLocale( ) ), dashboardIdentity.getBirthdate().isMandatory());
+        String strValidateBirthDate = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHDATE, Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHDATE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHDATE, request.getLocale( ) ), dashboardIdentity.getBirthdate().isMandatory(),attributeCategory);
 
         if ( !strValidateBirthDate.isEmpty( )  && !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getBirthdate()) &&  (! bOnlyCheckMandatory || dashboardIdentity.getBirthdate().isMandatory()) )
         {
@@ -253,7 +267,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         
         if ( StringUtils.isBlank( request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE )) )
         {
-            String strValidateBirthCountry = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY , Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHCOUNTRY, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY, request.getLocale( ) ), dashboardIdentity.getBirthcountry().isMandatory());
+            String strValidateBirthCountry = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY , Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHCOUNTRY, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY, request.getLocale( ) ), dashboardIdentity.getBirthcountry().isMandatory(),attributeCategory);
     
             if ( !strValidateBirthCountry.isEmpty( ) && !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getBirthcountry()) &&  (! bOnlyCheckMandatory || dashboardIdentity.getBirthcountry().isMandatory()))
             {
@@ -261,28 +275,28 @@ public class DashboardIdentityService implements IDashBoardIdentityService
             }
         }
         
-        String strValidateEmail = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_EMAIL , null, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_EMAIL, request.getLocale( ) ), dashboardIdentity.getEmail().isMandatory() );
+        String strValidateEmail = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_EMAIL , null, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_EMAIL, request.getLocale( ) ), dashboardIdentity.getEmail().isMandatory(),attributeCategory );
 
         if ( !strValidateEmail.isEmpty( ) &&  !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getEmail( )) && (! bOnlyCheckMandatory || dashboardIdentity.getEmail( ).isMandatory()) )
         {
         	hashErrors.put(Constants.ATTRIBUTE_DB_IDENTITY_EMAIL,strValidateEmail );
         }
 
-        String strValidatePhone =  getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_PHONE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_PHONE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_PHONE, request.getLocale( ) ), dashboardIdentity.getPhone().isMandatory() );
+        String strValidatePhone =  getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_PHONE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_PHONE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_PHONE, request.getLocale( ) ), dashboardIdentity.getPhone().isMandatory(),attributeCategory );
 
         if ( !strValidatePhone.isEmpty( ) && !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getPhone( )) &&  (! bOnlyCheckMandatory || dashboardIdentity.getPhone( ).isMandatory()))
         {
         	hashErrors.put(Constants.ATTRIBUTE_DB_IDENTITY_PHONE, strValidatePhone );
         }
 
-        String strValidateMobilePhone = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_MOBILEPHONE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_MOBILEPHONE, request.getLocale( ) ), dashboardIdentity.getMobilePhone().isMandatory());
+        String strValidateMobilePhone = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_MOBILEPHONE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_MOBILEPHONE, request.getLocale( ) ), dashboardIdentity.getMobilePhone().isMandatory(),attributeCategory);
 
         if ( !strValidateMobilePhone.isEmpty( ) && !DashboardIdentityUtils.isDashboardAttributeCertified( dashboardIdentity.getMobilePhone( )) &&  (! bOnlyCheckMandatory ||dashboardIdentity.getMobilePhone( ).isMandatory()))
         {
         	hashErrors.put(Constants.ATTRIBUTE_DB_IDENTITY_MOBILE_PHONE , strValidateMobilePhone );
         }
 
-        String strValidateAdresse = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS, request.getLocale( ) ), dashboardIdentity.getAddress().isMandatory());
+        String strValidateAdresse = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS, request.getLocale( ) ), dashboardIdentity.getAddress().isMandatory(),attributeCategory);
 
         if ( !strValidateAdresse.isEmpty( ) && !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getAddress( ))&& (! bOnlyCheckMandatory || (dashboardIdentity.getAddress( ).isMandatory())))
         {
@@ -290,7 +304,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         }
 
         //Adress Detail can not be Mandatory
-        String strValidateAdresseDetail = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_DETAIL , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_DETAIL, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_DETAIL, request.getLocale( ) ), false );
+        String strValidateAdresseDetail = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_DETAIL , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_DETAIL, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_DETAIL, request.getLocale( ) ), false,attributeCategory );
 
         if ( !strValidateAdresseDetail.isEmpty( ) && !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getAddressDetail( ))&&  (! bOnlyCheckMandatory ||( dashboardIdentity.getAddressDetail( ).isMandatory())) )
         {
@@ -299,28 +313,28 @@ public class DashboardIdentityService implements IDashBoardIdentityService
 
         
         
-        String strValidateAdressePostalcode = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_POSTALCODE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_POSTALCODE, request.getLocale( ) ), dashboardIdentity.getAddressPostalcode().isMandatory() );
+        String strValidateAdressePostalcode = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_POSTALCODE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_POSTALCODE, request.getLocale( ) ), dashboardIdentity.getAddressPostalcode().isMandatory(),attributeCategory );
 
         if ( !strValidateAdressePostalcode.isEmpty( ) &&!DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getAddressPostalcode( ))&&  (! bOnlyCheckMandatory || (dashboardIdentity.getAddressPostalcode( ).isMandatory()) ))
         {
         	hashErrors.put(  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_POSTAL_CODE,strValidateAdressePostalcode );
         }
 
-        String strValidateCity = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_CITY, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_CITY, request.getLocale( ) ), dashboardIdentity.getAddressCity().isMandatory() );
+        String strValidateCity = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY , Constants.PROPERTY_KEY_VALIDATION_REGEXP_ADDRESS_CITY, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_ADDRESS_CITY, request.getLocale( ) ), dashboardIdentity.getAddressCity().isMandatory(),attributeCategory );
 
         if ( !strValidateCity.isEmpty( ) && !DashboardIdentityUtils.isDashboardAttributeCertified( dashboardIdentity.getAddressCity( ))&& (! bOnlyCheckMandatory ||(dashboardIdentity.getAddressCity( ).isMandatory()) ))
         {
         	hashErrors.put( Constants.ATTRIBUTE_DB_IDENTITY_ADDRESS_CITY,strValidateCity );
         }
         
-        String strValidateBirthplaceCode = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE, Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHPLACE_CODE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHPLACE_CODE, request.getLocale( ) ), dashboardIdentity.getBirthplaceCode().isMandatory() );
+        String strValidateBirthplaceCode = getErrorValidation(request, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE, Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHPLACE_CODE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHPLACE_CODE, request.getLocale( ) ), dashboardIdentity.getBirthplaceCode().isMandatory() ,attributeCategory);
 
         if ( !strValidateBirthplaceCode.isEmpty( )  && !DashboardIdentityUtils.isDashboardAttributeCertified(dashboardIdentity.getBirthplaceCode())&& (! bOnlyCheckMandatory || (dashboardIdentity.getBirthplaceCode().isMandatory())  ) )
         {
             hashErrors.put(Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE,strValidateBirthplaceCode );
         }
         
-        String strValidateBirthCountryCode = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHCOUNTRY_CODE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY_CODE, request.getLocale( ) ), dashboardIdentity.getBirthcountryCode().isMandatory());
+        String strValidateBirthCountryCode = getErrorValidation(request,  Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE , Constants.PROPERTY_KEY_VALIDATION_REGEXP_BIRTHCOUNTRY_CODE, I18nService.getLocalizedString( Constants.MESSAGE_ERROR_VALIDATION_BIRTHCOUNTRY_CODE, request.getLocale( ) ), dashboardIdentity.getBirthcountryCode().isMandatory(),attributeCategory);
 
         if ( !strValidateBirthCountryCode.isEmpty( ) && !DashboardIdentityUtils.isDashboardAttributeCertified( dashboardIdentity.getBirthcountryCode()) && (! bOnlyCheckMandatory || dashboardIdentity.getBirthcountryCode().isMandatory()))
         {
@@ -395,7 +409,17 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     @Override
 	public void updateDashboardIdentity(DashboardIdentity dashboardIdentity,boolean bUpdateOnlyManadtory) throws AppException
     {
-    	IdentityDto identity = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,bUpdateOnlyManadtory );
+    	updateDashboardIdentity(dashboardIdentity, bUpdateOnlyManadtory, null);
+           	
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public void updateDashboardIdentity(DashboardIdentity dashboardIdentity,boolean bUpdateOnlyManadtory,AttributeCategory attributeCategory) throws AppException
+    {
+    	IdentityDto identity = DashboardIdentityUtils.getInstance( ).convertToIdentityDto( dashboardIdentity,bUpdateOnlyManadtory,attributeCategory );
          //do not update certifier fields
     	 DashboardIdentityUtils.getInstance( ).filterByCertifier ( identity );
          DashboardIdentityUtils.getInstance().updateIdentity( identity );
@@ -422,16 +446,30 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     
     
     /**
+     * {@inheritDoc}
+     */
+    
+    @Override
+    public void populateDashboardIdentity ( DashboardIdentity identity, HttpServletRequest request )
+    {
+        
+    	populateDashboardIdentity(identity, request, null);
+        
+    }
+    
+    
+    
+    /**
      * Populate dashboard identity.
      *
      * @param identity the identity
      * @param request the request
      */
     @Override
-    public void populateDashboardIdentity ( DashboardIdentity identity, HttpServletRequest request )
+    public void populateDashboardIdentity ( DashboardIdentity identity, HttpServletRequest request,AttributeCategory attributeCategory )
     {
         
-    	DashboardIdentityUtils.getInstance().populateDashboardIdentity(identity, request);
+    	DashboardIdentityUtils.getInstance().populateDashboardIdentity(identity, request,attributeCategory);
         
     }
     
@@ -447,42 +485,47 @@ public class DashboardIdentityService implements IDashBoardIdentityService
      * @param strRegExp the regExp who verify the submit value
      * @param i18nErrorMessage the I18nError message to display
      * @param bCheckMandatory the b check mandatory
+     * @param attributeCategory only chek attribute spercify in this category category
      * @return  Empty if no error appear otherwise return the errorMessage
      */
-    private String getErrorValidation(HttpServletRequest request,String strAttributeKey,String strRegExp, String errorMessage,boolean bCheckMandatory)
+    private String getErrorValidation(HttpServletRequest request,String strAttributeKey,String strRegExp, String errorMessage,boolean bCheckMandatory,AttributeCategory attributeCategory)
     {
     	String strError= StringUtils.EMPTY;
     	
-    	
-    	
     	boolean bError=false;
-    	if(strAttributeKey.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) 
-    			&& !StringUtils.isBlank(request.getParameter( strAttributeKey ))  
-    			&&   !EmailValidator.getInstance( ).isValid( request.getParameter( strAttributeKey )))
-    	{
-    		
-    		strError = errorMessage;
-    		 bError=true;
-    		
-    	}
-    	else if(bCheckMandatory && StringUtils.isBlank(request.getParameter( strAttributeKey )) && StringUtils.isBlank( strError ))
-    	{
-    		
-    		strError=  I18nService.getLocalizedString( Constants.MESSAGE_ERROR_EMPTY_ERROR_PREFIX+strAttributeKey, request.getLocale( ) );
-    		bError=true;
-    		
-    	}
-    		
-    	else if ( strRegExp != null && !strAttributeKey.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) && (request.getParameter( strAttributeKey ) != null && !request.getParameter( strAttributeKey ).matches( strRegExp )) )
-         {
-    		strError = errorMessage;
-    		bError=true;
-         }
     	
     	
-    	if(bError && StringUtils.isEmpty(strError))
+    	
+    	if(DashboardIdentityUtils.getInstance().getMapAttributeKey(attributeCategory).containsKey(strAttributeKey))
     	{
-    		strError=DEFAULT_ERROR;
+	    	if(strAttributeKey.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) 
+	    			&& !StringUtils.isBlank(request.getParameter( strAttributeKey ))  
+	    			&&   !EmailValidator.getInstance( ).isValid( request.getParameter( strAttributeKey )))
+	    	{
+	    		
+	    		strError = errorMessage;
+	    		 bError=true;
+	    		
+	    	}
+	    	else if(bCheckMandatory && StringUtils.isBlank(request.getParameter( strAttributeKey )) && StringUtils.isBlank( strError ))
+	    	{
+	    		
+	    		strError=  I18nService.getLocalizedString( Constants.MESSAGE_ERROR_EMPTY_ERROR_PREFIX+strAttributeKey, request.getLocale( ) );
+	    		bError=true;
+	    		
+	    	}
+	    		
+	    	else if ( strRegExp != null && !strAttributeKey.equals( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ) && (request.getParameter( strAttributeKey ) != null && !request.getParameter( strAttributeKey ).matches( strRegExp )) )
+	         {
+	    		strError = errorMessage;
+	    		bError=true;
+	         }
+	    	
+	    	
+	    	if(bError && StringUtils.isEmpty(strError))
+	    	{
+	    		strError=DEFAULT_ERROR;
+	    	}
     	}
     	return strError;
     	

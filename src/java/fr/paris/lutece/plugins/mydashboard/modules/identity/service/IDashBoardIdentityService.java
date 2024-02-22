@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.contract.ServiceContractSearchResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.DuplicateSearchResponse;
+import fr.paris.lutece.plugins.mydashboard.modules.identity.business.AttributeCategory;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
 import fr.paris.lutece.portal.service.util.AppException;
 
@@ -79,6 +80,23 @@ public interface IDashBoardIdentityService {
 	 */
 	Map<String,String> checkDashboardIdentityFields(DashboardIdentity dashboardIdentity, HttpServletRequest request,
 			boolean bOnlyCheckMandatory);
+	
+	
+
+	/**
+	 * Check fields format of dashboardIdentity.
+	 *
+	 * @param dashboardIdentity            dashboardIdentity to check
+	 * @param request            the httpServletrequest 
+	 * @param bOnlyCheckMandatory true if only mandatory file must be checked
+	 * @param attributeCategory only check attributeCategory
+	 * @return a Map of errors
+	 */
+	Map<String,String> checkDashboardIdentityFields(DashboardIdentity dashboardIdentity, HttpServletRequest request,
+			boolean bOnlyCheckMandatory,AttributeCategory attributeCategory);
+	
+	
+	 
 
 	/**
 	 * Update identitity using dashboardinformations.
@@ -88,6 +106,17 @@ public interface IDashBoardIdentityService {
 	 * @throws AppException the app exception
 	 */
 	void updateDashboardIdentity(DashboardIdentity dashboardIdentity, boolean bUpdateOnlyManadtory) throws AppException;
+	
+	
+	/**
+	 * Update identitity using dashboardinformations.
+	 *
+	 * @param dashboardIdentity the dashboard identity
+	 * @param bUpdateOnlyManadtory Only Update mandatory Informations
+	 * @param attributeCategory update only DashbordIdentity Attribute in this Category
+	 * @throws AppException the app exception
+	 */
+	void updateDashboardIdentity(DashboardIdentity dashboardIdentity, boolean bUpdateOnlyManadtory,AttributeCategory attributeCategory) throws AppException;
 	
 	/**
 	 * Return an IdentityDTO object wich contains only identity fields to update
@@ -104,6 +133,16 @@ public interface IDashBoardIdentityService {
 	 * @param request the request
 	 */
 	void populateDashboardIdentity ( DashboardIdentity dashboardIdentity, HttpServletRequest request );
+	
+	
+	/**
+	 * Populate dashboard identity.
+	 *
+	 * @param dashboardIdentity the identity
+	 * @param request the request
+	 * @param attributeCategory update only DashbordIdentity Attribute in this Category
+	 */
+	void populateDashboardIdentity ( DashboardIdentity dashboardIdentity, HttpServletRequest request ,AttributeCategory attributeCategory);
 
     /**
      * Search suspicious identities
