@@ -460,10 +460,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
     
     
     /**
-     * Populate dashboard identity.
-     *
-     * @param identity the identity
-     * @param request the request
+     * {@inheritDoc}
      */
     @Override
     public void populateDashboardIdentity ( DashboardIdentity identity, HttpServletRequest request,AttributeCategory attributeCategory )
