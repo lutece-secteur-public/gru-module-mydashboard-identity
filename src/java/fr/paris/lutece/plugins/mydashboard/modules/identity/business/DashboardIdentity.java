@@ -48,6 +48,7 @@ public class DashboardIdentity
 {
     private Map<String, DashboardAttribute> _mapAttributes;
     private Timestamp _lastUpdateDate;
+    private Integer _nCoverage;
     
     public DashboardIdentity ()
     {
@@ -507,6 +508,21 @@ public class DashboardIdentity
     {
         _mapAttributes.put( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE, birthcountryCode );
     }
+	/**
+	 * 
+	 * @return the coverage of the identity
+	 */
+	public Integer getCoverage() {
+		return _nCoverage;
+	}
+  
+	/**
+	 * set the coverage of the identity
+	 * @param coverage the coverage
+	 */
+	public void setCoverage(Integer coverage) {
+		this._nCoverage = coverage;
+	}
 
 
 }

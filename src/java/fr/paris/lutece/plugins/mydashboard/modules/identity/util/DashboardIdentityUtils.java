@@ -212,6 +212,8 @@ public class DashboardIdentityUtils
         	dashboardIdentity.setCustomerId( new DashboardAttribute(
                 Constants.ATTRIBUTE_DB_IDENTITY_CUSTOMER_ID,
                 identity.getCustomerId( ) ) );
+        	dashboardIdentity.setCoverage( identity.getQuality() != null ? identity.getQuality().getCoverage() : 0);
+        	
         }
         
         
