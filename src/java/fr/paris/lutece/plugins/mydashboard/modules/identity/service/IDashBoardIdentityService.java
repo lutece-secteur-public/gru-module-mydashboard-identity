@@ -177,5 +177,5 @@ public interface IDashBoardIdentityService {
 	 * {@inheritDoc}
 	 */
 	Map<String, String> checkDashboardIdentityFieldsFromServiceContract(DashboardIdentity dashboardIdentity,
-			HttpServletRequest request, boolean bOnlyCheckMandatory, String strAppCode);
+			HttpServletRequest request, boolean bOnlyCheckMandatory, String strAppCode, boolean bOnlyCheckNotEmptyAttribute);
 }
