@@ -525,7 +525,7 @@ public class IdentityXPage extends MVCApplication
             throw new AccessDeniedException( Constants.MESSAGE_ERROR_TOKEN  );
         }
         
-        checkUserAuthentication( request );
+        LuteceUser luteceUser = getConnectedUser( request );
         AuthorizedUrlService.getInstance( ).getServiceBackUrl( request );
 
         if ( _checkdIdentity == null || request.getParameter( PARAMETER_BACK ) != null )
@@ -544,7 +544,8 @@ public class IdentityXPage extends MVCApplication
         }
         
         //Suspicious identity
-        if( DashboardIdentityService.getInstance( ).existSuspiciousIdentities( _checkdIdentity,DashboardIdentityUtils.getInstance( ).getAllSuspiciousIdentityRules( ) ) )
+        if( DashboardIdentityService.getInstance( ).existSuspiciousIdentities( _checkdIdentity,DashboardIdentityUtils.getInstance( ).getAllSuspiciousIdentityRules( ) ) 
+                && DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC.split( "," ) ), 400 ) )
         {
             DashboardIdentityUtils.getInstance( ).setCurrentDashboardIdentityInSession( request, _checkdIdentity );
             DashboardIdentityUtils.getInstance( ).setRedirectUrlAfterCompletionInSession( PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE, PROPERTY_REDIRECT_COMPLETION_ACCOUNT_VIEW, request );
