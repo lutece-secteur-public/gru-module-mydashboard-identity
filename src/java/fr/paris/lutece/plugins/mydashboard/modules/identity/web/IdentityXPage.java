@@ -38,6 +38,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -114,6 +115,7 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_ORIGIN_ACTION                        = "origin";
     private static final String MARK_NS_NAME                              = "numericServiceName";
     private static final String MARK_TOKEN                                = "token";
+    private static final String MARK_ERRORS                               = "errors";
     
     private static final String BEAN_IDENTITYSTORE_SERVICE                = "mydashboard-identity.identitystore.service";
     private static final String SPLIT_PATTERN                             = ";";
@@ -412,7 +414,22 @@ public class IdentityXPage extends MVCApplication
         // reinit Information
         _bMandatoryInformationsSaved = false;
 
+        getLoadingErrors( request, model );
+        
         return getXPage( TEMPLATE_GET_VIEW_CHECK_IDENTITY, request.getLocale( ), model );
+    }
+
+    private void getLoadingErrors( HttpServletRequest request, Map<String, Object> model )
+    {
+        if( ObjectUtils.isEmpty( model.get( MARK_ERRORS ) ) )
+        {
+            Map<String, String> hashErros =  DashboardIdentityService.getInstance( ).checkDashboardIdentityFieldsFromServiceContract( _checkdIdentity, request, true, _strAppCode, true ) ;
+            if ( !hashErros.isEmpty( ) )
+            {
+                hashErros.forEach( ( x, y ) -> addError( y, x ) );
+            }
+            fillCommons( model );
+        }
     }
 
     /**
@@ -508,7 +525,7 @@ public class IdentityXPage extends MVCApplication
             throw new AccessDeniedException( Constants.MESSAGE_ERROR_TOKEN  );
         }
         
-        checkUserAuthentication( request );
+        LuteceUser luteceUser = getConnectedUser( request );
         AuthorizedUrlService.getInstance( ).getServiceBackUrl( request );
 
         if ( _checkdIdentity == null || request.getParameter( PARAMETER_BACK ) != null )
@@ -519,7 +536,7 @@ public class IdentityXPage extends MVCApplication
         // fill dashboardIdentity from submitted form
         DashboardIdentityService.getInstance( ).populateDashboardIdentity( _checkdIdentity, request );
         Map<String, String> hashErros = DashboardIdentityService.getInstance( ).checkDashboardIdentityFields( _checkdIdentity, request, true );
-        hashErros.putAll( DashboardIdentityService.getInstance( ).checkDashboardIdentityFieldsFromServiceContract( _checkdIdentity, request, true, _strAppCode ) );
+        hashErros.putAll( DashboardIdentityService.getInstance( ).checkDashboardIdentityFieldsFromServiceContract( _checkdIdentity, request, true, _strAppCode, false ) );
         if ( !hashErros.isEmpty( ) )
         {
             hashErros.forEach( ( x, y ) -> addError( y, x ) );
@@ -527,7 +544,8 @@ public class IdentityXPage extends MVCApplication
         }
         
         //Suspicious identity
-        if( DashboardIdentityService.getInstance( ).existSuspiciousIdentities( _checkdIdentity,DashboardIdentityUtils.getInstance( ).getAllSuspiciousIdentityRules( ) ) )
+        if( DashboardIdentityService.getInstance( ).existSuspiciousIdentities( _checkdIdentity,DashboardIdentityUtils.getInstance( ).getAllSuspiciousIdentityRules( ) ) 
+                && DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC.split( "," ) ), 400 ) )
         {
             DashboardIdentityUtils.getInstance( ).setCurrentDashboardIdentityInSession( request, _checkdIdentity );
             DashboardIdentityUtils.getInstance( ).setRedirectUrlAfterCompletionInSession( PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE, PROPERTY_REDIRECT_COMPLETION_ACCOUNT_VIEW, request );

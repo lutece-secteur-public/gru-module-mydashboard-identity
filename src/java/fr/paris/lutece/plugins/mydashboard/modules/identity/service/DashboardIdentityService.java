@@ -364,7 +364,7 @@ public class DashboardIdentityService implements IDashBoardIdentityService
      * {@inheritDoc}
      */
     @Override
-    public Map<String,String> checkDashboardIdentityFieldsFromServiceContract( DashboardIdentity dashboardIdentity, HttpServletRequest request, boolean bOnlyCheckMandatory, String strAppCode )
+    public Map<String,String> checkDashboardIdentityFieldsFromServiceContract( DashboardIdentity dashboardIdentity, HttpServletRequest request, boolean bOnlyCheckMandatory, String strAppCode, boolean bOnlyCheckNotEmptyAttribute )
     {
     	Map<String,String> hashErrors = new HashMap<String,String>();
     	
@@ -377,7 +377,8 @@ public class DashboardIdentityService implements IDashBoardIdentityService
         	{
         		for ( Map.Entry<String,String> attributeMatch : DashboardIdentityUtils.getInstance( ).getMapAttributeKeyMatch( ).entrySet( ) )
         		{
-        			if ( attributeMatch.getKey( ).equals( attributeDefinitionDto.getKeyName( ) ) )
+        			if ( attributeMatch.getKey( ).equals( attributeDefinitionDto.getKeyName( ) ) &&
+        			        ( !bOnlyCheckNotEmptyAttribute || bOnlyCheckNotEmptyAttribute && StringUtils.isNotEmpty( dashboardIdentity.getAttribute( attributeMatch.getValue( ) ).getValue( ) ) ) )
         			{
         				boolean isMandatory = false;
         				
