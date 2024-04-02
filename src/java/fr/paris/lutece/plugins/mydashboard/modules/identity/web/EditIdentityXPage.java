@@ -44,14 +44,16 @@ import fr.paris.lutece.plugins.mydashboard.modules.identity.service.DashboardIde
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.DashboardIdentityUtils;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.security.ISecurityTokenService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
+import fr.paris.lutece.portal.service.site.properties.SitePropertiesGroup;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -89,7 +91,8 @@ public class EditIdentityXPage extends MVCApplication
     private static final String MARK_ACTION_NAME                              = "actionName";
     private static final String MARK_TOKEN                                    = "token";
     private static final String MARK_BUTTON_VALIDATE                          = "btnValidate";
-    
+    private static final String MARK_MYDASHBOARD_SITE_PROPERTIES              = "mydashboard_site_properties";
+ 
     private static final String MESSAGE_COORDINATES_PAGE_TITLE = "module.mydashboard.identity.xpage.edit_identity.coordinates.page.title";
     private static final String MESSAGE_COORDINATES_BTN_VALIDATE = "module.mydashboard.identity.xpage.edit_identity.coordinates.validate.button";
     private static final String MESSAGE_IDENTITY_INFOS_PAGE_TITLE = "module.mydashboard.identity.xpage.edit_identity.identity.infos.page.title";
@@ -99,9 +102,10 @@ public class EditIdentityXPage extends MVCApplication
     
     private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE         = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.page" );
     private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_VIEW         = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.view" );
-    
+
     private DashboardIdentity   _dashboardIdentity;
     private ISecurityTokenService _securityTokenService = SecurityTokenService.getInstance( );
+    private SitePropertiesGroup _dashboardPropertiesGroup = ( SitePropertiesGroup ) SpringContextService.getBean( "mydashboard-identity.sitePropertiesGroup" );
     
     /**
      * Get the edit identity of the informations user view
@@ -126,9 +130,11 @@ public class EditIdentityXPage extends MVCApplication
         {
             IdentityDto identity = DashboardIdentityUtils.getInstance( ).getIdentity( luteceUser.getName( ) );
             _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity );
-        }
+        }        
         
         Map<String, Object> model = getModel( );
+        
+        model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( _dashboardPropertiesGroup.getDatastoreKeysPrefix( ) ).toMap( ) );
         model.put( MARK_PAGE_TITLE, I18nService.getLocalizedString( MESSAGE_IDENTITY_INFOS_PAGE_TITLE, request.getLocale( ) ) );
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_EDIT_INFORMATIONS, true);
@@ -165,6 +171,7 @@ public class EditIdentityXPage extends MVCApplication
         }
         
         Map<String, Object> model = getModel( );
+        model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( _dashboardPropertiesGroup.getDatastoreKeysPrefix( ) ).toMap( ) );
         model.put( MARK_PAGE_TITLE, I18nService.getLocalizedString( MESSAGE_COORDINATES_PAGE_TITLE, request.getLocale( ) ) );
         model.put( MARK_IDENTITY, _dashboardIdentity );
         model.put( MARK_EDIT_COORDINATES, true);
