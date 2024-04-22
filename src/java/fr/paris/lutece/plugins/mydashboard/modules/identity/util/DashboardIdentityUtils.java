@@ -294,19 +294,21 @@ public class DashboardIdentityUtils
         
         List<AttributeDto> listCertifiedAttribute = new ArrayList< >( );
         
+        DashboardIdentity dashboardIdentityFromRic = convertToDashboardIdentity( getIdentity( identity.getConnectionId( ) ) );
+        
         for ( Map.Entry<String,String> attributeMatch : getMapAttributeKey(attributeCategory).entrySet( ) )
         {
             DashboardAttribute dashboardAttribute = dashboardIdentity.getAttribute( attributeMatch.getKey( ) );
-            if(!bOnlyMandatory || dashboardAttribute.isMandatory())
-            { 	
-            	AttributeDto certifiedAttribute = new AttributeDto(  );
-                certifiedAttribute.setKey( attributeMatch.getValue() );
-                certifiedAttribute.setValue( dashboardAttribute.getValue( ) );
-                certifiedAttribute.setCertifier( dashboardAttribute.getCertifierCode( ) );
-                certifiedAttribute.setCertificationDate( new Date() );
-                certifiedAttribute.setCertificationLevel(dashboardAttribute.getCertifierLevel());
-                                
-	            listCertifiedAttribute.add( certifiedAttribute );
+            if ( dashboardIdentityFromRic == null )
+            {
+                if ( !bOnlyMandatory || dashboardAttribute.isMandatory( ) )
+                {
+                    listCertifiedAttribute.add( getCertifiedAttribute( dashboardAttribute, attributeMatch.getValue( ) ) );
+                }
+            }
+            else if ( ( !bOnlyMandatory || dashboardAttribute.isMandatory( ) ) && hasChanged( dashboardAttribute, dashboardIdentityFromRic.getAttribute( attributeMatch.getKey( ) ) ) )
+            {
+                listCertifiedAttribute.add( getCertifiedAttribute( dashboardAttribute, attributeMatch.getValue( ) ) );
             }
         }
         identity.setAttributes( listCertifiedAttribute );
@@ -316,6 +318,36 @@ public class DashboardIdentityUtils
         return identity;
     }
     
+    /**
+     * 
+     * @param dashboardAttribute
+     * @param attributeValue
+     * @return the certifiedAttribute
+     */
+    private AttributeDto getCertifiedAttribute( DashboardAttribute dashboardAttribute, String attributeValue )
+    {
+        AttributeDto certifiedAttribute = new AttributeDto(  );
+        certifiedAttribute.setKey( attributeValue );
+        certifiedAttribute.setValue( dashboardAttribute.getValue( ) );
+        certifiedAttribute.setCertifier( dashboardAttribute.getCertifierCode( ) );
+        certifiedAttribute.setCertificationDate( new Date() );
+        certifiedAttribute.setCertificationLevel(dashboardAttribute.getCertifierLevel());
+        
+        return certifiedAttribute;
+    }
+    
+    /**
+     * 
+     * @param newAttribute the new dashboard attribute submitted
+     * @param oldAttribute the old dashboard attribute saved
+     * @return true if the two attributes are different
+     */
+    private boolean hasChanged( DashboardAttribute newAttribute, DashboardAttribute oldAttribute )
+    {
+        return ( newAttribute.getValue( ) != null && !newAttribute.getValue( ).equals( oldAttribute.getValue( ) ) )
+                || ( newAttribute.getCertifierCode( ) != null && !newAttribute.getCertifierCode( ).equals( oldAttribute.getCertifierCode( ) ) )
+                || ( newAttribute.getCertificateDate( ) != null && oldAttribute.getCertificateDate( ) != null && !newAttribute.getCertificateDate( ).equals( oldAttribute.getCertificateDate( ) ) );
+    }
     
     /**
      * Get DashboardAttribute From AttributeDto
