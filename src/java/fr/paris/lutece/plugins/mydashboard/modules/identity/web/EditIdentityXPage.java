@@ -61,6 +61,8 @@ import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.url.UrlItem;
+import fr.paris.lutece.util.ReferenceItem;
+import fr.paris.lutece.util.ReferenceList;
 
 /**
  * EditIdentity application
@@ -84,12 +86,15 @@ public class EditIdentityXPage extends MVCApplication
         
     private static final String MARK_PAGE_TITLE                               = "pageTitle";
     private static final String MARK_IDENTITY                                 = "identity";
+    private static final String MARK_GENDER_LIST                              = "genderlist";
     private static final String MARK_EDIT_INFORMATIONS                        = "editInformations";
     private static final String MARK_EDIT_COORDINATES                         = "editCoordinates";
     private static final String MARK_ACTION_NAME                              = "actionName";
     private static final String MARK_TOKEN                                    = "token";
     private static final String MARK_BUTTON_VALIDATE                          = "btnValidate";
     private static final String MARK_MYDASHBOARD_SITE_PROPERTIES              = "mydashboard_site_properties";
+    
+    private static final String SPLIT_PATTERN                                 = ";";
  
     private static final String MESSAGE_COORDINATES_PAGE_TITLE = "module.mydashboard.identity.xpage.edit_identity.coordinates.page.title";
     private static final String MESSAGE_COORDINATES_BTN_VALIDATE = "module.mydashboard.identity.xpage.edit_identity.coordinates.validate.button";
@@ -106,6 +111,28 @@ public class EditIdentityXPage extends MVCApplication
     private DashboardIdentity   _dashboardIdentity;
     private ISecurityTokenService _securityTokenService = SecurityTokenService.getInstance( );
     private SitePropertiesGroup _dashboardPropertiesGroup = ( SitePropertiesGroup ) SpringContextService.getBean( "mydashboard-identity.sitePropertiesGroup" );
+    private ReferenceList       _lstGenderList;
+    
+    /**
+     * Constructor
+     */
+    public EditIdentityXPage( )
+    {
+        super( );
+        
+        _lstGenderList = new ReferenceList( );
+
+        int i = 0;
+
+        for ( String sItem : Constants.PROPERTY_KEY_GENDER_LIST.split( SPLIT_PATTERN ) )
+        {
+            ReferenceItem refItm = new ReferenceItem( );
+            refItm.setName( sItem );
+            refItm.setCode( String.valueOf( i ) );
+            _lstGenderList.add( refItm );
+            i++;
+        }
+    }
     
     /**
      * Get the edit identity of the informations user view
@@ -137,6 +164,7 @@ public class EditIdentityXPage extends MVCApplication
         model.put( MARK_MYDASHBOARD_SITE_PROPERTIES, DatastoreService.getDataByPrefix( _dashboardPropertiesGroup.getDatastoreKeysPrefix( ) ).toMap( ) );
         model.put( MARK_PAGE_TITLE, I18nService.getLocalizedString( MESSAGE_IDENTITY_INFOS_PAGE_TITLE, request.getLocale( ) ) );
         model.put( MARK_IDENTITY, _dashboardIdentity );
+        model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_EDIT_INFORMATIONS, true);
         model.put( MARK_ACTION_NAME, "jsp/site/Portal.jsp?page=editIdentity&action=doModifyIdentityInformations" );
         model.put( MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_MODIFY_IDENTITY_INFORMATIONS ) );
@@ -210,6 +238,7 @@ public class EditIdentityXPage extends MVCApplication
         
         // fill dashboardIdentity from submitted form
         DashboardIdentityService.getInstance( ).populateDashboardIdentity( _dashboardIdentity, request );
+        _dashboardIdentity.getGender().setMandatory( true );
         _dashboardIdentity.getLastName().setMandatory( true );
         _dashboardIdentity.getFirstname().setMandatory( true );
         _dashboardIdentity.getBirthdate().setMandatory( true );

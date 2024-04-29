@@ -120,6 +120,9 @@ public class IdentityXPage extends MVCApplication
     private static final String PROPERTY_AVATERSERVER_POST_URL            = "mydashboard.identity.avatarserver.post.url";
     private static final String AVATARSERVER_POST_URL                     = AppPropertiesService.getProperty( PROPERTY_AVATERSERVER_POST_URL );
 
+    private static final String ROLE_MYDASHBOARD_CS_REQUIREMENTS_FULLFILLED    = "mydashboard.identity.roleMydashboardCsRequirementsFullFilled";
+    private static final String APP_CODE_SERVICE_CONTRACT_MON_PARIS            = "mydashboard.identity.appCodeServiceContractMonParis";
+
     // Views
     private static final String VIEW_VALIDATE_LAST_NAME                   = "validate_lastName";
     private static final String VIEW_VALIDATE_PREFERRED_USERNAME          = "validate_preferredUsername";
@@ -387,6 +390,25 @@ public class IdentityXPage extends MVCApplication
         
         if ( _strAppCode != null && _checkdIdentity != null )
         {
+            String strAppCodeMonParis = AppPropertiesService.getProperty( APP_CODE_SERVICE_CONTRACT_MON_PARIS );
+            
+            if ( _checkdIdentity.getCoverage( ) == 1 && _strAppCode.equals( strAppCodeMonParis ) )
+            {
+                String strRoleCertifier = AppPropertiesService.getProperty( ROLE_MYDASHBOARD_CS_REQUIREMENTS_FULLFILLED );
+                
+                if( luteceUser.getRoles( ) != null )
+                {
+                    if( !Arrays.stream( luteceUser.getRoles( ) ).anyMatch( x -> x.equals( strRoleCertifier ) ) )
+                    {
+                        luteceUser.addRoles( Arrays.asList( strRoleCertifier ) );
+                    }
+                }
+                else
+                {
+                    luteceUser.setRoles( Arrays.asList( strRoleCertifier ) );
+                }
+            }
+            
             model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC.split( "," ) ), 400 ) );
   
             boolean bLoginNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_LOGIN ), PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN )
