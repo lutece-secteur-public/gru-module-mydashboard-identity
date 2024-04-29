@@ -60,6 +60,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
+import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -76,16 +77,13 @@ public class EditIdentityXPage extends MVCApplication
     
     private static final String VIEW_GET_EDIT_IDENTITY_INFORMATIONS           = "getEditIdentityInformations";
     private static final String VIEW_GET_EDIT_IDENTITY_COORDINATES            = "getEditIdentityCoordinates";
-    private static final String VIEW_SUSPICION_IDENTITY_COMPLETION            = "completeIdentity";
     
     private static final String ACTION_DO_MODIFY_IDENTITY_INFORMATIONS        = "doModifyIdentityInformations";
     private static final String ACTION_DO_MODIFY_IDENTITY_COORDINATES         = "doModifyIdentityCoordinates";
     private static final String ACTION_TYPE_MODIFY_ACCOUNT                    = "modifyAccount";
     
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY             = "skin/plugins/mydashboard/modules/identity/modify_identity.html";
-    
-    private static final String PARAMETER_ORIGIN_ACTION                       = "origin";
-    
+        
     private static final String MARK_PAGE_TITLE                               = "pageTitle";
     private static final String MARK_IDENTITY                                 = "identity";
     private static final String MARK_GENDER_LIST                              = "genderlist";
@@ -107,6 +105,8 @@ public class EditIdentityXPage extends MVCApplication
     
     private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE         = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.page" );
     private static final String PROPERTY_REDIRECT_MODIFY_ACCOUNT_VIEW         = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.modify_account.redirect.view" );
+
+    private static final String URL_SUSPICION_IDENTITY_COMPLETION  = "Portal.jsp?page=mydashboardIdentity&view=completeIdentity&origin=" + Constants.ORIGIN_ACTION_MODIFY_ACCOUNT;
 
     private DashboardIdentity   _dashboardIdentity;
     private ISecurityTokenService _securityTokenService = SecurityTokenService.getInstance( );
@@ -256,7 +256,7 @@ public class EditIdentityXPage extends MVCApplication
             DashboardIdentityUtils.getInstance( ).setCurrentDashboardIdentityInSession( request, _dashboardIdentity );
             DashboardIdentityUtils.getInstance( ).setRedirectUrlAfterCompletionInSession( PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE, PROPERTY_REDIRECT_MODIFY_ACCOUNT_VIEW, request );
             
-            return redirect( request, VIEW_SUSPICION_IDENTITY_COMPLETION, PARAMETER_ORIGIN_ACTION, Constants.ORIGIN_ACTION_MODIFY_ACCOUNT );
+            return redirect( request, new UrlItem( URL_SUSPICION_IDENTITY_COMPLETION ).getUrl( ) );            
         }
         
         try
