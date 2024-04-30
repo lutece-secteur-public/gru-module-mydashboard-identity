@@ -185,6 +185,10 @@ public class DashboardIdentityService implements IDashBoardIdentityService
 	public boolean needCertification( String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity, List<String> listAttributesNeedFC, int nLevelMin )
     {
         ServiceContractSearchResponse serviceContractSearchResponse = getActiveServiceContract( strApplicationCode );
+        if ( serviceContractSearchResponse == null )
+        {
+            return false;
+        }
         return DashboardIdentityUtils.getInstance( ).needCertification( dashboardIdentity, serviceContractSearchResponse, listAttributesNeedFC, nLevelMin );
     }
     
