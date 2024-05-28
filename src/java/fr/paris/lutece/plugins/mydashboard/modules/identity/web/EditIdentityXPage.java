@@ -37,6 +37,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.AttributeCategory;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
@@ -170,7 +172,26 @@ public class EditIdentityXPage extends MVCApplication
         model.put( MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_MODIFY_IDENTITY_INFORMATIONS ) );
         model.put( MARK_BUTTON_VALIDATE, I18nService.getLocalizedString( MESSAGE_IDENTITY_INFOS_BTN_VALIDATE, request.getLocale( ) ) );
         
+        addMessage( request, model );
+        
         return getXPage( TEMPLATE_GET_VIEW_MODIFY_IDENTITY, request.getLocale( ), model );
+    }
+    
+    private void addMessage( HttpServletRequest request, Map<String, Object> model )
+    {
+        String strErrorMessageInSession = DashboardIdentityUtils.getInstance( ).getMessageInSession( true, true, request );
+        String stInfoMessageInSession = DashboardIdentityUtils.getInstance( ).getMessageInSession( false, true, request );
+        
+        if( StringUtils.isNotEmpty( strErrorMessageInSession ) )
+        {
+            addError( strErrorMessageInSession, request.getLocale( ) );
+            fillCommons( model );
+        }
+        if( StringUtils.isNotEmpty( stInfoMessageInSession ) )
+        {
+            addInfo( stInfoMessageInSession, request.getLocale( ) );
+            fillCommons( model );
+        }
     }
     
     /**
