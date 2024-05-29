@@ -487,16 +487,27 @@ public class DashboardIdentityUtils
     
   
     
-    
     /**
-     * return identitySearchResponse from strConnectionId
+     * Gets the identity.
      *
-     * @param strConnectionId
-     *            user connection id
-     * @return IdentitySearchResponse
-     * @throws UserNotSignedException
+     * @param strConnectionId the str connection id
+     * @return the identity
      */
     public IdentityDto getIdentity( String strConnectionId )
+    {
+   
+        return getIdentity(strConnectionId, DASHBOARD_APP_CODE);
+    }
+    
+    
+ /**
+  * Gets the identity.
+  *
+  * @param strConnectionId the str connection id
+  * @param strAppCode the str app code
+  * @return the identity
+  */
+    public IdentityDto getIdentity( String strConnectionId,String strAppCode )
     {
         IdentitySearchResponse identitySearchResponse = null;
         IdentityDto identity=null;
@@ -504,9 +515,9 @@ public class DashboardIdentityUtils
         try
         {
             RequestAuthor requestAuthor = new RequestAuthor( );
-            requestAuthor.setName( DASHBOARD_APP_CODE );
+            requestAuthor.setName( strAppCode );
             requestAuthor.setType( AuthorType.owner );
-            identitySearchResponse = _identityService.getIdentityByConnectionId( strConnectionId, DASHBOARD_APP_CODE ,requestAuthor);
+            identitySearchResponse = _identityService.getIdentityByConnectionId( strConnectionId, strAppCode ,requestAuthor);
         	if( identitySearchResponse!=null && 
 					!ResponseStatusType.NOT_FOUND.equals(identitySearchResponse.getStatus().getType()) 
 					&&  identitySearchResponse.getIdentities() != null 
@@ -530,6 +541,25 @@ public class DashboardIdentityUtils
         }
 
         return identity;
+    }
+    
+    /**
+     * Get Identity Coverage for a connectionId and a app Coe
+     * @param strConnectionId
+     * @param strAppCode
+     * @return
+     */
+    public int getIdentityCoverage( String strConnectionId,String strAppCode )
+    {
+    	int nCoverage=0;
+    	
+    	IdentityDto identity=getIdentity(strConnectionId, strAppCode);
+    	if(identity!=null && identity.getQuality()!=null )
+    	{
+    		nCoverage= identity .getQuality().getCoverage();
+    		
+    	}
+    	return nCoverage;
     }
     
     /**

@@ -392,8 +392,9 @@ public class IdentityXPage extends MVCApplication
         {
             String strAppCodeMonParis = AppPropertiesService.getProperty( APP_CODE_SERVICE_CONTRACT_MON_PARIS );
             
-            if ( _checkdIdentity.getCoverage( ) == 1 && _strAppCode.equals( strAppCodeMonParis ) )
+            if ( _strAppCode.equals( strAppCodeMonParis )  && DashboardIdentityUtils.getInstance().getIdentityCoverage(luteceUser.getName( ), _strAppCode) == 1)
             {
+            	//Add  roles for services contract mon paris if the user have a coverage =1
                 String strRoleCertifier = AppPropertiesService.getProperty( ROLE_MYDASHBOARD_CS_REQUIREMENTS_FULLFILLED );
                 
                 if( luteceUser.getRoles( ) != null )
