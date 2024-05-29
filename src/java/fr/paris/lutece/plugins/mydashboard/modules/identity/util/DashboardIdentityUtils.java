@@ -46,6 +46,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.AttributeDto;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.AuthorType;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.common.IdentityDto;
@@ -85,7 +89,13 @@ public class DashboardIdentityUtils
     private static Map<String,String> _mapAttributeKeyMatch;
     private static  Map<String,String> _mapAttributeKeyMatchIdentityInformations;
     private static  Map<String,String> _mapAttributeKeyMatchCoordinates;
-    
+    private static ObjectMapper _mapper;
+    static
+    {
+        _mapper = new ObjectMapper( );
+        _mapper.disable( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES );
+    }
+
     
     
     private IdentityService _identityService;
@@ -540,7 +550,7 @@ public class DashboardIdentityUtils
             	final IdentityChangeResponse response= _identityService.updateIdentity( identityChangeRequest.getIdentity( ).getCustomerId( ), identityChangeRequest, DASHBOARD_APP_CODE,getOwnerRequestAuthor() );
             	if (response==null ||  !ResponseStatusType.OK.equals(  response.getStatus().getType())  )
           	  {
-          		  AppLogService.error( "Error when  updating the identity for connectionId {} the idantity change status is {} ", identity.getConnectionId( ), response!=null? response.getStatus():"");
+          		  AppLogService.error( "Error when  updating the identity for connectionId {} the identity change status is {}, the json identity response is {} ", identity.getConnectionId( ), response!=null? response.getStatus().getMessage():"",printJsonObjectAsString(response));
           		  
           		  throw new IdentityStoreException(response==null ? "":response.getStatus().getType().name());
           	  }
@@ -550,7 +560,7 @@ public class DashboardIdentityUtils
             	final IdentityChangeResponse response=_identityService.createIdentity( identityChangeRequest, DASHBOARD_APP_CODE ,getOwnerRequestAuthor());
             	  if (response==null || !ResponseStatusType.SUCCESS.equals( response.getStatus().getType()  ))
             	  {
-            		  AppLogService.error( "Error when creating  the identity for connectionId {} the idantity change status is {} ", identity.getConnectionId( ), response!=null? response.getStatus():"");
+            		  AppLogService.error( "Error when creating  the identity for connectionId {} the identity change status is {} , the json identity response is {}", identity.getConnectionId( ), response!=null? response.getStatus().getMessage():"",printJsonObjectAsString(response));
             		  
             		  throw new IdentityStoreException(response==null ? "":response.getStatus().getType().name());
             	  }
@@ -888,5 +898,24 @@ public class DashboardIdentityUtils
 
 		return _mapAttributeKeyMatch;
 	}
+	
+	  /**
+     * Print JsonObject as String
+     * @param o the json Object
+     * @return Json String
+     */
+    public static String printJsonObjectAsString(Object o) 
+    {
+		if (o != null) {
+
+			try {
+				return _mapper.writeValueAsString(o);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				AppLogService.error("Failed to write object as Json", e);
+			}
+		}
+    	return "";
+    }
     
 }
