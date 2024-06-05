@@ -578,7 +578,7 @@ public class DashboardIdentityUtils
             if( !StringUtils.isEmpty( identity.getCustomerId( ) ) )
             {
             	final IdentityChangeResponse response= _identityService.updateIdentity( identityChangeRequest.getIdentity( ).getCustomerId( ), identityChangeRequest, DASHBOARD_APP_CODE,getOwnerRequestAuthor() );
-            	if (response==null ||  !ResponseStatusType.OK.equals(  response.getStatus().getType())  )
+            	if (response==null ||  (!ResponseStatusType.SUCCESS.equals(response.getStatus().getType()) && !ResponseStatusType.INCOMPLETE_SUCCESS.equals(response.getStatus().getType()))   )
           	  {
           		  AppLogService.error( "Error when  updating the identity for connectionId {} the identity change status is {}, the json identity response is {} ", identity.getConnectionId( ), response!=null? response.getStatus().getMessage():"",printJsonObjectAsString(response));
           		  
