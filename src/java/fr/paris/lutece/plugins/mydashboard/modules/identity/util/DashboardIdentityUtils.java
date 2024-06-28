@@ -512,6 +512,11 @@ public class DashboardIdentityUtils
         IdentitySearchResponse identitySearchResponse = null;
         IdentityDto identity=null;
 
+		if (StringUtils.isEmpty(strConnectionId)) {
+			//the strConnectionId is empty it is a creation
+			return new IdentityDto();
+		}
+        
         try
         {
             RequestAuthor requestAuthor = new RequestAuthor( );
