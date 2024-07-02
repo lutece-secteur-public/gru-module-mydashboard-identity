@@ -953,4 +953,24 @@ public class DashboardIdentityUtils
     	return "";
     }
     
+    /**
+     * Return true if any of the attributes in the list are empty in the Identity Dashboard
+     * 
+     * @param dasboardIdentity
+     * @param listAttributesName
+     * @return
+     */
+    public static boolean isContaintEmptyAttribute( DashboardIdentity dasboardIdentity, List<String> listAttributesName )
+    {
+        for ( String nameAttribute : listAttributesName )
+        {
+            if ( dasboardIdentity.getAttribute( nameAttribute ) == null 
+                    || StringUtils.isEmpty( dasboardIdentity.getAttribute( nameAttribute ).getValue( ) ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }
