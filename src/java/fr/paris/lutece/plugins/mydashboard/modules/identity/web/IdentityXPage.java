@@ -148,7 +148,8 @@ public class IdentityXPage extends MVCApplication
     private static final String PROPERTY_FC_CERTIFIER_CODE =  AppPropertiesService.getProperty( "myluteceusergu.identitystore.fccertifier.code", "fccertifier" );
     private static final String PROPERTY_REDIRECT_URL_CERTIFY_EMAIL = AppPropertiesService.getProperty( "mydashboard.identity.completion.certify_email");
     private static final int PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN =  AppPropertiesService.getPropertyInt( "mydashboard.identity.emailcertifier.level_min", 200);
-    
+    private static final String PROPERTY_LIST_ATTRIBUTES_TO_CHECK = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.list_attributes.to_check" );
+  
     private ReferenceList       _lstContactModeList;
     private ReferenceList       _lstGenderList;
 
@@ -903,7 +904,14 @@ public class IdentityXPage extends MVCApplication
         {
             return redirect( request, AppPathService.getRootForwardUrl( ) );
         }
-
+        
+        //Do not show the completion screen if all attributes are filled
+        if( !DashboardIdentityUtils.isContaintEmptyAttribute ( dasboardIdentitySession, Arrays.asList( PROPERTY_LIST_ATTRIBUTES_TO_CHECK.split( ";" ) ) ) )
+        {
+            // redirection vers la page ayant demander la completion
+            return redirect( request, DashboardIdentityUtils.getInstance( ).getRedirectUrlAfterCompletionInSession( request ) );
+        }
+        
         model.put( MARK_GENDER_LIST, _lstGenderList );
         model.put( MARK_IDENTITY, _completionIdentity == null ? dasboardIdentitySession : _completionIdentity );
         model.put( MARK_ORIGIN_ACTION, _originActionCompletion );
