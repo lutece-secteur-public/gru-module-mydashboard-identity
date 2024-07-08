@@ -381,11 +381,13 @@ public class IdentityXPage extends MVCApplication
         if ( !StringUtils.isEmpty( strBackUrl ) )
         {
             model.put( MARK_SERVICE_URL, strBackUrl );
-            String strServiceName = !StringUtils.isEmpty( _strAppCode ) ? AuthorizedUrlService.getInstance( ).getNameByApplicationCode( _strAppCode, strBackUrl ) : AuthorizedUrlService.getInstance( ).getName( strBackUrl );
-            if ( !StringUtils.isEmpty( strServiceName ) )
-            {
-                model.put( MARK_SERVICE_NAME, strServiceName );
-            }
+        }
+        
+        ServiceContractSearchResponse serviceContract = DashboardIdentityService.getInstance( ).getActiveServiceContract( _strAppCode );
+        if( serviceContract != null && serviceContract.getServiceContract( ) != null )
+        {
+            DashboardIdentityUtils.getInstance( ).setNumericServiceNameInSession( serviceContract.getServiceContract( ).getName( ), request );
+            model.put( MARK_SERVICE_NAME, serviceContract.getServiceContract( ).getName( ) );
         }
         
         if ( _strAppCode != null && _checkdIdentity != null )
