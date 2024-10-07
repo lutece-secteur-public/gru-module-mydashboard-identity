@@ -88,6 +88,10 @@ public final class Constants
             "mydashboard.identity.attribute.user.bplaceCode" );
     public static final String PROPERTY_KEY_BIRTHCOUNTRY_CODE = AppPropertiesService.getProperty( 
             "mydashboard.identity.attribute.user.bcountryCode" );
+    public static final int PROPERTY_IDENTITYSTORE_GUICHET_CERTIFIER_MIN_CODE = AppPropertiesService.getPropertyInt(
+            "myluteceusergu.identitystore.guichet.certifier.min.level", 400);
+    public static final int PROPERTY_IDENTITYSTORE_GUICHET_CERTIFIER_MAX_CODE = AppPropertiesService.getPropertyInt(
+            "myluteceusergu.identitystore.guichet.certifier.max.level", 600);
     
     //Fields validation messages
     public static final String MESSAGE_ERROR_UPDATE_IDENTITY = "module.mydashboard.identity.message.error.identity.update";
