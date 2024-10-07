@@ -66,7 +66,6 @@ import fr.paris.lutece.plugins.identitystore.web.exception.IdentityStoreExceptio
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.AttributeCategory;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardIdentity;
-import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -906,7 +905,29 @@ public class DashboardIdentityUtils
     	
     }
     
-    
+    public boolean identityCanBeCertifiedFC( DashboardIdentity dashboardIdentity )
+    {
+        boolean canBeFC = true;
+        List<String> attributesList = Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_FIRSTNAME, Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME,
+                Constants.ATTRIBUTE_DB_IDENTITY_BIRTHDATE, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE);
+        
+        for( String attributeKey : attributesList )
+        {
+           String strValueAttribute =  _mapAttributeKeyMatch.get( attributeKey );
+           
+           if( StringUtils.isNotEmpty( strValueAttribute ) )
+           {
+               DashboardAttribute attribute = dashboardIdentity.getAttribute( attributeKey );
+               
+               if ( attribute.getCertifierLevel( ) >= Constants.PROPERTY_IDENTITYSTORE_GUICHET_CERTIFIER_MIN_CODE && attribute.getCertifierLevel( ) < Constants.PROPERTY_IDENTITYSTORE_GUICHET_CERTIFIER_MAX_CODE )
+               {
+                   canBeFC = false;
+               }
+           }
+        }
+        
+        return canBeFC;
+    }
     
     
     /**
