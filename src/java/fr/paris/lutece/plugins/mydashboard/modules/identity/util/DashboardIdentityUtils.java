@@ -300,6 +300,7 @@ public class DashboardIdentityUtils
         identity.setLastUpdateDate(dashboardIdentity.getLastUpdateDate());
         identity.setConnectionId(dashboardIdentity.getConnectionId(  )!=null?  dashboardIdentity.getConnectionId(  ).getValue( ):null );
         identity.setCustomerId( dashboardIdentity.getCustomerId(  )!=null? dashboardIdentity.getCustomerId(  ).getValue( ):null );
+        identity.setMonParisActive( true );
         
         List<AttributeDto> listCertifiedAttribute = new ArrayList< >( );
         
