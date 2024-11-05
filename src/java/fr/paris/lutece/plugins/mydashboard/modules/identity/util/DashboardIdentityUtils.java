@@ -920,7 +920,7 @@ public class DashboardIdentityUtils
            {
                DashboardAttribute attribute = dashboardIdentity.getAttribute( attributeKey );
                
-               if ( attribute.getCertifierLevel( ) >= Constants.PROPERTY_IDENTITYSTORE_GUICHET_CERTIFIER_MIN_CODE && attribute.getCertifierLevel( ) < Constants.PROPERTY_IDENTITYSTORE_GUICHET_CERTIFIER_MAX_CODE )
+               if ( attribute.getCertifierLevel( ) < Constants.PROPERTY_IDENTITYSTORE_GUICHET_CERTIFIER_MIN_CODE )
                {
                    canBeFC = false;
                }
