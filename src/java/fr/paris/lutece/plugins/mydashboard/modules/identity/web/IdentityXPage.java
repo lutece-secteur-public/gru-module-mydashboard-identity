@@ -553,7 +553,7 @@ public class IdentityXPage extends MVCApplication
         }
         
         //Suspicious identity
-        if( DashboardIdentityService.getInstance( ).existSuspiciousIdentities( _checkdIdentity,DashboardIdentityUtils.getInstance( ).getAllSuspiciousIdentityRules( ) ) )
+        if( !DashboardIdentityUtils.getInstance().isCertifiedIdentity( _checkdIdentity ) && DashboardIdentityService.getInstance( ).existSuspiciousIdentities( _checkdIdentity,DashboardIdentityUtils.getInstance( ).getAllSuspiciousIdentityRules( ) ) )
         {
             DashboardIdentityUtils.getInstance( ).setCurrentDashboardIdentityInSession( request, _checkdIdentity );
             DashboardIdentityUtils.getInstance( ).setRedirectUrlAfterCompletionInSession( PROPERTY_REDIRECT_MODIFY_ACCOUNT_PAGE, PROPERTY_REDIRECT_COMPLETION_ACCOUNT_VIEW, request );
