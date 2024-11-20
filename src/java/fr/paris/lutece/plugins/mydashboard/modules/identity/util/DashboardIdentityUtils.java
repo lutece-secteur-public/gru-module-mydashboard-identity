@@ -906,9 +906,14 @@ public class DashboardIdentityUtils
     	
     }
     
-    public boolean identityCanBeCertifiedFC( DashboardIdentity dashboardIdentity )
+    /**
+     * Return true if identity is certified ( > 400)
+     * @param dashboardIdentity
+     * @return true if identity is certified
+     */
+    public boolean isCertifiedIdentity( DashboardIdentity dashboardIdentity )
     {
-        boolean canBeFC = true;
+        boolean isCertified = true;
         List<String> attributesList = Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_FIRSTNAME, Constants.ATTRIBUTE_DB_IDENTITY_LAST_NAME,
                 Constants.ATTRIBUTE_DB_IDENTITY_BIRTHDATE, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE, Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE);
         
@@ -922,12 +927,12 @@ public class DashboardIdentityUtils
                
                if ( attribute.getCertifierLevel( ) < Constants.PROPERTY_IDENTITYSTORE_GUICHET_CERTIFIER_MIN_CODE )
                {
-                   canBeFC = false;
+                   isCertified = false;
                }
            }
         }
         
-        return canBeFC;
+        return isCertified;
     }
     
     
