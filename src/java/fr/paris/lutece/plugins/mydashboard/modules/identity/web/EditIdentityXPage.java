@@ -155,11 +155,8 @@ public class EditIdentityXPage extends MVCApplication
             throw new UserNotSignedException( );
         }
         
-        if ( ( _dashboardIdentity == null ) || ( _dashboardIdentity.getConnectionId( ) == null ) || !_dashboardIdentity.getConnectionId( ).getValue( ).equals( luteceUser.getName( ) ) )
-        {
-            IdentityDto identity = DashboardIdentityUtils.getInstance( ).getIdentity( luteceUser.getName( ) );
-            _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity );
-        }        
+        IdentityDto identity = DashboardIdentityUtils.getInstance( ).getIdentity( luteceUser.getName( ) );
+        _dashboardIdentity = DashboardIdentityUtils.getInstance( ).convertToDashboardIdentity( identity );
         
         Map<String, Object> model = getModel( );
         
