@@ -47,6 +47,7 @@ import fr.paris.lutece.plugins.mydashboard.modules.identity.util.Constants;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.util.DashboardIdentityUtils;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
+import fr.paris.lutece.portal.service.html.EncodingService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.security.ISecurityTokenService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
@@ -354,7 +355,9 @@ public class EditIdentityXPage extends MVCApplication
         
         if ( !_dashboardIdentity.getEmail( ).getValue( ).equals( dashboardIdentityFromRic.getEmail( ).getValue( ) ) )
         {
-            return redirect( request, PROPERTY_REDIRECT_URL_CERTIFY_EMAIL_ACTION + "&email=" + _dashboardIdentity.getEmail( ).getValue( ) + "&token=" + _securityTokenService.getToken( request, ACTION_TYPE_MODIFY_ACCOUNT ) );
+            String strEncodeEmail =  EncodingService.encodeUrl( _dashboardIdentity.getEmail( ).getValue( ) );
+                    
+            return redirect( request, PROPERTY_REDIRECT_URL_CERTIFY_EMAIL_ACTION + "&email=" + strEncodeEmail + "&token=" + _securityTokenService.getToken( request, ACTION_TYPE_MODIFY_ACCOUNT ) );
         }
         
         // reint dashboard and check identity informations
