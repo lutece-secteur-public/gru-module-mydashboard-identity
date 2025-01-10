@@ -243,7 +243,10 @@ public class DashboardIdentityUtils
     
     public boolean needCertification( DashboardIdentity dashboardIdentity, ServiceContractSearchResponse contractSearchResponse, List<String> strAttributesNeedFC, int nLevelMin)
     {
-        
+        if( dashboardIdentity==null )
+        {
+        	return true;
+        }
         for( String attributeKey : strAttributesNeedFC )
         {
            String strValueAttribute =  _mapAttributeKeyMatch.get( attributeKey );
