@@ -251,7 +251,7 @@ public class DashboardIdentityUtils
         {
            String strValueAttribute =  _mapAttributeKeyMatch.get( attributeKey );
            
-           if( StringUtils.isNotEmpty( strValueAttribute ) )
+           if ( StringUtils.isNotEmpty( strValueAttribute ) && contractSearchResponse != null && contractSearchResponse.getServiceContract( ) != null && contractSearchResponse.getServiceContract( ).getAttributeDefinitions( ) != null )
            {
                DashboardAttribute attribute = dashboardIdentity.getAttribute( attributeKey );
                Optional<AttributeDefinitionDto> optionalContract = contractSearchResponse.getServiceContract( ).getAttributeDefinitions( )
