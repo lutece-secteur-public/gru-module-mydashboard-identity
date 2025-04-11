@@ -573,7 +573,6 @@ public class DashboardIdentityUtils
      * Update Identity from an IdentityDto.
      *
      * @param identityDto            identity Data transfer Object
-     * @throws IdentityNotFoundException the identity not found exception
      * @throws AppException the app exception
      */
     public void updateIdentity(   IdentityDto identity )throws AppException
