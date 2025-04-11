@@ -61,7 +61,6 @@ import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeRe
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.crud.IdentityChangeResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.rs.dto.search.IdentitySearchResponse;
 import fr.paris.lutece.plugins.identitystore.v3.web.service.IdentityService;
-import fr.paris.lutece.plugins.identitystore.web.exception.IdentityNotFoundException;
 import fr.paris.lutece.plugins.identitystore.web.exception.IdentityStoreException;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.AttributeCategory;
 import fr.paris.lutece.plugins.mydashboard.modules.identity.business.DashboardAttribute;

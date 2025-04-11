@@ -44,13 +44,13 @@
         <dependency>
             <artifactId>library-identitystore</artifactId>
             <groupId>fr.paris.lutece.plugins</groupId>
-            <version>[3.1.6]</version>
+            <version>[3.1.6,)</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <artifactId>library-identitybusiness</artifactId>
             <groupId>fr.paris.lutece.plugins</groupId>
-            <version>[3.1.8]</version>
+            <version>[3.1.8,)</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -73,7 +73,7 @@
 		 <dependency>
 			<groupId>fr.paris.lutece.plugins</groupId>
 			<artifactId>library-identityquality</artifactId>
-			<version>[1.0.2]</version>
+			<version>[1.0.2,)</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
