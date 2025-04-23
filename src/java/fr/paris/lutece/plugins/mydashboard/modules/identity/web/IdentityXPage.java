@@ -103,6 +103,7 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_NEED_CERTIFICATION_FC                = "needCertificationFC";
     private static final String MARK_NEED_LOGIN_CERTIFICATION             = "needLoginCertification";
     private static final String MARK_NEED_EMAIL_CERTIFICATION             = "needEmailCertification";
+    private static final String MARK_NEED_ATTACHMENT_CERTIFICATION        = "needAttachmentCertification";
 
     private static final String TEMPLATE_GET_VIEW_MODIFY_IDENTITY         = "skin/plugins/mydashboard/modules/identity/edit_identity.html";
     private static final String TEMPLATE_GET_VIEW_CHECK_IDENTITY          = "skin/plugins/mydashboard/modules/identity/check_identity.html";
@@ -114,6 +115,7 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_ORIGIN_ACTION                        = "origin";
     private static final String MARK_NS_NAME                              = "numericServiceName";
     private static final String MARK_TOKEN                                = "token";
+    private static final String MARK_APP_CODE                             = "appCode";
     
     private static final String BEAN_IDENTITYSTORE_SERVICE                = "mydashboard-identity.identitystore.service";
     private static final String SPLIT_PATTERN                             = ";";
@@ -149,7 +151,10 @@ public class IdentityXPage extends MVCApplication
     private static final String PROPERTY_REDIRECT_URL_CERTIFY_EMAIL = AppPropertiesService.getProperty( "mydashboard.identity.completion.certify_email");
     private static final int PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN =  AppPropertiesService.getPropertyInt( "mydashboard.identity.emailcertifier.level_min", 200);
     private static final String PROPERTY_LIST_ATTRIBUTES_TO_CHECK = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.list_attributes.to_check" );
-  
+    private static final int PROPERTY_CERTIFICATION_PJ_LEVEL_MIN =  AppPropertiesService.getPropertyInt( "mydashboard.identity.certification_pj.level_min", 100);
+    private static final int PROPERTY_CERTIFICATION_PJ_LEVEL_MAX =  AppPropertiesService.getPropertyInt( "mydashboard.identity.certification_pj.level_max", 400);
+
+    
     private ReferenceList       _lstContactModeList;
     private ReferenceList       _lstGenderList;
 
@@ -375,6 +380,7 @@ public class IdentityXPage extends MVCApplication
         model.put( MARK_AVATARSERVER_POST_URL, AVATARSERVER_POST_URL );
         model.put( MARK_MANDATORY_INFORMATIONS_SAVED, _bMandatoryInformationsSaved );
         model.put( MARK_TOKEN, _securityTokenService.getToken( request, ACTION_DO_CHECK_IDENTITY ) );
+        model.put( MARK_APP_CODE, _strAppCode );
         
         // check back url in session
 
@@ -413,9 +419,9 @@ public class IdentityXPage extends MVCApplication
                 }
             }
             
-            model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC.split( "," ) ), 400 ) );
+            model.put( MARK_NEED_CERTIFICATION_FC, DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC.split( "," ) ), 400, 700 ) );
   
-            boolean bLoginNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_LOGIN ), PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN )
+            boolean bLoginNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_LOGIN ), PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN,700 )
                     && ( StringUtils.isEmpty( _checkdIdentity.getLogin( ).getCertifierCode( ) ) || !_checkdIdentity.getLogin( ).getCertifierCode( ).equals( PROPERTY_IDENTITYSTORE_EMAIL_CERTIFIER_CODE ) );
 
             if( bLoginNeedCertification && StringUtils.isNotEmpty( PROPERTY_REDIRECT_URL_CERTIFY_EMAIL ) )
@@ -423,7 +429,7 @@ public class IdentityXPage extends MVCApplication
                return redirect( request, PROPERTY_REDIRECT_URL_CERTIFY_EMAIL + "&type=login" ) ;
             }
  
-            boolean bContactEmailNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ), PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN )
+            boolean bContactEmailNeedCertification = DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( Constants.ATTRIBUTE_DB_IDENTITY_EMAIL ), PROPERTY_IDENTITYSTORE_EMAIL_LEVEL_MIN, 700 )
                     && ( StringUtils.isEmpty( _checkdIdentity.getEmail( ).getCertifierCode( ) ) || !_checkdIdentity.getEmail( ).getCertifierCode( ).equals( PROPERTY_IDENTITYSTORE_EMAIL_CERTIFIER_CODE ) );
             
             if( ( bContactEmailNeedCertification || StringUtils.isEmpty( _checkdIdentity.getEmail( ).getValue( ) ) ) && StringUtils.isNotEmpty( PROPERTY_REDIRECT_URL_CERTIFY_EMAIL ) )
@@ -433,6 +439,7 @@ public class IdentityXPage extends MVCApplication
             
             model.put( MARK_NEED_EMAIL_CERTIFICATION, bContactEmailNeedCertification );
             model.put( MARK_NEED_LOGIN_CERTIFICATION, bLoginNeedCertification );
+            model.put( MARK_NEED_ATTACHMENT_CERTIFICATION, needAttachmentCertification( luteceUser, serviceContract ) );
         }
 
         // reinit Information
@@ -441,6 +448,13 @@ public class IdentityXPage extends MVCApplication
         return getXPage( TEMPLATE_GET_VIEW_CHECK_IDENTITY, request.getLocale( ), model );
     }
 
+    private boolean needAttachmentCertification( LuteceUser luteceUser, ServiceContractSearchResponse serviceContract )
+    {
+        return serviceContract != null && serviceContract.getServiceContract( ) != null && serviceContract.getServiceContract( ).isAuthorizedAttachementCertification( ) &&
+        DashboardIdentityService.getInstance().needCertification( _strAppCode, luteceUser.getName( ), _checkdIdentity, Arrays.asList( PROPERTY_COMPLETION_ATTRIBUTES_NEED_FC.split( "," ) ), PROPERTY_CERTIFICATION_PJ_LEVEL_MIN, PROPERTY_CERTIFICATION_PJ_LEVEL_MAX );
+    }
+    
+    
     /**
      * Do the modification of the user identity
      *
