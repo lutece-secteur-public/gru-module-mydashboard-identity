@@ -163,7 +163,7 @@ public interface IDashBoardIdentityService {
 	/**
 	 * {@inheritDoc}
 	 */
-	boolean needCertification(String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity, List<String> listAttributesNeedCertification, int nLevelMin)
+	boolean needCertification(String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity, List<String> listAttributesNeedCertification, int nLevelMin, int nLevelMax)
 			throws AppException;
 	
 	/**

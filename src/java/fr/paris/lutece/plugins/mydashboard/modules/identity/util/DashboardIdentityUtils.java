@@ -240,11 +240,11 @@ public class DashboardIdentityUtils
         
     }
     
-    public boolean needCertification( DashboardIdentity dashboardIdentity, ServiceContractSearchResponse contractSearchResponse, List<String> strAttributesNeedFC, int nLevelMin)
+    public boolean needCertification( DashboardIdentity dashboardIdentity, ServiceContractSearchResponse contractSearchResponse, List<String> strAttributesNeedFC, int nLevelMin, int nLevelMax)
     {
         if( dashboardIdentity==null )
         {
-        	return true;
+            return true;
         }
         for( String attributeKey : strAttributesNeedFC )
         {
@@ -258,13 +258,14 @@ public class DashboardIdentityUtils
                
                if ( optionalContract.isPresent( ) && optionalContract.get( ).getAttributeRequirement( ) != null 
                        && attribute.getCertifierLevel( ) < Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) 
-                           && Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) >= nLevelMin )
+                           && Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) >= nLevelMin 
+                           && Integer.valueOf( optionalContract.get( ).getAttributeRequirement( ).getLevel( ) ) <= nLevelMax )
                {
                    return true;
                }
            }
         }
-    	return false;
+        return false;
     }
     
     

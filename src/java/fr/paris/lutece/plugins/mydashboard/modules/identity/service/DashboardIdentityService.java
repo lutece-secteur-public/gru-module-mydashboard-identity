@@ -182,14 +182,14 @@ public class DashboardIdentityService implements IDashBoardIdentityService
      * {@inheritDoc}
      */
     @Override
-	public boolean needCertification( String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity, List<String> listAttributesNeedFC, int nLevelMin )
+	public boolean needCertification( String strApplicationCode, String strGuid, DashboardIdentity dashboardIdentity, List<String> listAttributesNeedFC, int nLevelMin, int nLevelMax )
     {
         ServiceContractSearchResponse serviceContractSearchResponse = getActiveServiceContract( strApplicationCode );
         if ( serviceContractSearchResponse == null )
         {
             return false;
         }
-        return DashboardIdentityUtils.getInstance( ).needCertification( dashboardIdentity, serviceContractSearchResponse, listAttributesNeedFC, nLevelMin );
+        return DashboardIdentityUtils.getInstance( ).needCertification( dashboardIdentity, serviceContractSearchResponse, listAttributesNeedFC, nLevelMin, nLevelMax );
     }
     
     @Override
