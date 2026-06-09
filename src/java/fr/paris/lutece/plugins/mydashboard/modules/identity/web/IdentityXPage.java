@@ -116,7 +116,8 @@ public class IdentityXPage extends MVCApplication
     private static final String MARK_NS_NAME                              = "numericServiceName";
     private static final String MARK_TOKEN                                = "token";
     private static final String MARK_APP_CODE                             = "appCode";
-    
+    private static final String MARK_ERROR_CODE          				  = "errorCode";
+  
     private static final String BEAN_IDENTITYSTORE_SERVICE                = "mydashboard-identity.identitystore.service";
     private static final String SPLIT_PATTERN                             = ";";
     private static final String PROPERTY_AVATERSERVER_POST_URL            = "mydashboard.identity.avatarserver.post.url";
@@ -124,7 +125,8 @@ public class IdentityXPage extends MVCApplication
 
     private static final String ROLE_MYDASHBOARD_CS_REQUIREMENTS_FULLFILLED    = "mydashboard.identity.roleMydashboardCsRequirementsFullFilled";
     private static final String APP_CODE_SERVICE_CONTRACT_MON_PARIS            = "mydashboard.identity.appCodeServiceContractMonParis";
-
+    private static final String ERROR_SERVICE_CONTRACT_NOT_FOUND 		  = "SERVICE_CONTRACT_NOT_FOUND";
+    
     // Views
     private static final String VIEW_VALIDATE_LAST_NAME                   = "validate_lastName";
     private static final String VIEW_VALIDATE_PREFERRED_USERNAME          = "validate_preferredUsername";
@@ -153,7 +155,6 @@ public class IdentityXPage extends MVCApplication
     private static final String PROPERTY_LIST_ATTRIBUTES_TO_CHECK = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.list_attributes.to_check" );
     private static final int PROPERTY_CERTIFICATION_PJ_LEVEL_MIN =  AppPropertiesService.getPropertyInt( "mydashboard.identity.certification_pj.level_min", 100);
     private static final int PROPERTY_CERTIFICATION_PJ_LEVEL_MAX =  AppPropertiesService.getPropertyInt( "mydashboard.identity.certification_pj.level_max", 400);
-
     
     private ReferenceList       _lstContactModeList;
     private ReferenceList       _lstGenderList;
@@ -391,11 +392,15 @@ public class IdentityXPage extends MVCApplication
         }
         
         ServiceContractSearchResponse serviceContract = DashboardIdentityService.getInstance( ).getActiveServiceContract( _strAppCode );
-        if( serviceContract != null && serviceContract.getServiceContract( ) != null )
-        {
+        if( serviceContract != null && serviceContract.getServiceContract( ) != null ) {
             DashboardIdentityUtils.getInstance( ).setNumericServiceNameInSession( serviceContract.getServiceContract( ).getName( ), request );
             model.put( MARK_SERVICE_NAME, serviceContract.getServiceContract( ).getName( ) );
-        }
+        } else {
+            AppLogService.error( "No Service contract was found for this application: ", _strAppCode );
+
+            model.put(MARK_ERROR_CODE, ERROR_SERVICE_CONTRACT_NOT_FOUND);
+            return getXPage( TEMPLATE_GET_VIEW_ERROR, request.getLocale( ), model );
+        }        
         
         if ( _strAppCode != null && _checkdIdentity != null )
         {
