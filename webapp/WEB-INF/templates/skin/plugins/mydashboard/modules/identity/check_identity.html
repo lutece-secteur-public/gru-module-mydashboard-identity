@@ -297,6 +297,7 @@ const save=$('#save');
 <#else>
 	/*  Save form management   */
 	var isSubmited=0, hasQuit=0;
+	var birthplaceMandatory = <#if identity.birthplace.mandatory>true<#else>false</#if>;
 	$('.form-control').on('keyup', function(e){
 		save.show();
 	});
@@ -304,7 +305,15 @@ const save=$('#save');
 		save.show();
 	});
 	$( "#form-profil" ).submit( function( event ) {
-	isSubmited=1;
+		isSubmited=1;
+		var country = $("input[name='birthcountry']").val().trim();
+		if ( birthplaceMandatory && country && country.toUpperCase() === 'FRANCE' && !$("input[name='birthplace']").val().trim() ) {
+			event.preventDefault();
+			cleanBirthPlace(birthplaceAutocompleteDiv);
+			$("#birthplace").find("input").prop("disabled", false);
+			isSubmited=0;
+			return false;
+		}
 	});
 	window.addEventListener( 'beforeunload' , function (e) {
 	if( isSubmited==0 ){
@@ -401,15 +410,26 @@ const save=$('#save');
 			$("#helpBirthPlace").remove();
 		}
 	});
+
+	/* Re-evaluate birthplace widget on country keystrokes (catches typing without dropdown selection) */
+	$("input[name='birthcountry']").on("keyup", function() {
+		var val = $(this).val().trim().toUpperCase();
+		if (val === 'FRANCE') {
+			cleanBirthPlace(birthplaceAutocompleteDiv);
+			$("#birthplace").find("input").prop("disabled", false);
+		} else if (val !== '' && val !== 'FRANCE' && $("input[name='birthcountry_code']").val() !== '') {
+			cleanBirthPlace(birthplaceDiv);
+		}
+	});
 		
 	$("body").on('click success', function () {
 		if ( $("input[name='birthcountry_code']").val() != birthCountryCodeInput ) {
-			if ($("input[name='birthcountry']").val().toUpperCase() == 'FRANCE') {
+			if ($("input[name='birthcountry']").val().trim().toUpperCase() == 'FRANCE') {
 				cleanBirthPlace(birthplaceAutocompleteDiv);
 				$("#birthplace").find("input").prop("disabled", false);
-			} else if ($("input[name='birthcountry']").val() != '' && $("input[name='birthcountry']").val().toUpperCase() != 'FRANCE' && $("input[name='birthcountry_code']").val() != '') {
+			} else if ($("input[name='birthcountry']").val().trim() != '' && $("input[name='birthcountry']").val().trim().toUpperCase() != 'FRANCE' && $("input[name='birthcountry_code']").val() != '') {
 				cleanBirthPlace(birthplaceDiv);
-			} else if ($("input[name='birthcountry']").val() == '') {
+			} else if ($("input[name='birthcountry']").val().trim() == '') {
 				cleanBirthPlace(birthplaceAutocompleteDiv);
 				$("#birthplace").find("input").prop("disabled", true);
 			}
