@@ -361,7 +361,7 @@ const save=$('#save');
 
 	var birthplaceAutocompleteDiv = $("#autocompleteBirthPlaceDiv");
 	var birthplaceDiv = $('<div class="form-group" id="birthPlaceDiv">' +
-		'<label for="birthplace">Ville de naissance</label>' +
+		'<label for="birthplace">Ville de naissance <span class="main-danger-color ms-xxs">*</span></label>' +
 		'<input class="form-control form-control-lg" value="${identity.birthplace.value!}" type="text" id="birthplace" name="birthplace" maxlength="255">' +
 		'</div>');
 	if ( "${identity.birthcountry.certifierCode}" == 'fccertifier' ) {
