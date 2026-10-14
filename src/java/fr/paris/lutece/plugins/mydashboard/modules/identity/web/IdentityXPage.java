@@ -958,6 +958,17 @@ public class IdentityXPage extends MVCApplication
             return redirect( request, AppPathService.getRootForwardUrl( ) );
         }
 
+        // Account creation with a suspicious identity: a birth in France must reference a city selected in the geocodes
+        // referential, the duplicate rules compare the birthplace code. Checked on the request before populating the
+        // identity in session, so that the completion view displays the error
+        if ( String.valueOf( Constants.ORIGIN_ACTION_CREATE_ACCOUNT ).equals( _originActionCompletion )
+                && Constants.BIRTHCOUNTRY_CODE_FRANCE.equals( StringUtils.trim( request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHCOUNTRY_CODE ) ) )
+                && StringUtils.isBlank( request.getParameter( Constants.ATTRIBUTE_DB_IDENTITY_BIRTHPLACE_CODE ) ) )
+        {
+            addError( Constants.MESSAGE_ERROR_COMPLETE_IDENTITY_BIRTHPLACE_CODE, request.getLocale( ) );
+            return redirect( request, VIEW_SUSPICION_IDENTITY_COMPLETION, PARAMETER_ORIGIN_ACTION, Constants.ORIGIN_ACTION_CREATE_ACCOUNT );
+        }
+
         _completionIdentity = DashboardIdentityUtils.getInstance( ).initMandatoryAttributeForCompletionIdentity( dasboardIdentitySession, _originActionCompletion );
 
         DashboardIdentityService.getInstance( ).populateDashboardIdentity( _completionIdentity, request );

@@ -186,6 +186,10 @@ public final class Constants
     public static final int ORIGIN_ACTION_CREATE_ACCOUNT = 1;
     public static final int ORIGIN_ACTION_MODIFY_ACCOUNT = 2;
     public static final int ORIGIN_ACTION_COMPLETION_ACCOUNT = 3;
+
+    // LUT-33165 : birthplace code mandatory for a birth in France when completing a suspicious identity at account creation
+    public static final String BIRTHCOUNTRY_CODE_FRANCE = AppPropertiesService.getProperty( "mydashboard.identity.birthcountry.code.france", "99100" );
+    public static final String MESSAGE_ERROR_COMPLETE_IDENTITY_BIRTHPLACE_CODE = "module.mydashboard.identity.view_complete_identity.error.birthplaceCode";
     
     public static final String PROPERTY_SUSPICIOUS_LIST_RULE_STRIC       = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.identity.list_code_rule.strict", "RG_GEN_StrictDoublon_01" );
     public static final String PROPERTY_SUSPICIOUS_LIST_RULE_NOT_STRIC   = AppPropertiesService.getProperty( "mydashboard.identity.suspicious.identity.list_code_rule.not_strict",
